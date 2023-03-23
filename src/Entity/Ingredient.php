@@ -12,7 +12,7 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private int $id;
+    private ?int $id;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
@@ -27,7 +27,15 @@ class Ingredient
 
     #[ORM\Column]
     #[Assert\NotNull()]
-    private \DateTimeImmutable $createdAt;
+    private ?\DateTimeImmutable $createdAt;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable();
+    }
 
     public function getId(): int
     {
