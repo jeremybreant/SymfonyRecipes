@@ -8,7 +8,7 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
-class AppFixtures extends Fixture
+class IngredientFixtures extends Fixture
 {
     /**
      * @var Generator

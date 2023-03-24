@@ -13,9 +13,23 @@
         {% endblock %}
     </head>
     <body>
+
         {% block header %}
             {% include "partials/_header.html.twig" %}
         {% endblock %}
+
+        {% block flash %}
+            <div class="container mt-4">
+                {% for label, messages in app.flashes %}
+                    {% for message in messages %}
+                        <div class="alert alert-dismissible alert-{{ label }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        {% endblock %}
+
         {% block body %}{% endblock %}
     </body>
 </html>
