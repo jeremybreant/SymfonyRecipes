@@ -36,6 +36,13 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    /**
+     * This controller is used to create a new ingredient
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/ingredient/nouveau', 'ingredient.new', methods: ['Get', 'POST'])]
     public function new(
         Request $request,
@@ -64,5 +71,41 @@ class IngredientController extends AbstractController
         return $this->render('pages/ingredient/new.html.twig', [
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     *This controller is used to edit an ingredient
+     *
+     * @return Response
+     */
+    #[Route('/ingredient/edit/{id}', 'ingredient.edit', methods: ['Get', 'POST'])]
+    public function edit(
+        Request $request,
+        EntityManagerInterface $manager,
+        Ingredient $ingredient
+    ):Response
+    {
+        $form = $this->createForm(IngredientType::class, $ingredient);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $ingredient = $form->getData();
+
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre ingrédient a été modifié avec succès'
+            );
+
+            return $this->redirectToRoute('ingredient.index');
+        }
+
+        return $this->render('pages/ingredient/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+
     }
 }

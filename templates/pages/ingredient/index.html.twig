@@ -6,6 +6,10 @@
     <div class="container mt-4">
         <h1>Mes ingrédients</h1>
 
+        <a href="{{ path('ingredient.new') }}" class="btn btn-primary mt-4">
+            Créer un ingrédient
+        </a>
+        
         <div class="count mt-4">
             {%  if ingredients is empty %}
             Il y a 0 ingrédient au total
