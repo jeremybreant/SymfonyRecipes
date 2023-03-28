@@ -43,7 +43,7 @@ class IngredientController extends AbstractController
      * @param EntityManagerInterface $manager
      * @return Response
      */
-    #[Route('/ingredient/nouveau', 'ingredient.new', methods: ['Get', 'POST'])]
+    #[Route('/ingredient/nouveau', 'ingredient.new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $manager
@@ -78,7 +78,7 @@ class IngredientController extends AbstractController
      *
      * @return Response
      */
-    #[Route('/ingredient/edit/{id}', 'ingredient.edit', methods: ['Get', 'POST'])]
+    #[Route('/ingredient/edit/{id}', 'ingredient.edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
@@ -106,6 +106,32 @@ class IngredientController extends AbstractController
         return $this->render('pages/ingredient/edit.html.twig', [
             'form' => $form->createView()
         ]);
+    }
 
+    #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET'])]
+    public function delete(
+        Ingredient $ingredient,
+        EntityManagerInterface $entityManager
+    ) : Response
+    {
+        if(!$ingredient)
+        {
+            $this->addFlash(
+                'danger',
+                'L\'ingrédient n\'a pas été trouvé'
+            );
+        }
+        else
+        {
+            $entityManager->remove($ingredient);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                sprintf('Ingrédient %s a été supprimé avec succès', $ingredient->getName())
+            );
+        }
+
+        return $this->redirectToRoute('ingredient.index');
     }
 }
