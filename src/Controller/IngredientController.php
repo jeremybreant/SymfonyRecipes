@@ -97,7 +97,7 @@ class IngredientController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Votre ingrédient a été modifié avec succès'
+                sprintf('Votre ingrédient %s a été modifié avec succès', $ingredient->getName())
             );
 
             return $this->redirectToRoute('ingredient.index');
