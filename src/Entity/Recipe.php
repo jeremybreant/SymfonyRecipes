@@ -3,10 +3,15 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+#[UniqueEntity('name')]
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Recipe
 {
     #[ORM\Id]
@@ -20,32 +25,41 @@ class Recipe
     private string $name;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Range(min: 2, max: 1440)]
+    #[Assert\LessThan(1441)]
+    #[Assert\Positive()]
     private ?int $time = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\LessThan(value: 50)]
+    #[Assert\LessThan(value: 51)]
+    #[Assert\Positive()]
     private ?int $peopleRequired = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\Range(min: 1, max: 5)]
-    private ?float $difficulty = null;
+    private ?int $difficulty = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: 'text')]
     #[Assert\NotBlank()]
     private string $description;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\Range(min: 0, max: 1000)]
+    #[Assert\Positive()]
+    #[Assert\LessThan(1001)]
     private ?float $price = null;
 
     #[ORM\Column]
     #[Assert\NotNull()]
-    private ?\DateTimeImmutable $createdAt;
+    private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
     #[Assert\NotNull()]
-    private ?\DateTimeImmutable $updatedAt;
+    private \DateTimeImmutable $updatedAt;
+
+    #[ORM\ManyToMany(targetEntity: ingredient::class, inversedBy: 'recipes')]
+    private Collection $Ingredient;
+
+    #[ORM\Column]
+    private bool $isFavorite;
 
     /**
      * Constructor
@@ -54,10 +68,11 @@ class Recipe
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
+        $this->Ingredient = new ArrayCollection();
     }
 
-    #[ORM\PreUpdate]
-    public function setUpdatedAt(): void
+    #[ORM\PrePersist]
+    public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
     }
@@ -154,5 +169,41 @@ class Recipe
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
+    }
+
+    /**
+     * @return Collection<int, ingredient>
+     */
+    public function getIngredients(): Collection
+    {
+        return $this->Ingredient;
+    }
+
+    public function addIngredient(ingredient $ingredient): self
+    {
+        if (!$this->Ingredient->contains($ingredient)) {
+            $this->Ingredient->add($ingredient);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredient(ingredient $ingredient): self
+    {
+        $this->Ingredient->removeElement($ingredient);
+
+        return $this;
+    }
+
+    public function isIsFavorite(): ?bool
+    {
+        return $this->isFavorite;
+    }
+
+    public function setIsFavorite(bool $isFavorite): self
+    {
+        $this->isFavorite = $isFavorite;
+
+        return $this;
     }
 }
