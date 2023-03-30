@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -55,8 +54,8 @@ class Recipe
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
-    #[ORM\ManyToMany(targetEntity: ingredient::class, inversedBy: 'recipes')]
-    private Collection $Ingredient;
+    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recipes')]
+    private Collection $ingredient;
 
     #[ORM\Column]
     private bool $isFavorite;
@@ -68,7 +67,7 @@ class Recipe
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->Ingredient = new ArrayCollection();
+        $this->ingredient = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -172,25 +171,25 @@ class Recipe
     }
 
     /**
-     * @return Collection<int, ingredient>
+     * @return Collection<int, Ingredient>
      */
     public function getIngredients(): Collection
     {
-        return $this->Ingredient;
+        return $this->ingredient;
     }
 
     public function addIngredient(ingredient $ingredient): self
     {
-        if (!$this->Ingredient->contains($ingredient)) {
-            $this->Ingredient->add($ingredient);
+        if (!$this->ingredient->contains($ingredient)) {
+            $this->ingredient->add($ingredient);
         }
 
         return $this;
     }
 
-    public function removeIngredient(ingredient $ingredient): self
+    public function removeIngredient(Ingredient $ingredient): self
     {
-        $this->Ingredient->removeElement($ingredient);
+        $this->ingredient->removeElement($ingredient);
 
         return $this;
     }
