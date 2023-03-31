@@ -6,7 +6,7 @@
     <div class="container mt-4">
         <h1>Mes recettes</h1>
 
-        <a href="#" class="btn btn-primary mt-4">
+        <a href="{{ path('recipe.new') }}" class="btn btn-primary mt-4">
             Créer une recette
         </a>
 
@@ -36,14 +36,14 @@
                 <tr class="table-primary">
                     <th scope="row">{{ recipe.id }}</th>
                     <td>{{ recipe.name }}</td>
-                    <td>{{ recipe.time }}</td>
-                    <td>{{ recipe.peopleRequired }}</td>
-                    <td>{{ recipe.difficulty }}</td>
-                    <td>{{ recipe.price }}</td>
+                    <td>{{ (recipe.time is null) ? '--' : recipe.time }}</td>
+                    <td>{{ (recipe.peopleRequired is null) ? '--' : recipe.peopleRequired }}</td>
+                    <td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
+                    <td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
                     <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
                     <td>
-                        <a href="#" class="btn btn-info">Modifier</a>
-                        <a href="#" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
+                        <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
                     </td>
                 </tr>
             {% endfor %}
