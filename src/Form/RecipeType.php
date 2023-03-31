@@ -27,7 +27,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Nom',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('time', IntegerType::class,[
@@ -36,7 +36,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'temps',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('peopleRequired', IntegerType::class,[
@@ -45,7 +45,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Nbr de personne nécessaire',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('difficulty',  IntegerType::class,[
@@ -54,7 +54,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'difficulté',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -63,7 +63,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Description',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('price', MoneyType::class, [
@@ -72,16 +72,16 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Prix',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('isFavorite', CheckboxType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-check-input'
                 ],
                 'label' => 'Favoris ?',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-check-label'
                 ]
             ])
             ->add('ingredients', EntityType::class, [
