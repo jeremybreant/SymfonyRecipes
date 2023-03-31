@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Ingredient;
+use App\Entity\Recipe;
+use App\Form\IngredientType;
+use App\Form\RecipeType;
 use App\Repository\RecipeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,4 +41,112 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * This controller allow us to create new recipe
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    #[Route('/recipe/creation', 'recipe.new', methods: ['GET', 'POST'])]
+    public function new(
+        Request $request,
+        EntityManagerInterface $manager
+    ) : Response
+    {
+        $recipe = new Recipe();
+        $form = $this->createForm(RecipeType::class, $recipe);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $recipe = $form->getData();
+
+            $manager->persist($recipe);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre recette a été créé avec succès'
+            );
+
+            return $this->redirectToRoute('recipe.index');
+        }
+
+        return $this->render('pages/recipe/new.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * This route is used to edit a recipe
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param Recipe $recipe
+     * @return Response
+     */
+    #[Route('/recipe/edit/{id}', 'recipe.edit', methods: ['GET', 'POST'])]
+    public function edit(
+        Request $request,
+        EntityManagerInterface $manager,
+        Recipe $recipe
+    ):Response
+    {
+        $form = $this->createForm(RecipeType::class, $recipe);
+
+        $form->handleRequest($request);
+        if($form->isSubmitted() && $form->isValid())
+        {
+            $recipe = $form->getData();
+
+            $manager->persist($recipe);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                sprintf('Votre recette %s a été modifié avec succès', $recipe->getName())
+            );
+
+            return $this->redirectToRoute('recipe.index');
+        }
+
+        return $this->render('pages/recipe/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * This route is used to delete recipe
+     *
+     * @param Recipe $recipe
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
+    #[Route('/recipe/suppression/{id}', 'recipe.delete', methods: ['GET'])]
+    public function delete(
+        Recipe $recipe,
+        EntityManagerInterface $entityManager
+    ) : Response
+    {
+        if(!$recipe)
+        {
+            $this->addFlash(
+                'danger',
+                'La recette n\'a pas été trouvé'
+            );
+        }
+        else
+        {
+            $entityManager->remove($recipe);
+            $entityManager->flush();
+
+            $this->addFlash(
+                'success',
+                sprintf('La recette %s a été supprimé avec succès', $recipe->getName())
+            );
+        }
+
+        return $this->redirectToRoute('recipe.index');
+    }
 }
