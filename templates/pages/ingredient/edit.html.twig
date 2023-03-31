@@ -1,16 +1,12 @@
 {%  extends "base.html.twig" %}
 
+{% block title %}StmfonyRecipes - Modification ingrédient{% endblock %}
+
 {%  block body %}
     <div class="container">
         <h1 class="mt-4">
             Modification de l'ingrédient
         </h1>
-
-        {% for message in app.flashes('success') %}
-            <div class="alert alert-success mt-4">
-                {{ message }}
-            </div>
-        {% endfor %}
 
         {{ form_start(form) }}
 
