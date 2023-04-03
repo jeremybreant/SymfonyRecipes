@@ -31,7 +31,7 @@ class UserFixture extends Fixture
                 ->setPseudo(mt_rand(0,1) === 1 ? $this->faker->firstName() : null)
                 ->setEmail($this->faker->email())
                 ->setRoles(['ROLE_USER'])
-                ->setPlainPassword('pasword');
+                ->setPlainPassword('password');
 
             $manager->persist($user);
         }
