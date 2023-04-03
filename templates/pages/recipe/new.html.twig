@@ -61,7 +61,9 @@
         </div>
 
         {{ form_row(form.ingredients) }}
-
+        <div class="form-group">
+            {{ form_row(form.submit, { 'label': 'Créer une recette'}) }}
+        </div>
         {{ form_end(form) }}
     </div>
 {% endblock %}
