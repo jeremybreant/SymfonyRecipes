@@ -23,7 +23,10 @@ class IngredientController extends AbstractController
      * @return Response
      */
     #[Route('/ingredient', name: 'ingredient.index', methods: ['GET'])]
-    public function index(IngredientRepository $ingredientRepository, PaginatorInterface $paginator, Request $request): Response
+    public function index(
+        IngredientRepository $ingredientRepository,
+        PaginatorInterface $paginator,
+        Request $request): Response
     {
         $ingredients = $paginator->paginate(
             $ingredientRepository->findAll(), /* query NOT result */
@@ -37,7 +40,7 @@ class IngredientController extends AbstractController
     }
 
     /**
-     * This controller is used to create a new ingredient
+     * This route is used to create a new ingredient
      *
      * @param Request $request
      * @param EntityManagerInterface $manager
@@ -74,8 +77,11 @@ class IngredientController extends AbstractController
     }
 
     /**
-     *This controller is used to edit an ingredient
+     * This route is used to edit an ingredient
      *
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @param Ingredient $ingredient
      * @return Response
      */
     #[Route('/ingredient/edit/{id}', 'ingredient.edit', methods: ['GET', 'POST'])]
@@ -108,6 +114,13 @@ class IngredientController extends AbstractController
         ]);
     }
 
+    /**
+     * This route is used to delete an ingredient
+     *
+     * @param Ingredient $ingredient
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/ingredient/suppression/{id}', 'ingredient.delete', methods: ['GET'])]
     public function delete(
         Ingredient $ingredient,
