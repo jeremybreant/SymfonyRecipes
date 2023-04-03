@@ -21,6 +21,7 @@ class RecipeController extends AbstractController
      *
      * @param RecipeRepository $recipeRepository
      * @param PaginatorInterface $paginator
+     * @param Request $request
      * @return Response
      */
     #[Route('/recipe', name: 'recipe.index', methods: ['GET'])]
