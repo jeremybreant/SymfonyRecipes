@@ -47,7 +47,7 @@ class RecipeFixture extends Fixture
                 ->setIsFavorite(mt_rand(0,1) == 1);
             for ($k=0; $k < mt_rand(5,15); $k++)
             {
-                $recipe->addIngredient($ingredients[mt_rand(0,count($ingredients)-1)]);
+                $recipe->addIngredients($ingredients[mt_rand(0,count($ingredients)-1)]);
             }
 
             $manager->persist($recipe);
