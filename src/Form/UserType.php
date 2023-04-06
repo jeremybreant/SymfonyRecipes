@@ -25,7 +25,7 @@ class UserType extends AbstractType
                 ],
                 'label' => 'Nom / Prenom',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
             ->add('pseudo', TextType::class, [
@@ -37,8 +37,17 @@ class UserType extends AbstractType
                 'required' => false,
                 'label' => 'Pseudo',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
+            ])
+            ->add('plainPassword',PasswordType::class, [
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'label_attr' => [
+                    'class' => 'form-label'
+                ],
+                'label' => 'Mot de passe',
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
