@@ -70,6 +70,15 @@ class UserController extends AbstractController
         ]);
     }
 
+    /**
+     * this route allow us to change password
+     *
+     * @param User $user
+     * @param Request $request
+     * @param UserPasswordHasherInterface $hasher
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/utilisateur/edition-mot-de-passe/{id}', 'user.edit.password', methods:['GET','POST'])]
     public function editPassword(
         User $user,
