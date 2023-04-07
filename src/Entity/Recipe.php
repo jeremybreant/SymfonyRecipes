@@ -190,7 +190,7 @@ class Recipe
 
     public function removeIngredients(Ingredient $ingredient): self
     {
-        $this->ingredient->removeElement($ingredient);
+        $this->ingredients->removeElement($ingredient);
 
         return $this;
     }
