@@ -61,6 +61,10 @@ class Recipe
     #[ORM\Column]
     private bool $isFavorite;
 
+    #[ORM\ManyToOne(inversedBy: 'recipes')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     /**
      * Constructor
      */
@@ -203,6 +207,18 @@ class Recipe
     public function setIsFavorite(bool $isFavorite): self
     {
         $this->isFavorite = $isFavorite;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }

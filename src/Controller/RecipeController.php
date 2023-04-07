@@ -32,7 +32,7 @@ class RecipeController extends AbstractController
     ): Response
     {
         $recipes = $paginator->paginate(
-            $recipeRepository->findAll(), /* query NOT result */
+            $recipeRepository->findBy(['user' => $this->getUser()]), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
@@ -62,6 +62,7 @@ class RecipeController extends AbstractController
         if($form->isSubmitted() && $form->isValid())
         {
             $recipe = $form->getData();
+            $recipe->setUser($this->getUser());
 
             $manager->persist($recipe);
             $manager->flush();
