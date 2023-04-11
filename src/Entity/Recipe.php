@@ -21,7 +21,7 @@ class Recipe
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max:50)]
+    #[Assert\Length(min: 2, max: 50)]
     private string $name;
 
     #[ORM\Column(nullable: true)]
@@ -61,9 +61,13 @@ class Recipe
     #[ORM\Column]
     private bool $isFavorite;
 
+    #[ORM\Column]
+    private ?bool $isPublic = null;
+
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
 
     /**
      * Constructor
@@ -211,6 +215,18 @@ class Recipe
         return $this;
     }
 
+    public function isIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -222,4 +238,5 @@ class Recipe
 
         return $this;
     }
+
 }
