@@ -1,0 +1,53 @@
+{% extends "base.html.twig" %}
+
+{% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h1 class="mt-4">
+            {{ recipe.name }}
+        </h1>
+        <span class="badge bg-primary">
+        Crééé le {{ recipe.createdAt|date('d/m/Y') }}
+    </span>
+        <div class="mt-4">
+            {% if recipe.time %}
+                Temps (en min) : {{ recipe.time }}
+            {% else %}
+                Temps non renségné
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {% if recipe.peopleRequired %}
+                Pour {{ recipe.peopleRequired }} personnes
+            {% else %}
+                Nombre de personne non renségné
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {% if recipe.difficulty %}
+                Difficulté : {{ recipe.difficulty }}
+            {% else %}
+                Diffculté non renségné
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {% if recipe.price %}
+                Prix : {{ recipe.price }}€
+            {% else %}
+                Prix non renségné
+            {% endif %}
+        </div>
+        <div class="mt-4">
+            {{ recipe.description|raw }}
+        </div>
+        <div class="mt-4">
+            <p class="mt-4"> Ingredients :</p>
+            {% for ingredient in recipe.ingredients %}
+                <span class="badge bg-primary">
+            {{ ingredient.name }}
+            </span>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
