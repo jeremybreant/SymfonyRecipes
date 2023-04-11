@@ -92,6 +92,15 @@ class RecipeType extends AbstractType
                     'class' => 'form-check-label'
                 ]
             ])
+            ->add('isPublic', CheckboxType::class, [
+                'attr' => [
+                    'class' => 'form-check-input'
+                ],
+                'label' => 'Public ?',
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ]
+            ])
             ->add('ingredients', EntityType::class, [
                 'class' => Ingredient::class,
                 'multiple' => true,
