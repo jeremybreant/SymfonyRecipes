@@ -2,13 +2,33 @@
 
 {% block body %}
     <div class="container mt-4">
-        <div class="jumbotron">
-            <h1 class="display-4">Symfony recipes</h1>
-            <p class="lead">SymfonyRecipes est une application permettant de créer des recettes. Elles pourront être partagées à la communauté du site... ou pas.</p>
-            <hr class="my-4">
-            <p>Mais avant cela, il va falloir t'inscrire !</p>
-            <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">S'inscrire</a>
-            <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Se connecter</a>
-        </div>
+    <div class="jumbotron">
+        <h1 class="display-4">Symfony recipes</h1>
+        <p class="lead">SymfonyRecipes est une application permettant de créer des recettes. Elles pourront être
+            partagées à la communauté du site... ou pas.</p>
+        <hr class="my-4">
+        <p>Mais avant cela, il va falloir t'inscrire !</p>
+        <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">S'inscrire</a>
+        <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Se connecter</a>
     </div>
-{%  endblock %}
+    <div class="recipes mt-5">
+        <h1>Recettes de la communauté</h1>
+        {% if recipes is same as([]) %}
+            <h4>Il n'y a pas de recette</h4>
+        {% else %}
+            <div class="d-flex justify-content-around flex-wrap mt-4">
+                {% for recipe in recipes %}
+                    <div class="card border-primary mb-3" style="max-width: 23rem;">
+                        <div class="card-header">
+                            <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="list-group-item list-group-item-action">{{ recipe.name }}</a>
+                        </div>
+                        <div class="card-body">
+                            <h4 class="card-title">{{ recipe.name }}</h4>
+                            <p class="card-text">{{ recipe.description|slice(0,100) ~ "..." }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
