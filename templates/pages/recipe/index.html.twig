@@ -42,8 +42,12 @@
                     <td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
                     <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
                     <td>
+                        {% if recipe.user == app.user %}
                         <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
                         <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+                        {% else %}
+                        --
+                        {% endif %}
                     </td>
                 </tr>
             {% endfor %}
