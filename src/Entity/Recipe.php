@@ -59,14 +59,19 @@ class Recipe
     private Collection $ingredients;
 
     #[ORM\Column]
+    #[Assert\NotNull()]
     private bool $isFavorite;
 
     #[ORM\Column]
-    private ?bool $isPublic = null;
+    #[Assert\NotNull()]
+    private bool $isPublic;
 
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
+    private Collection $marks;
 
 
     /**
@@ -77,6 +82,7 @@ class Recipe
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->ingredients = new ArrayCollection();
+        $this->marks = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -203,7 +209,7 @@ class Recipe
         return $this;
     }
 
-    public function isIsFavorite(): ?bool
+    public function getIsFavorite(): ?bool
     {
         return $this->isFavorite;
     }
@@ -215,7 +221,7 @@ class Recipe
         return $this;
     }
 
-    public function isIsPublic(): ?bool
+    public function getIsPublic(): ?bool
     {
         return $this->isPublic;
     }
@@ -237,6 +243,69 @@ class Recipe
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Mark>
+     */
+    public function getMarks(): Collection
+    {
+        return $this->marks;
+    }
+
+    public function addMark(Mark $mark): self
+    {
+        if (!$this->marks->contains($mark)) {
+            $this->marks->add($mark);
+            $mark->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMark(Mark $mark): self
+    {
+        if ($this->marks->removeElement($mark)) {
+            // set the owning side to null (unless already changed)
+            if ($mark->getRecipe() === $this) {
+                $mark->setRecipe(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getAverage(): ?float
+    {
+        $total = 0;
+        $count = count($this->marks);
+
+        if ($count === 0) {
+            return null;
+        }
+
+        foreach ($this->marks as $mark) {
+            $total += $mark->getMark();
+        }
+
+        return $total / $count;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getRoundedAverage(): ?float
+    {
+        $averageMark = $this->getAverage();
+
+        if ($averageMark === null) {
+            return null;
+        }
+
+        return round($averageMark,2);
     }
 
 }

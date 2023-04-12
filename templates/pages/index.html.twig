@@ -19,9 +19,16 @@
             <div class="d-flex justify-content-around flex-wrap mt-4">
                 {% for recipe in recipes %}
                     <div class="card border-primary mb-3" style="max-width: 23rem;">
-                        <div class="card-header">
-                            <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="list-group-item list-group-item-action">{{ recipe.name }}</a>
-                        </div>
+                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="card-header btn btn-light">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    {{ recipe.name }}
+                                </div>
+                                <div>
+                                    {{ recipe.getRoundedAverage() }} &#10032;
+                                </div>
+                            </div>
+                        </a>
                         <div class="card-body">
                             <h4 class="card-title">{{ recipe.name }}</h4>
                             <p class="card-text">{{ recipe.description|slice(0,100) ~ "..." }}</p>
