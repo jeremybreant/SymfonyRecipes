@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Ingredient;
+use App\Entity\Mark;
 use App\Entity\Recipe;
 use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -53,6 +54,7 @@ class AppFixture extends Fixture
         }
 
         //Recipes
+        $recipes = [];
         for ($i = 0; $i < 25; $i++) {
             $recipe = new Recipe();
             $recipe->setName($this->faker->word(1))
@@ -68,8 +70,24 @@ class AppFixture extends Fixture
                 $recipe->addIngredients($ingredients[mt_rand(0, count($ingredients) - 1)]);
             }
 
+            $recipes[$i] = $recipe;
             $manager->persist($recipe);
         }
+
+        //Marks
+        foreach ($users as $user) {
+            foreach ($recipes as $recipe){
+                if (mt_rand(0,1)){
+                    $mark = new Mark();
+                    $mark->setUser($user)
+                        ->setMark(mt_rand(0,5))
+                        ->setRecipe($recipe);
+
+                    $manager->persist($mark);
+                }
+            }
+        }
+
 
         $manager->flush();
     }
