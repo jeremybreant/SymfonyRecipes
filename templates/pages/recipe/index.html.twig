@@ -11,11 +11,13 @@
         </a>
 
         <div class="count mt-4">
-            {%  if recipes is empty %}
-                Il y a 0 recette au total
+            Il y a {{ recipes.getTotalItemCount }}
+            {% if recipes.getTotalItemCount > 1 %}
+                recettes
             {% else %}
-                Il y a {{ recipes.getTotalItemCount }} recettes au total
-            {%  endif %}
+                recette
+            {% endif %}
+            au total
         </div>
 
         <table class="table table-hover mt-4">
@@ -43,10 +45,11 @@
                     <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
                     <td>
                         {% if recipe.user == app.user %}
-                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
-                        <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+                            <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
+                            <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger"
+                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
                         {% else %}
-                        --
+                            --
                         {% endif %}
                     </td>
                 </tr>
