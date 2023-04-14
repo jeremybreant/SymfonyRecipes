@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 
 class RecipeType extends AbstractType
@@ -87,6 +88,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-check-input'
                 ],
+                'required' => false,
                 'label' => 'Favoris ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
@@ -96,6 +98,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-check-input'
                 ],
+                'required' => false,
                 'label' => 'Public ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
@@ -114,7 +117,16 @@ class RecipeType extends AbstractType
                 'expanded' => true,
                 'label' => 'les ingrédients',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
+                ]
+            ])
+            ->add('imageFile', VichImageType::class, [
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'label' => 'Image :',
+                'label_attr' => [
+                    'class' => 'form-label'
                 ]
             ])
             ->add('submit', SubmitType::class, [
