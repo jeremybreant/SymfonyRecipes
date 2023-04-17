@@ -52,7 +52,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Nbr de personne nécessaire',
+                'label' => 'Nbr de personne :',
                 'label_attr' => [
                     'class' => 'form-label'
                 ]
@@ -115,7 +115,7 @@ class RecipeType extends AbstractType
                         ->setParameter('user' , $this->token->getToken()->getUser());
                 },
                 'expanded' => true,
-                'label' => 'les ingrédients',
+                'label' => 'les ingrédients :',
                 'label_attr' => [
                     'class' => 'form-label'
                 ]
@@ -124,6 +124,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
+                'required' => false,
                 'label' => 'Image :',
                 'label_attr' => [
                     'class' => 'form-label'

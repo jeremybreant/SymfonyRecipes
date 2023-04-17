@@ -20,11 +20,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Assert\NotNull()]
     private int $id;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "fullName notNull")]
     #[Assert\Length(min: 2, max: 50)]
     private string $fullName;
 
@@ -46,15 +45,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      */
     #[ORM\Column]
-    #[Assert\NotBlank()]
-    private ?string $password = "null";
+    #[Assert\NotBlank(message: "Votre mot de passe est vide")]
+    private string $password = 'password';
 
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "createdAt notNull")]
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "pdatedAt notNull")]
     private \DateTimeImmutable $updatedAt;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Ingredient::class, orphanRemoval: true)]
