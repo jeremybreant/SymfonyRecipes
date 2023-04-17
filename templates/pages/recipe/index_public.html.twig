@@ -10,7 +10,7 @@
             <h1>Recettes de la communauté</h1>
             <div class="d-flex justify-content-around flex-wrap mt-4">
                 {% for recipe in recipes %}
-                    <div class="card border-primary mb-3" style="max-width: 23rem;">
+                    <div class="card border-primary mb-3" style="width: 23rem;">
                         <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="card-header btn btn-light">
                             <div class="d-flex justify-content-between">
                                 <div>
