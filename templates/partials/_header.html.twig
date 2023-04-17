@@ -14,17 +14,23 @@
                         Accueil
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link{% if app.request.get('_route') == 'recipe.index.public' %} active{% endif %}"
+                       href="{{ path('recipe.index.public') }}">
+                        Recettes
+                    </a>
+                </li>
                 {% if app.user %}
                     <li class="nav-item">
                         <a class="nav-link{% if app.request.get('_route') == 'ingredient.index' %} active{% endif %}"
                            href="{{ path('ingredient.index') }}">
-                            Ingredients
+                            Vos Ingredients
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link{% if app.request.get('_route') == 'recipe.index' %} active{% endif %}"
                            href="{{ path('recipe.index') }}">
-                            Recettes
+                            Vos Recettes
                         </a>
                     </li>
                 {% endif %}
