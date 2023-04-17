@@ -10,7 +10,11 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
-#[UniqueEntity('name')]
+#[UniqueEntity(
+    fields: ['name','user'],
+    message: 'Cet utilisateur a déjà créé cet ingrédient',
+    errorPath: 'name'
+)]
 class Ingredient
 {
     #[ORM\Id]

@@ -7,12 +7,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
+
+#[ORM\Entity(repositoryClass: MarkRepository::class)]
 #[UniqueEntity(
     fields: ['user','recipe'],
     message: 'Cet utilisateur a déjà noté cette recette',
     errorPath: 'user'
 )]
-#[ORM\Entity(repositoryClass: MarkRepository::class)]
 class Mark
 {
     #[ORM\Id]

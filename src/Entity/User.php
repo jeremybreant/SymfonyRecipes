@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[UniqueEntity('email')]
+#[UniqueEntity('email',message: 'e-mail déjà utilisé',)]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\EntityListeners([UserListener::class])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface

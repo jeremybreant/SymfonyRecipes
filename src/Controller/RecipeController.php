@@ -2,10 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\Ingredient;
 use App\Entity\Mark;
 use App\Entity\Recipe;
-use App\Form\IngredientType;
 use App\Form\MarkType;
 use App\Form\RecipeType;
 use App\Repository\MarkRepository;
@@ -88,6 +86,7 @@ class RecipeController extends AbstractController
                 'recipe' => $recipe
             ]);
         }
+
         $mark = new Mark();
 
         $form = $this->createForm(MarkType::class, $mark);
@@ -95,8 +94,6 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid())
         {
             $mark = $form->getData();
-            $mark->setUser($this->getUser())
-                ->setRecipe($recipe);
 
             $existingMark = $markRepository->findOneBy([
                 'user' => $this->getUser(),
@@ -115,6 +112,8 @@ class RecipeController extends AbstractController
                     'success',
                     'Votre note a bien été prise en compte'
                 );
+                $mark->setUser($this->getUser())
+                    ->setRecipe($recipe);
                 $manager->persist($mark);
             }
             $manager->flush();
@@ -144,13 +143,13 @@ class RecipeController extends AbstractController
     ) : Response
     {
         $recipe = new Recipe();
-        $form = $this->createForm(RecipeType::class, $recipe);
+        $recipe->setUser($this->getUser());
 
+        $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
             $recipe = $form->getData();
-            $recipe->setUser($this->getUser());
 
             $manager->persist($recipe);
             $manager->flush();
