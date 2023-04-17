@@ -52,8 +52,10 @@
             </span>
             {% endfor %}
         </div>
+        {% if recipe.user != app.user %}
         <div class="form-group">
             {{ form(form) }}
         </div>
+        {% endif %}
     </div>
 {% endblock %}

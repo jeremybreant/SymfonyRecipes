@@ -82,6 +82,12 @@ class RecipeController extends AbstractController
     ) : Response
     {
 
+        if($request->getUser() === $recipe->getUser())
+        {
+            return $this->render('pages/recipe/show.html.twig', [
+                'recipe' => $recipe
+            ]);
+        }
         $mark = new Mark();
 
         $form = $this->createForm(MarkType::class, $mark);
@@ -99,8 +105,8 @@ class RecipeController extends AbstractController
 
             if($existingMark){
                 $this->addFlash(
-                    'Success',
-                    'Votre note a bien été modifié'
+                    'success',
+                    sprintf('La note pour %s a bien été modifiée', $recipe->getName())
                 );
                 $existingMark->setMark($mark->getMark());
             }
