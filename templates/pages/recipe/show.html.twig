@@ -1,0 +1,59 @@
+{% extends "base.html.twig" %}
+
+{% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
+
+{% block body %}
+    <h1>
+        {{ recipe.name }} - {{ recipe.getRoundedAverage() }} &#10032;
+    </h1>
+    <span class="badge bg-primary">
+        Crééé le {{ recipe.createdAt|date('d/m/Y') }}
+        </span>
+    <div class="recipe_image mt-4">
+        <img style="max-width: 20%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
+    </div>
+    <div class="mt-4">
+        {% if recipe.time %}
+            Temps (en min) : {{ recipe.time }}
+        {% else %}
+            Temps non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {% if recipe.peopleRequired %}
+            Pour {{ recipe.peopleRequired }} personnes
+        {% else %}
+            Nombre de personne non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {% if recipe.difficulty %}
+            Difficulté : {{ recipe.difficulty }}
+        {% else %}
+            Diffculté non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {% if recipe.price %}
+            Prix : {{ recipe.price }}€
+        {% else %}
+            Prix non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {{ recipe.description|raw }}
+    </div>
+    <div class="mt-4">
+        <p class="mt-4"> Ingredients :</p>
+        {% for ingredient in recipe.ingredients %}
+            <span class="badge bg-primary">
+            {{ ingredient.name }}
+            </span>
+        {% endfor %}
+    </div>
+    {% if recipe.user != app.user %}
+        <div class="form-group">
+            {{ form(form) }}
+        </div>
+    {% endif %}
+{% endblock %}

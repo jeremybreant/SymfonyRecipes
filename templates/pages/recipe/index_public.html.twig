@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}StmfonyRecipes - Les recettes{% endblock %}
+
+{% block body %}
+    {% if recipes.items is same as([]) %}
+        <h4>Il n'y a pas de recette</h4>
+    {% else %}
+        <h1>Recettes de la communauté</h1>
+        <div class="d-flex justify-content-around flex-wrap mt-4">
+            {% for recipe in recipes %}
+                <div class="card border-primary mb-3" style="width: 23rem;">
+                    <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="card-header btn btn-light">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                {{ recipe.name }}
+                            </div>
+                            <div>
+                                {{ recipe.getRoundedAverage() }} &#10032;
+                            </div>
+                        </div>
+                    </a>
+                    <div class="card-body">
+                        <h4 class="card-title">{{ recipe.name }}</h4>
+                        <p class="card-text">{{ recipe.description|slice(0,100) ~ "..." }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
