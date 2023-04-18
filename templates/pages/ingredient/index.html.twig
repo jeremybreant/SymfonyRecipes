@@ -3,52 +3,50 @@
 {% block title %}StmfonyRecipes - Mes ingrédients{% endblock %}
 
 {% block body %}
-    <div class="container mt-4">
-        <h1>Mes ingrédients</h1>
+    <h1>Mes ingrédients</h1>
 
-        <a href="{{ path('ingredient.new') }}" class="btn btn-primary mt-4">
-            Créer un ingrédient
-        </a>
+    <a href="{{ path('ingredient.new') }}" class="btn btn-primary mt-4">
+        Créer un ingrédient
+    </a>
 
-        <div class="count mt-4">
-            Il y a {{ ingredients.getTotalItemCount }}
-            {% if ingredients.getTotalItemCount > 1 %}
-                ingrédients
-            {% else %}
-                ingrédient
-            {% endif %}
-            au total
-        </div>
+    <div class="count mt-4">
+        Il y a {{ ingredients.getTotalItemCount }}
+        {% if ingredients.getTotalItemCount > 1 %}
+            ingrédients
+        {% else %}
+            ingrédient
+        {% endif %}
+        au total
+    </div>
 
-        <table class="table table-hover mt-4">
-            <thead>
-            <tr>
-                <th scope="col">Numéro</th>
-                <th scope="col">Nom</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Date de création</th>
-                <th scope="col">Action</th>
+    <table class="table table-hover mt-4">
+        <thead>
+        <tr>
+            <th scope="col">Numéro</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Prix</th>
+            <th scope="col">Date de création</th>
+            <th scope="col">Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ingredient in ingredients %}
+            <tr class="table-primary">
+                <th scope="row">{{ ingredient.id }}</th>
+                <td>{{ ingredient.name }}</td>
+                <td>{{ ingredient.price|number_format(2, '.', ',') }} €</td>
+                <td>{{ ingredient.createdAt | date("d/m/Y") }}</td>
+                <td>
+                    <a href="{{ path('ingredient.edit', { id: ingredient.id}) }}" class="btn btn-info">Modifier</a>
+                    <a href="{{ path('ingredient.delete', { id: ingredient.id}) }}" class="btn btn-danger"
+                       onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+                </td>
             </tr>
-            </thead>
-            <tbody>
-            {% for ingredient in ingredients %}
-                <tr class="table-primary">
-                    <th scope="row">{{ ingredient.id }}</th>
-                    <td>{{ ingredient.name }}</td>
-                    <td>{{ ingredient.price }}</td>
-                    <td>{{ ingredient.createdAt | date("d/m/Y") }}</td>
-                    <td>
-                        <a href="{{ path('ingredient.edit', { id: ingredient.id}) }}" class="btn btn-info">Modifier</a>
-                        <a href="{{ path('ingredient.delete', { id: ingredient.id}) }}" class="btn btn-danger"
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-        {# display navigation #}
-        <div class="navigation d-flex justify-content-center mt-4">
-            {{ knp_pagination_render(ingredients) }}
-        </div>
+        {% endfor %}
+        </tbody>
+    </table>
+    {# display navigation #}
+    <div class="navigation d-flex justify-content-center mt-4">
+        {{ knp_pagination_render(ingredients) }}
     </div>
 {% endblock %}

@@ -136,7 +136,7 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[IsGranted('ROLE_USER')]
-    #[Route('/recipe/creation', 'recipe.new', methods: ['GET', 'POST'])]
+    #[Route('/recette/creation', 'recipe.new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
         EntityManagerInterface $manager
@@ -175,8 +175,8 @@ class RecipeController extends AbstractController
      * @param Recipe $recipe
      * @return Response
      */
+    #[Route('/recette/edit/{id}', 'recipe.edit', methods: ['GET', 'POST'])]
     #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
-    #[Route('/recipe/edit/{id}', 'recipe.edit', methods: ['GET', 'POST'])]
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
@@ -213,8 +213,8 @@ class RecipeController extends AbstractController
      * @param EntityManagerInterface $entityManager
      * @return Response
      */
+    #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ['GET'])]
     #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
-    #[Route('/recipe/suppression/{id}', 'recipe.delete', methods: ['GET'])]
     public function delete(
         Recipe $recipe,
         EntityManagerInterface $entityManager
