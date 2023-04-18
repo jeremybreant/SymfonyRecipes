@@ -2,17 +2,16 @@
 
 namespace App\Form;
 
-use App\Entity\User;
+use App\Entity\Contact;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\PasswordType;
-use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserType extends AbstractType
+class ContactType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -25,35 +24,43 @@ class UserType extends AbstractType
                 ],
                 'label' => 'Nom / Prenom',
                 'label_attr' => [
-                    'class' => 'form-label mt-4'
+                    'class' => 'form-label'
                 ]
             ])
-            ->add('pseudo', TextType::class, [
+            ->add('email',EmailType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '180'
                 ],
-                'required' => false,
-                'label' => 'Pseudo',
+                'label' => 'Adresse email',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('plainPassword',PasswordType::class, [
+            ->add('subject', TextType::class, [
                 'attr' => [
                     'class' => 'form-control'
                 ],
+                'label' => 'Sujet',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
+                ]
+            ])
+            ->add('message', TextareaType::class, [
+                'attr' => [
+                    'class' => 'form-control'
                 ],
-                'label' => 'Mot de passe',
+                'label' => 'Description',
+                'label_attr' => [
+                    'class' => 'form-label'
+                ]
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
                 ],
-                'label' => 'Modifier'
+                'label' => 'Envoyer'
             ])
         ;
     }
@@ -61,7 +68,7 @@ class UserType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => User::class,
+            'data_class' => Contact::class,
         ]);
     }
 }
