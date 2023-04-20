@@ -5,9 +5,11 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
@@ -15,7 +17,8 @@ class ContactController extends AbstractController
     #[Route('/contact', name: 'contact.index')]
     public function index(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        MailerInterface $mailer
     ): Response
     {
         $contact = new Contact();
@@ -34,9 +37,26 @@ class ContactController extends AbstractController
             $manager->persist($contact);
             $manager->flush();
 
+            $email = (new TemplatedEmail())
+                ->from($contact->getEmail())
+                ->to('admin@symfonyrecipe.com')
+                ->subject($contact->getSubject())
+                ->html($contact->getMessage())
+
+                // path of the Twig template to render
+                ->htmlTemplate('emails/contact.html.twig')
+
+                // pass variables (name => value) to the template
+                ->context([
+                    'contact' => $contact,
+                ])
+            ;
+
+            $mailer->send($email);
+
             $this->addFlash(
                 'success',
-                'Votre mail a été transmit'
+                'Votre mail a été transmis'
             );
 
             return $this->redirectToRoute('recipe.index.public');
