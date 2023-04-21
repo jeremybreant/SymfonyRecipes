@@ -36,7 +36,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Nom',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('time', IntegerType::class,[
@@ -45,7 +45,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'temps',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('peopleRequired', IntegerType::class,[
@@ -54,7 +54,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Nbr de personne :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('difficulty',  IntegerType::class,[
@@ -63,7 +63,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'difficulté',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('description', TextareaType::class, [
@@ -72,7 +72,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Description',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('price', MoneyType::class, [
@@ -81,7 +81,7 @@ class RecipeType extends AbstractType
                 ],
                 'label' => 'Prix',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('isFavorite', CheckboxType::class, [
@@ -91,7 +91,7 @@ class RecipeType extends AbstractType
                 'required' => false,
                 'label' => 'Favoris ?',
                 'label_attr' => [
-                    'class' => 'form-check-label'
+                    'class' => 'form-check-label mt-4'
                 ]
             ])
             ->add('isPublic', CheckboxType::class, [
@@ -101,7 +101,7 @@ class RecipeType extends AbstractType
                 'required' => false,
                 'label' => 'Public ?',
                 'label_attr' => [
-                    'class' => 'form-check-label'
+                    'class' => 'form-check-label mt-4'
                 ]
             ])
             ->add('ingredients', EntityType::class, [
@@ -117,7 +117,7 @@ class RecipeType extends AbstractType
                 'expanded' => true,
                 'label' => 'les ingrédients :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('imageFile', VichImageType::class, [
@@ -127,7 +127,7 @@ class RecipeType extends AbstractType
                 'required' => false,
                 'label' => 'Image :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('submit', SubmitType::class, [
