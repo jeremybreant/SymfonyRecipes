@@ -14,9 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class DashboardController extends AbstractDashboardController
 {
-    /**
-     * @Security("is_granted('ROLE_ADMIN')")
-     */
+
     #[Route('/admin', name: 'admin.index')]
     public function index(): Response
     {
