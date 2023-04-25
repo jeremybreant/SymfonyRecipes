@@ -33,6 +33,7 @@ class AppFixture extends Fixture
             ->setPseudo(null)
             ->setEmail('admin@symrecipe.fr')
             ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+            ->setPlainPassword('password')
         ;
 
         $users[] = $admin;
