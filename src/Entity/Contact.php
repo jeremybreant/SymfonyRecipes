@@ -22,7 +22,7 @@ class Contact
 
     #[ORM\Column(length: 180)]
     #[Assert\Email()]
-    #[Assert\Length(min: 2, max: 180)]
+    #[Assert\Length(max: 180)]
     private string $email;
 
     #[ORM\Column(length: 100)]
