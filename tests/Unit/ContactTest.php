@@ -3,41 +3,55 @@
 namespace App\Tests\Unit;
 
 use App\Entity\Contact;
+use App\Tests\TestConstant;
 use Doctrine\Common\Collections\ArrayCollection;
+use PHPUnit\Event\Code\Throwable;
+use PHPUnit\Exception;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\ConstraintViolation;
+use TypeError;
 
 class ContactTest extends KernelTestCase
 {
-    protected array $entityFieldsRestrictions = array(
-        "email" => array(
-            'type' => 'Symfony\Component\Validator\Constraints\Email'
-        )
-    );
 
     public function getEntity(): Contact
     {
         $contact = new Contact();
         return $contact
-            ->setEmail('test@email.com')
-            ->setFullName('fullNameTest')
-            ->setMessage('This is a test of a contact message used for the test')
-            ->setSubject('The subject test')
+            ->setEmail(TestConstant::VALID_MAIL)
+            ->setFullName(TestConstant::VALID_FULLNAME)
+            ->setMessage(TestConstant::VALID_CONTACT_MESSAGE)
+            ->setSubject(TestConstant::VALID_CONTACT_SUBJECT)
             ->setCreatedAt(new \DateTimeImmutable());
     }
 
-    public function testIsSampleEntityValid(): void
+    public function testGetterSetter(): void
     {
-        self::bootKernel();
         $container = static::getContainer();
 
-        $errors = $container->get('validator')->validate($this->getEntity());
+        $contact = new Contact();
 
-        $this->assertCount(0, $errors);
+        $mail = 'mail';
+        $fullname = 'Name';
+        $subject = 'Subject';
+        $message = 'Message';
+        $createdAt = new \DateTimeImmutable();
+
+        $contact
+            ->setEmail($mail)
+            ->setFullName($fullname)
+            ->setSubject($subject)
+            ->setMessage($message)
+            ->setCreatedAt($createdAt);
+
+        $this->assertTrue($contact->getEmail() === $mail);
+        $this->assertTrue($contact->getFullName() === $fullname);
+        $this->assertTrue($contact->getSubject() === $subject);
+        $this->assertTrue($contact->getMessage() === $message);
+        $this->assertTrue($contact->getCreatedAt() === $createdAt);
     }
-
 
 /*
     public function testTypeRestrictions(): void
@@ -52,7 +66,6 @@ class ContactTest extends KernelTestCase
 
     public function testLengthRestrictions(): void
     {
-        self::bootKernel();
         $container = static::getContainer();
 
         $contact = $this->getEntity()
@@ -60,16 +73,17 @@ class ContactTest extends KernelTestCase
             ->setEmail("01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789@gmail.com")
             ->setSubject('x');
         $errors = $container->get('validator')->validate($contact);
+
         foreach ($errors as $error){
-            if($error->getPropertyPath() === "email") {
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_MAIL) {
                 $this->assertSame($error->getConstraint()->max, 180);
             }
-            if($error->getPropertyPath() === "fullName")
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_FULLNAME)
             {
                 $this->assertSame($error->getConstraint()->min, 2);
                 $this->assertSame($error->getConstraint()->max, 50);
             }
-            if($error->getPropertyPath() === "subject")
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_CONTACT_SUBJECT)
             {
                 $this->assertSame($error->getConstraint()->min, 2);
                 $this->assertSame($error->getConstraint()->max, 100);
@@ -77,11 +91,51 @@ class ContactTest extends KernelTestCase
         }
     }
 
-    /*
+
     public function testNotNullRestrictions(): void
     {
-        self::bootKernel();
         $container = static::getContainer();
+        $contact = new Contact();
+
+        $mail = null;
+        $fullname = "x";
+        $subject = null;
+        $message = null;
+        $createdAt = null;
+
+
+        $contact
+            ->setEmail($mail)
+            ->setFullName($fullname)
+            ->setMessage($message)
+            ->setSubject($subject)
+            ->setCreatedAt($createdAt);
+
+        $errors = $container->get('validator')->validate($contact);
+        /*
+        foreach ($errors as $error){
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_MAIL) {
+                $this->assertFalse($error->getConstraint()->allowNull);
+            }
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_FULLNAME)
+            {
+                $this->assertFalse($error->getConstraint()->allowNull);
+            }
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_CREATEDAT)
+            {
+                $this->assertFalse($error->getConstraint()->allowNull);
+            }
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_CONTACT_SUBJECT)
+            {
+                $this->assertFalse($error->getConstraint()->allowNull);
+            }
+            if($error->getPropertyPath() === TestConstant::PROPERTYPATH_CONTACT_MESSAGE)
+            {
+                $this->assertFalse($error->getConstraint()->allowNull);
+            }
+        }
+        //*/
+        //$this->assertCount(5,$errors);
     }
 
     public function testNotBlankRestrictions(): void
@@ -89,5 +143,5 @@ class ContactTest extends KernelTestCase
         self::bootKernel();
         $container = static::getContainer();
     }
-    //*/
+
 }

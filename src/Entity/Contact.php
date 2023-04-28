@@ -22,21 +22,22 @@ class Contact
 
     #[ORM\Column(length: 180)]
     #[Assert\Email()]
+    #[Assert\NotBlank()]
     #[Assert\Length(max: 180)]
-    private string $email;
+    private ?string $email = null;
 
     #[ORM\Column(length: 100)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 100)]
-    private string $subject;
+    private ?string $subject = null;
 
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
-    private string $message;
+    private ?string $message = null;
 
     #[ORM\Column]
     #[Assert\NotNull()]
-    private \DateTimeImmutable $createdAt;
+    private ?\DateTimeImmutable $createdAt;
 
     public function __construct()
     {
@@ -65,7 +66,7 @@ class Contact
         return $this->email;
     }
 
-    public function setEmail(string $email): self
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
 
@@ -77,7 +78,7 @@ class Contact
         return $this->subject;
     }
 
-    public function setSubject(string $subject): self
+    public function setSubject(?string $subject): self
     {
         $this->subject = $subject;
 
@@ -89,7 +90,7 @@ class Contact
         return $this->message;
     }
 
-    public function setMessage(string $message): self
+    public function setMessage(?string $message): self
     {
         $this->message = $message;
 
@@ -101,7 +102,7 @@ class Contact
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
