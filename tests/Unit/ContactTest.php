@@ -91,7 +91,7 @@ class ContactTest extends KernelTestCase
         }
     }
 
-
+    /*
     public function testNotNullRestrictions(): void
     {
         $container = static::getContainer();
@@ -112,7 +112,7 @@ class ContactTest extends KernelTestCase
             ->setCreatedAt($createdAt);
 
         $errors = $container->get('validator')->validate($contact);
-        /*
+
         foreach ($errors as $error){
             if($error->getPropertyPath() === TestConstant::PROPERTYPATH_MAIL) {
                 $this->assertFalse($error->getConstraint()->allowNull);
@@ -134,14 +134,16 @@ class ContactTest extends KernelTestCase
                 $this->assertFalse($error->getConstraint()->allowNull);
             }
         }
-        //*/
-        //$this->assertCount(5,$errors);
-    }
 
+        $this->assertCount(5,$errors);
+    }
+    //*/
+    /*
     public function testNotBlankRestrictions(): void
     {
         self::bootKernel();
         $container = static::getContainer();
     }
+    //*/
 
 }

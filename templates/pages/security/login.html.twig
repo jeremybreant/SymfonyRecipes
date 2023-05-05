@@ -9,7 +9,7 @@
             <strong>Erreur :</strong> {{ error.messageKey|trans(error.messageData, 'security') }}
         </div>
     {% endif %}
-    <form action="{{ path('security.login') }}" method="post">
+    <form action="{{ path('security.login') }}" method="post" name="login">
         <div class="form-group">
             <label for="exampleInputEmail1" class="form-label mt-4">Adresse email</label>
             <input type="email" class="form-control" id="username" name="_username" aria-describedby="emailHelp"

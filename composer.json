@@ -105,7 +105,8 @@
             "symfony console doctrine:schema:validate --skip-sync --env=test",
             "symfony console doctrine:migrations:migrate -n --env=test",
             "symfony console doctrine:fixtures:load -n --env=test",
-            "php bin/phpunit"
+            "php bin/phpunit --testdox tests/Unit/",
+            "php bin/phpunit --testdox tests/Functional/"
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",
