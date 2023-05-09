@@ -54,7 +54,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "pdatedAt notNull")]
+    #[Assert\NotNull(message: "updatedAt notNull")]
     private \DateTimeImmutable $updatedAt;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Ingredient::class, orphanRemoval: true)]

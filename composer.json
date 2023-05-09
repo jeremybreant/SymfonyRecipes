@@ -49,9 +49,10 @@
         "vich/uploader-bundle": "^1.23"
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^7.2",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.21",
-        "phpunit/phpunit": "^9.5",
+        "phpunit/phpunit": "10",
         "symfony/browser-kit": "6.2.*",
         "symfony/css-selector": "6.2.*",
         "symfony/debug-bundle": "6.2.*",
@@ -91,19 +92,21 @@
         "symfony/polyfill-php80": "*"
     },
     "scripts": {
-        "prepare-main": [
+        "prepare": [
             "symfony console doctrine:database:drop --if-exists --force",
             "symfony console doctrine:database:create",
             "symfony console doctrine:schema:validate --skip-sync",
             "symfony console doctrine:migrations:migrate -n",
             "symfony console doctrine:fixtures:load -n"
         ],
-        "prepare-test": [
+        "test": [
             "symfony console doctrine:database:drop --env=test --if-exists --force",
             "symfony console doctrine:database:create --env=test",
             "symfony console doctrine:schema:validate --skip-sync --env=test",
             "symfony console doctrine:migrations:migrate -n --env=test",
-            "symfony console doctrine:fixtures:load -n --env=test"
+            "symfony console doctrine:fixtures:load -n --env=test",
+            "php bin/phpunit --testdox tests/Unit/",
+            "php bin/phpunit --testdox tests/Functional/"
         ],
         "auto-scripts": {
             "cache:clear": "symfony-cmd",

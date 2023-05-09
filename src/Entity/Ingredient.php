@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\IngredientRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -23,19 +24,19 @@ class Ingredient
     private ?int $id;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
     private string $name;
 
     #[ORM\Column]
-    #[Assert\NotNull()]
-    #[Assert\Positive()]
+    #[Assert\NotNull]
+    #[Assert\Positive]
     #[Assert\LessThan(50)]
     private float $price;
 
     #[ORM\Column]
-    #[Assert\NotNull()]
-    private ?\DateTimeImmutable $createdAt;
+    #[Assert\NotNull]
+    private ?DateTimeImmutable $createdAt;
 
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
     private Collection $recipes;
@@ -49,7 +50,7 @@ class Ingredient
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new DateTimeImmutable();
         $this->recipes = new ArrayCollection();
     }
 
@@ -82,12 +83,12 @@ class Ingredient
         return $this;
     }
 
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
