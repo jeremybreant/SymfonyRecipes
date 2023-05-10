@@ -13,10 +13,12 @@ use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class RecipeController extends AbstractController
 {
@@ -54,8 +56,15 @@ class RecipeController extends AbstractController
         Request $request
     ): Response
     {
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
+            $item->expiresAfter(15);
+            return $recipeRepository->findPublicRecipe(null);
+        });
+
         $recipes = $paginator->paginate(
-            $recipeRepository->findPublicRecipe(null), /* query NOT result */
+            $data,
+            /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             10 /*limit per page*/
         );
