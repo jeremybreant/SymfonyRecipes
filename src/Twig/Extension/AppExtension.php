@@ -15,25 +15,7 @@ class AppExtension extends AbstractExtension
             // If your filter generates SAFE HTML, you should add a third
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
-            new TwigFilter('min_to_hour', [$this, 'minutesToHour']),
+            new TwigFilter('min_to_hour', [AppExtensionRuntime::class, 'minutesToHour']),
         ];
-    }
-
-    public function minutesToHour($value): string
-    {
-        if ($value < 60) {
-            return sprintf('%s', $value);
-        }
-
-        $hours = floor($value / 60);
-        $minutes = $value % 60;
-
-        if ($minutes < 10) {
-            $minutes = '0' . $minutes;
-        }
-
-        $time = sprintf('%sh%s', $hours, $minutes);
-
-        return $time;
     }
 }
