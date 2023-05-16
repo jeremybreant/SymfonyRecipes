@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -90,6 +91,9 @@ class Recipe
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
     private Collection $recipeIngredients;
 
+    #[ORM\ManyToMany(targetEntity: Tag::class, inversedBy: 'recipes')]
+    private Collection $tags;
+
 
     /**
      * Constructor
@@ -101,6 +105,7 @@ class Recipe
         $this->ingredients = new ArrayCollection();
         $this->marks = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -363,6 +368,30 @@ class Recipe
                 $recipeIngredient->setRecipe(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Tag>
+     */
+    public function getTags(): Collection
+    {
+        return $this->tags;
+    }
+
+    public function addTag(Tag $tag): self
+    {
+        if (!$this->tags->contains($tag)) {
+            $this->tags->add($tag);
+        }
+
+        return $this;
+    }
+
+    public function removeTag(Tag $tag): self
+    {
+        $this->tags->removeElement($tag);
 
         return $this;
     }
