@@ -89,21 +89,7 @@ class RecipeController extends AbstractController
     ) : Response
     {
         $recipe = new Recipe();
-
-        // dummy code - add some example tags to the task
-        // (otherwise, the template will render an empty list of tags)
-        //*
-        $recipeIngredient1 = new RecipeIngredient();
-        $recipeIngredient1->setUnitType(RecipeIngredient::UNIT_GRAM);
-        $recipeIngredient1->setQuantity(2);
-        $recipe->addRecipeIngredient($recipeIngredient1);
-        $recipeIngredient2 = new RecipeIngredient();
-        $recipeIngredient2->setUnitType(RecipeIngredient::UNIT_LITER);
-        $recipeIngredient2->setQuantity(1);
-        $recipe->addRecipeIngredient($recipeIngredient2);
-        //*/
-        // end dummy code
-
+        
         $recipe->setUser($this->getUser());
 
         $form = $this->createForm(RecipeType::class, $recipe);

@@ -1,17 +1,4 @@
-{% import _self as recipeIngredientMacro %}
-{% macro printRecipeIngredientRow(recipeIngredient) %}
-    <div class="row">
-        <div class="col-sm-4">
-            {{ form_row(recipeIngredient.ingredient) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_row(recipeIngredient.quantity) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_row(recipeIngredient.unitType) }}
-        </div>
-    </div>
-{% endmacro %}
+{% import "macros/recipeIngredient/form.html.twig" as recipeIngredientMacro %}
 
 {% extends "base.html.twig" %}
 
@@ -88,7 +75,6 @@
         </div>
     </div>
     <h3 class="mt-4">Ingredients</h3>
-
     <div {{ stimulus_controller('form-collection') }}
             data-form-collection-index-value="{{ form.recipeIngredients|length > 0 ? form.recipeIngredients|last.vars.name + 1 : 0 }}"
             data-form-collection-prototype-value="{{ recipeIngredientMacro.printRecipeIngredientRow(form.recipeIngredients.vars.prototype)|e('html_attr') }}"

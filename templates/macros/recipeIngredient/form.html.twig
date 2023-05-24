@@ -1,0 +1,13 @@
+{% macro printRecipeIngredientRow(recipeIngredient) %}
+    <div class="row">
+        <div class="col-sm-4">
+            {{ form_row(recipeIngredient.ingredient) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_row(recipeIngredient.quantity) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_row(recipeIngredient.unitType) }}
+        </div>
+    </div>
+{% endmacro %}

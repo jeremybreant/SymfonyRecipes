@@ -45,11 +45,14 @@
     </div>
     <div class="mt-4">
         <p class="mt-4"> Ingredients :</p>
-        {% for ingredient in recipe.ingredients %}
-            <span class="badge bg-primary">
-            {{ ingredient.name }}
-            </span>
-        {% endfor %}
+        <ul>
+            {% for recipeIngredient in recipe.recipeIngredients %}
+                <li>
+                    {{ recipeIngredient.ingredient.name }}
+                    {{ recipeIngredient.quantity }}{{ recipeIngredient.unitType }}
+                </li>
+            {% endfor %}
+        </ul>
     </div>
     {% if recipe.user != app.user %}
         <div class="form-group">
