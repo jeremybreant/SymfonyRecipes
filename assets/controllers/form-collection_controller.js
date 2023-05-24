@@ -17,4 +17,9 @@ export default class extends Controller {
         this.collectionContainerTarget.appendChild(item);
         this.indexValue++;
     }
+
+    removeCollectionElement(event)
+    {
+        event.explicitOriginalTarget.parentElement.remove();
+    }
 }
