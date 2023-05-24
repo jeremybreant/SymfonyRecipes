@@ -81,9 +81,12 @@
     >
         <div {{ stimulus_target('form-collection', 'collectionContainer') }}>
             {% for recipeIngredient in form.recipeIngredients %}
-                {{ recipeIngredientMacro.printRecipeIngredientRow(recipeIngredient) }}
+                <div>
+                    {{ recipeIngredientMacro.printRecipeIngredientRow(recipeIngredient) }}
+                </div>
             {% endfor %}
         </div>
+
         <button type="button" class="btn btn-primary mt-4" {{ stimulus_action('form-collection', 'addCollectionElement') }}>Add a recipeIngredient</button>
     </div>
 
