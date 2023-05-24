@@ -113,27 +113,11 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('tags', CollectionType::class, [
-                'entry_type' => TagType::class,
+            ->add('recipeIngredients', CollectionType::class, [
+                'entry_type' => RecipeIngredientType::class,
                 'entry_options' => ['label' => false],
                 'by_reference' => false,
                 'allow_add' => true,
-                /*
-                'multiple' => true,
-                'choice_label' => 'name',
-                'query_builder' => function (IngredientRepository $ir) {
-                    return $ir->createQueryBuilder('i')
-                        ->where('i.user = :user')
-                        ->orderBy('i.name', 'ASC')
-                        ->setParameter('user' , $this->token->getToken()->getUser());
-                },
-                'expanded' => true,
-                'label' => 'les ingrédients :',
-                'label_attr' => [
-                    'class' => 'form-label mt-4'
-                ]
-                //*/
-
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [

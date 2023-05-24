@@ -23,6 +23,20 @@ class RecipeIngredient
     public const UNIT_COFFEE_SPOON = "cc";
     public const UNIT_NONE = "";
 
+    public static function getAvailableUnits()
+    {
+        return [
+            RecipeIngredient::UNIT_LITER => RecipeIngredient::UNIT_LITER,
+            RecipeIngredient::UNIT_CENTILITER => RecipeIngredient::UNIT_CENTILITER,
+            RecipeIngredient::UNIT_MILLILITER => RecipeIngredient::UNIT_MILLILITER,
+            RecipeIngredient::UNIT_KILOGRAM => RecipeIngredient::UNIT_KILOGRAM,
+            RecipeIngredient::UNIT_GRAM => RecipeIngredient::UNIT_GRAM,
+            RecipeIngredient::UNIT_SOUP_SPOON => RecipeIngredient::UNIT_SOUP_SPOON,
+            RecipeIngredient::UNIT_COFFEE_SPOON => RecipeIngredient::UNIT_COFFEE_SPOON,
+            RecipeIngredient::UNIT_NONE => RecipeIngredient::UNIT_NONE
+        ];
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

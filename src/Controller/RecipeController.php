@@ -92,7 +92,7 @@ class RecipeController extends AbstractController
 
         // dummy code - add some example tags to the task
         // (otherwise, the template will render an empty list of tags)
-        /*
+        //*
         $recipeIngredient1 = new RecipeIngredient();
         $recipeIngredient1->setUnitType(RecipeIngredient::UNIT_GRAM);
         $recipeIngredient1->setQuantity(2);
@@ -102,16 +102,6 @@ class RecipeController extends AbstractController
         $recipeIngredient2->setQuantity(1);
         $recipe->addRecipeIngredient($recipeIngredient2);
         //*/
-        // end dummy code
-
-        // dummy code - add some example tags to the task
-        // (otherwise, the template will render an empty list of tags)
-        $tag1 = new Tag();
-        $tag1->setName('tag1');
-        $recipe->addTag($tag1);
-        $tag2 = new Tag();
-        $tag2->setName('tag2');
-        $recipe->addTag($tag2);
         // end dummy code
 
         $recipe->setUser($this->getUser());
