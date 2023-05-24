@@ -89,7 +89,8 @@ class RecipeController extends AbstractController
     ) : Response
     {
         $recipe = new Recipe();
-        
+        $recipe->addRecipeIngredient(new RecipeIngredient());
+
         $recipe->setUser($this->getUser());
 
         $form = $this->createForm(RecipeType::class, $recipe);

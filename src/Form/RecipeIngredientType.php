@@ -22,7 +22,7 @@ class RecipeIngredientType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Ingrédients :',
+                'label' => 'Ingrédient :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -41,7 +41,7 @@ class RecipeIngredientType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Unité',
+                'label' => 'Unité :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
