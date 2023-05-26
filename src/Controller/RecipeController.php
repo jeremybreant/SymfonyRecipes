@@ -4,10 +4,13 @@ namespace App\Controller;
 
 use App\Entity\Mark;
 use App\Entity\Recipe;
+use App\Entity\RecipeIngredient;
+use App\Entity\Tag;
 use App\Form\MarkType;
 use App\Form\RecipeType;
 use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
@@ -87,6 +90,8 @@ class RecipeController extends AbstractController
     ) : Response
     {
         $recipe = new Recipe();
+        $recipe->addRecipeIngredient(new RecipeIngredient());
+
         $recipe->setUser($this->getUser());
 
         $form = $this->createForm(RecipeType::class, $recipe);
@@ -127,12 +132,27 @@ class RecipeController extends AbstractController
         Recipe $recipe
     ):Response
     {
+        $originalRecipeIngredients = new ArrayCollection();
+
+        // dynamic recipeingredient - Create an ArrayCollection of the current recipeIngredient objects in the database for this recipe
+        foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
+            $originalRecipeIngredients->add($recipeIngredient);
+        }
+
         $form = $this->createForm(RecipeType::class, $recipe);
 
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
             $recipe = $form->getData();
+
+            // dynamic recipeingredient - checking if some are removed in the form
+            foreach ($originalRecipeIngredients as $recipeIngredient) {
+                if (false === $recipe->getRecipeIngredients()->contains($recipeIngredient)) {
+                    // dynamic recipeingredient - if it's the case removing them from db
+                    $manager->remove($recipeIngredient);
+                }
+            }
 
             $manager->persist($recipe);
             $manager->flush();

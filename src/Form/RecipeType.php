@@ -2,12 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\Ingredient;
 use App\Entity\Recipe;
-use App\Repository\IngredientRepository;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use App\Entity\RecipeIngredient;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -104,22 +103,6 @@ class RecipeType extends AbstractType
                     'class' => 'form-check-label mt-4'
                 ]
             ])
-            ->add('ingredients', EntityType::class, [
-                'class' => Ingredient::class,
-                'multiple' => true,
-                'choice_label' => 'name',
-                'query_builder' => function (IngredientRepository $ir) {
-                    return $ir->createQueryBuilder('i')
-                        ->where('i.user = :user')
-                        ->orderBy('i.name', 'ASC')
-                        ->setParameter('user' , $this->token->getToken()->getUser());
-                },
-                'expanded' => true,
-                'label' => 'les ingrédients :',
-                'label_attr' => [
-                    'class' => 'form-label mt-4'
-                ]
-            ])
             ->add('imageFile', VichImageType::class, [
                 'attr' => [
                     'class' => 'form-control'
@@ -129,6 +112,13 @@ class RecipeType extends AbstractType
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
+            ])
+            ->add('recipeIngredients', CollectionType::class, [
+                'entry_type' => RecipeIngredientType::class,
+                'entry_options' => ['label' => false],
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [

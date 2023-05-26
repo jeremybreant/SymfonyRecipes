@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
@@ -72,9 +73,6 @@ class Recipe
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
-    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'recipes')]
-    private Collection $ingredients;
-
     #[ORM\Column]
     #[Assert\NotNull()]
     private bool $isFavorite;
@@ -90,6 +88,9 @@ class Recipe
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
     private Collection $marks;
 
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
+    private Collection $recipeIngredients;
+
 
     /**
      * Constructor
@@ -98,8 +99,8 @@ class Recipe
     {
         $this->createdAt = new \DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->ingredients = new ArrayCollection();
         $this->marks = new ArrayCollection();
+        $this->recipeIngredients = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -237,30 +238,6 @@ class Recipe
         return $this->updatedAt;
     }
 
-    /**
-     * @return Collection<int, Ingredient>
-     */
-    public function getIngredients(): Collection
-    {
-        return $this->ingredients;
-    }
-
-    public function addIngredients(Ingredient $ingredient): self
-    {
-        if (!$this->ingredients->contains($ingredient)) {
-            $this->ingredients->add($ingredient);
-        }
-
-        return $this;
-    }
-
-    public function removeIngredients(Ingredient $ingredient): self
-    {
-        $this->ingredients->removeElement($ingredient);
-
-        return $this;
-    }
-
     public function getIsFavorite(): ?bool
     {
         return $this->isFavorite;
@@ -358,6 +335,36 @@ class Recipe
         }
 
         return round($averageMark,2);
+    }
+
+    /**
+     * @return Collection<int, RecipeIngredient>
+     */
+    public function getRecipeIngredients(): Collection
+    {
+        return $this->recipeIngredients;
+    }
+
+    public function addRecipeIngredient(RecipeIngredient $recipeIngredient): self
+    {
+        if (!$this->recipeIngredients->contains($recipeIngredient)) {
+            $this->recipeIngredients->add($recipeIngredient);
+            $recipeIngredient->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipeIngredient(RecipeIngredient $recipeIngredient): self
+    {
+        if ($this->recipeIngredients->removeElement($recipeIngredient)) {
+            // set the owning side to null (unless already changed)
+            if ($recipeIngredient->getRecipe() === $this) {
+                $recipeIngredient->setRecipe(null);
+            }
+        }
+
+        return $this;
     }
 
 }
