@@ -25,3 +25,9 @@
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-bundle ###
+
+###> VichUploader-bundle ###
+/public/imagess
+###< sVichUploader-bundle ###
+
+public/images/ingredient/

@@ -57,7 +57,6 @@ class AppFixture extends Fixture
         for ($i = 0; $i < 50; $i++) {
             $ingredient = new Ingredient();
             $ingredient->setName($this->faker->word(1))
-                ->setPrice(mt_rand(100 * 1, 100 * 50) / 100)
                 ->setUser($users[mt_rand(0, count($users) - 1)]);
 
             $ingredients[$i] = $ingredient;
@@ -83,18 +82,7 @@ class AppFixture extends Fixture
         }
 
         //RecipeIngredient
-        $recipesIngredients = [];
-        $unitConst = [
-            RecipeIngredient::UNIT_COFFEE_SPOON,
-            RecipeIngredient::UNIT_SOUP_SPOON,
-            RecipeIngredient::UNIT_LITER,
-            RecipeIngredient::UNIT_CENTILITER,
-            RecipeIngredient::UNIT_MILLILITER,
-            RecipeIngredient::UNIT_KILOGRAM,
-            RecipeIngredient::UNIT_GRAM,
-            RecipeIngredient::UNIT_NONE
-
-        ];
+        $unitConst = RecipeIngredient::getAvailableUnits();
         foreach ($recipes as $recipe) {
             foreach ($ingredients as $ingredient) {
                 // 1 out of 10
@@ -103,7 +91,7 @@ class AppFixture extends Fixture
                     $recipeIngredient->setRecipe($recipe)
                         ->setIngredient($ingredient)
                         ->setQuantity(mt_rand(1, 5))
-                        ->setUnitType($unitConst[mt_rand(0, count($unitConst) - 1)]);
+                        ->setUnitType($unitConst[array_rand($unitConst)]);
                     $manager->persist($recipeIngredient);
                 }
             }

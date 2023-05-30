@@ -9,6 +9,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class IngredientType extends AbstractType
 {
@@ -24,11 +25,12 @@ class IngredientType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('price', MoneyType::class, [
+            ->add('imageFile', VichImageType::class, [
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Prix',
+                'required' => false,
+                'label' => 'Image :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
