@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import "macros/mark/starMark.html.twig" as starMark %}
+
 {% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
 
 {% block body %}
@@ -62,8 +64,33 @@
         </ul>
     </div>
     {% if recipe.user != app.user %}
+        {{ form_start(form) }}
         <div class="form-group">
-            {{ form(form) }}
+            {{ form_label(form.mark) }}
+            {{ form_widget(form.mark) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.mark) }}
+            </div>
         </div>
+        <div class="form-group">
+            {{ form_label(form.comment) }}
+            {{ form_widget(form.comment) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.comment) }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form_row(form.submit, {'label': 'Noter'}) }}
+        </div>
+        {{ form_end(form) }}
     {% endif %}
+    <h4 class="mt-4">Avis :</h4>
+    {% for mark in relatedMarks %}
+        <div class="mb-3">
+            <div class="card-body">
+                <p class="card-text">{{ starMark.displayMarkWithStar(mark.mark) }}</p>
+                <p class="card-text">{{ mark.comment }}</p>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

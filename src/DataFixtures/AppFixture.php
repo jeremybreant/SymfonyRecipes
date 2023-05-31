@@ -106,6 +106,7 @@ class AppFixture extends Fixture
                     $mark = new Mark();
                     $mark->setUser($user)
                         ->setMark(mt_rand(0, 5))
+                        ->setComment($this->faker->text(200))
                         ->setRecipe($recipe);
 
                     $manager->persist($mark);

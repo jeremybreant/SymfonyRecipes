@@ -227,6 +227,10 @@ class RecipeController extends AbstractController
             ]);
         }
 
+        $relatedMarks = $markRepository->findBy([
+            'recipe' => $recipe
+        ]);
+
         $mark = new Mark();
 
         $form = $this->createForm(MarkType::class, $mark);
@@ -264,6 +268,7 @@ class RecipeController extends AbstractController
         }
         return $this->render('pages/recipe/show.html.twig', [
             'recipe' => $recipe,
+            'relatedMarks' => $relatedMarks,
             'form' => $form->createView()
         ]);
     }
