@@ -72,7 +72,8 @@ class AppFixture extends Fixture
                 ->setDifficulty(mt_rand(0, 1) == 1 ? mt_rand(1, 5) : null)
                 ->setDescription($this->faker->text(200))
                 ->setPeopleRequired(mt_rand(0, 1) == 1 ? mt_rand(1, 50) : null)
-                ->setTime(mt_rand(0, 1) == 1 ? mt_rand(2, 1440) : null)
+                ->setPreparationTime(mt_rand(0, 1) == 1 ? mt_rand(2, 1440) : null)
+                ->setCookingTime(mt_rand(0, 1) == 1 ? mt_rand(0, 1440) : null)
                 ->setIsFavorite(mt_rand(0, 1) == 1)
                 ->setUser($users[mt_rand(0, count($users) - 1)])
                 ->setIsPublic(mt_rand(0, 1) == 1);

@@ -38,7 +38,16 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('time', IntegerType::class,[
+            ->add('preparationTime', IntegerType::class,[
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'label' => 'temps',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
+                ]
+            ])
+            ->add('cookingTime', IntegerType::class,[
                 'attr' => [
                     'class' => 'form-control'
                 ],

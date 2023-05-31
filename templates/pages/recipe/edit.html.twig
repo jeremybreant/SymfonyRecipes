@@ -19,10 +19,17 @@
         </div>
     </div>
     <div class="form-group mt-4">
-        {{ form_label(form.time) }}
-        {{ form_widget(form.time) }}
+        {{ form_label(form.preparationTime) }}
+        {{ form_widget(form.preparationTime) }}
         <div class="form-error">
-            {{ form_errors(form.time) }}
+            {{ form_errors(form.preparationTime) }}
+        </div>
+    </div>
+    <div class="form-group mt-4">
+        {{ form_label(form.cookingTime) }}
+        {{ form_widget(form.cookingTime) }}
+        <div class="form-error">
+            {{ form_errors(form.cookingTime) }}
         </div>
     </div>
     <div class="form-group mt-4">

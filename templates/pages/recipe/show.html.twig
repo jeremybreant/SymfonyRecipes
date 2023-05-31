@@ -13,10 +13,17 @@
         <img style="max-width: 20%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
     </div>
     <div class="mt-4">
-        {% if recipe.time %}
-            Temps (en min) : {{ recipe.time|min_to_hour }}
+        {% if recipe.preparationTime %}
+            Temps de préparation : {{ recipe.preparationTime|min_to_hour }}
         {% else %}
-            Temps non renségné
+            Temps de préparation non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {% if recipe.cookingTime %}
+            Temps de cuisson : {{ recipe.cookingTime|min_to_hour }}
+        {% else %}
+            Temps de cuisson non renségné
         {% endif %}
     </div>
     <div class="mt-4">

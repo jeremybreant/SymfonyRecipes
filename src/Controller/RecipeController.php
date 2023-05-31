@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Mark;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
-use App\Entity\Tag;
 use App\Form\MarkType;
 use App\Form\RecipeType;
 use App\Repository\MarkRepository;
