@@ -24,7 +24,8 @@
         <tr>
             <th scope="col">Numéro</th>
             <th scope="col">Nom</th>
-            <th scope="col">Temps</th>
+            <th scope="col">Temps de préparation</th>
+            <th scope="col">Temps de cuisson</th>
             <th scope="col">Nombre de personne</th>
             <th scope="col">Difficulté</th>
             <th scope="col">Prix</th>
@@ -37,7 +38,8 @@
             <tr class="table-primary">
                 <th scope="row">{{ recipe.id }}</th>
                 <td>{{ recipe.name }}</td>
-                <td>{{ (recipe.time is null) ? '--' : recipe.time }}</td>
+                <td>{{ (recipe.preparationTime is null) ? '--' : recipe.preparationTime|min_to_hour }}</td>
+                <td>{{ (recipe.cookingTime is null) ? '--' : recipe.cookingTime|min_to_hour }}</td>
                 <td>{{ (recipe.peopleRequired is null) ? '--' : recipe.peopleRequired }}</td>
                 <td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
                 <td>{{ (recipe.price is null) ? '--' : recipe.price|number_format(2, '.', ',') }} €</td>

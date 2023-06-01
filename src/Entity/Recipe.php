@@ -45,7 +45,12 @@ class Recipe
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(1441)]
     #[Assert\Positive()]
-    private ?int $time = null;
+    private ?int $preparationTime = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\LessThan(1441)]
+    #[Assert\PositiveOrZero()]
+    private ?int $cookingTime = null;
 
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(value: 51)]
@@ -161,14 +166,26 @@ class Recipe
         return $this->imageName;
     }
 
-    public function getTime(): ?int
+    public function getPreparationTime(): ?int
     {
-        return $this->time;
+        return $this->preparationTime;
     }
 
-    public function setTime(?int $time): self
+    public function setPreparationTime(?int $preparationTime): self
     {
-        $this->time = $time;
+        $this->preparationTime = $preparationTime;
+
+        return $this;
+    }
+
+    public function getCookingTime(): ?int
+    {
+        return $this->cookingTime;
+    }
+
+    public function setCookingTime(?int $cookingTime): self
+    {
+        $this->cookingTime = $cookingTime;
 
         return $this;
     }
@@ -366,5 +383,4 @@ class Recipe
 
         return $this;
     }
-
 }

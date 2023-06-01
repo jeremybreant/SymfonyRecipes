@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Mark;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
-use App\Entity\Tag;
 use App\Form\MarkType;
 use App\Form\RecipeType;
 use App\Repository\MarkRepository;
@@ -228,6 +227,10 @@ class RecipeController extends AbstractController
             ]);
         }
 
+        $relatedMarks = $markRepository->findBy([
+            'recipe' => $recipe
+        ]);
+
         $mark = new Mark();
 
         $form = $this->createForm(MarkType::class, $mark);
@@ -265,6 +268,7 @@ class RecipeController extends AbstractController
         }
         return $this->render('pages/recipe/show.html.twig', [
             'recipe' => $recipe,
+            'relatedMarks' => $relatedMarks,
             'form' => $form->createView()
         ]);
     }

@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% import "macros/mark/starMark.html.twig" as starMark %}
+
 {% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
 
 {% block body %}
@@ -13,10 +15,17 @@
         <img style="max-width: 20%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
     </div>
     <div class="mt-4">
-        {% if recipe.time %}
-            Temps (en min) : {{ recipe.time|min_to_hour }}
+        {% if recipe.preparationTime %}
+            Temps de préparation : {{ recipe.preparationTime|min_to_hour }}
         {% else %}
-            Temps non renségné
+            Temps de préparation non renségné
+        {% endif %}
+    </div>
+    <div class="mt-4">
+        {% if recipe.cookingTime %}
+            Temps de cuisson : {{ recipe.cookingTime|min_to_hour }}
+        {% else %}
+            Temps de cuisson non renségné
         {% endif %}
     </div>
     <div class="mt-4">
@@ -55,8 +64,33 @@
         </ul>
     </div>
     {% if recipe.user != app.user %}
+        {{ form_start(form) }}
         <div class="form-group">
-            {{ form(form) }}
+            {{ form_label(form.mark) }}
+            {{ form_widget(form.mark) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.mark) }}
+            </div>
         </div>
+        <div class="form-group">
+            {{ form_label(form.comment) }}
+            {{ form_widget(form.comment) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.comment) }}
+            </div>
+        </div>
+        <div class="form-group">
+            {{ form_row(form.submit, {'label': 'Noter'}) }}
+        </div>
+        {{ form_end(form) }}
     {% endif %}
+    <h4 class="mt-4">Avis :</h4>
+    {% for mark in relatedMarks %}
+        <div class="mb-3">
+            <div class="card-body">
+                <p class="card-text">{{ starMark.displayMarkWithStar(mark.mark) }}</p>
+                <p class="card-text">{{ mark.comment }}</p>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}
