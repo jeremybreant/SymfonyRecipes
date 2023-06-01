@@ -28,4 +28,9 @@ class AppExtensionRuntime implements RuntimeExtensionInterface
 
         return $time;
     }
+
+    public function displayDate($value): string
+    {
+        return sprintf('%s',$value->format('Y/m/d H:i:s'));
+    }
 }

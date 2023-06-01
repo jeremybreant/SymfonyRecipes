@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% import "macros/mark/starMark.html.twig" as starMark %}
+{% import "macros/mark/mark.html.twig" as starMark %}
 
 {% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
 
@@ -86,11 +86,6 @@
     {% endif %}
     <h4 class="mt-4">Avis :</h4>
     {% for mark in relatedMarks %}
-        <div class="mb-3">
-            <div class="card-body">
-                <p class="card-text">{{ starMark.displayMarkWithStar(mark.mark) }}</p>
-                <p class="card-text">{{ mark.comment }}</p>
-            </div>
-        </div>
+        {{ starMark.displayMarkWithStar(mark.mark, mark.comment, mark.user.fullname, mark.createdAt|display_date) }}
     {% endfor %}
 {% endblock %}

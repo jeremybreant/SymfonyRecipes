@@ -105,7 +105,7 @@ class AppFixture extends Fixture
                 if (mt_rand(0, 1)) {
                     $mark = new Mark();
                     $mark->setUser($user)
-                        ->setMark(mt_rand(0, 5))
+                        ->setMark(mt_rand(1, 5))
                         ->setComment($this->faker->text(200))
                         ->setRecipe($recipe);
 

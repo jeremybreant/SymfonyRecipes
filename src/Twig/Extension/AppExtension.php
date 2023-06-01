@@ -16,6 +16,7 @@ class AppExtension extends AbstractExtension
             // parameter: ['is_safe' => ['html']]
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
             new TwigFilter('min_to_hour', [AppExtensionRuntime::class, 'minutesToHour']),
+            new TwigFilter('display_date', [AppExtensionRuntime::class, 'displayDate']),
         ];
     }
 }

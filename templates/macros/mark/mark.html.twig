@@ -1,0 +1,25 @@
+{% macro displayMarkWithStar(mark, comment, markAuthor, creationDate) %}
+    <div class="pb-3 mt-1 border-bottom">
+        <div class="card-body">
+            <p class="card-text">
+            <div class="row">
+                <div class="col-2">
+                    <strong>{{ markAuthor }}</strong>
+                </div>
+                <div class="col-2">
+                {% for i in 1..(mark) %}
+                    <span class="fa fa-star text-warning"></span>
+                {% endfor %}
+                {% if mark != 5 %}
+                    {% for i in 1..5-(mark) %}
+                        <span class="fa fa-star"></span>
+                    {% endfor %}
+                {% endif %}
+            </div>
+            </div>
+            </p>
+            <p class="card-text">{{ comment }}</p>
+            <p class="card-text text-secondary">{{ creationDate }}</p>
+        </div>
+    </div>
+{% endmacro %}

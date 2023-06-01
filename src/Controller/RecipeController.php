@@ -250,6 +250,8 @@ class RecipeController extends AbstractController
                     sprintf('La note pour %s a bien été modifiée', $recipe->getName())
                 );
                 $existingMark->setMark($mark->getMark());
+                $existingMark->setComment($mark->getComment());
+                $existingMark->setCreatedAt(New \DateTimeImmutable());
             }
             else {
                 $this->addFlash(
