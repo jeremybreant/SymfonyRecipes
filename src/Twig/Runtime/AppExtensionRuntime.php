@@ -14,7 +14,7 @@ class AppExtensionRuntime implements RuntimeExtensionInterface
     public function minutesToHour($value): string
     {
         if ($value < 60) {
-            return sprintf('%smin', $value);
+            return sprintf('%s min', $value);
         }
 
         $hours = floor($value / 60);
@@ -24,7 +24,7 @@ class AppExtensionRuntime implements RuntimeExtensionInterface
             $minutes = '0' . $minutes;
         }
 
-        $time = sprintf('%sh%s', $hours, $minutes);
+        $time = sprintf('%s h %s min', $hours, $minutes);
 
         return $time;
     }
@@ -33,4 +33,5 @@ class AppExtensionRuntime implements RuntimeExtensionInterface
     {
         return sprintf('%s',$value->format('Y/m/d H:i:s'));
     }
+
 }
