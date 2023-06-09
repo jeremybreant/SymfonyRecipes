@@ -5,15 +5,69 @@
 {% block title %}StmfonyRecipes - {{ recipe.name }}{% endblock %}
 
 {% block body %}
-    <h1>
-        {{ recipe.name }} - {{ recipe.getRoundedAverage() }} &#10032;
-    </h1>
-    <span class="badge bg-primary">
-        Crééé le {{ recipe.createdAt|date('d/m/Y') }}
-        </span>
-    <div class="recipe_image mt-4">
-        <img style="max-width: 20%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
+    <div class="d-flex justify-content-between">
+        <div class=""><h1>{{ recipe.name }}</h1></div>
+        <div class="">{{ (recipe.preparationTime+recipe.cookingTime)|min_to_hour }}  <i class="fa-solid fa-clock fa-xl text-primary"></i></div>
     </div>
+    <div class="d-flex justify-content-between">
+        <div class=""><h2>{{ starMark.displayMarkWithStar(recipe.getRoundedAverage()) }}</h2></div>
+        <div class="">
+            {% if recipe.price %}
+                {{ recipe.price }}
+            {% else %}
+                Non renseigné
+            {% endif %}
+            <i class="fa-solid fa-hand-holding-dollar fa-xl text-primary"></i>
+        </div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <div class=""><span class="badge bg-primary">Créée le {{ recipe.createdAt|date('d/m/Y') }}</span></div>
+        <div class="">{{ recipe.difficulty }}  <i class="fa-solid fa-book fa-xl text-primary"></i></div>
+    </div>
+
+    <div class="recipe_image mt-5 pt-5 text-center">
+        <img style="width: 75%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
+    </div>
+
+
+    <div class="row align-items-center p-2 mt-5 pt-5 mb-5">
+        <div class="col border-bottom"></div>
+        <div class="col text-center col-md-auto mx-5">
+                <span>
+                     <i class="fa-wheat-awn fa-solid fa-xl text-primary"></i> Ingrédients
+                </span>
+        </div>
+        <div class="col border-bottom"></div>
+    </div>
+    <div class="btn-group mt-4" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-secondary">-</button>
+        <div class="text-primary btn custom-btn-group-text btn-outline-secondary">{{ recipe.foodQuantity }} {{ recipe.foodQuantityType }}</div>
+        <button type="button" class="btn btn-outline-secondary">+</button>
+    </div>
+
+    <div class="mt-5">
+        <div class="row">
+            {% for recipeIngredient in recipe.recipeIngredients %}
+            <div class="col-3 d-flex flex-column">
+                <div class="p-2 text-center h-100"><img class="w-75" src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}"></div>
+                <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }} {{ recipeIngredient.quantity }}{{ recipeIngredient.unitType }}</div>
+
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="row align-items-center p-2 mt-5 pt-5 mb-5">
+        <div class="col border-bottom"></div>
+        <div class="col text-center col-md-auto mx-5">
+                <span>
+                     <i class="fa-fire-burner fa-solid fa-xl text-primary"></i> Préparation
+                </span>
+        </div>
+        <div class="col border-bottom"></div>
+    </div>
+
     <div class="mt-4">
         {% if recipe.preparationTime %}
             Temps de préparation : {{ recipe.preparationTime|min_to_hour }}
@@ -29,40 +83,10 @@
         {% endif %}
     </div>
     <div class="mt-4">
-        {% if recipe.peopleRequired %}
-            Pour {{ recipe.peopleRequired }} personnes
-        {% else %}
-            Nombre de personne non renségné
-        {% endif %}
+        Étapes :
+        <p>{{ recipe.description|raw }}</p>
     </div>
-    <div class="mt-4">
-        {% if recipe.difficulty %}
-            Difficulté : {{ recipe.difficulty }}
-        {% else %}
-            Diffculté non renségné
-        {% endif %}
-    </div>
-    <div class="mt-4">
-        {% if recipe.price %}
-            Prix : {{ recipe.price }}€
-        {% else %}
-            Prix non renségné
-        {% endif %}
-    </div>
-    <div class="mt-4">
-        {{ recipe.description|raw }}
-    </div>
-    <div class="mt-4">
-        <p class="mt-4"> Ingredients :</p>
-        <ul>
-            {% for recipeIngredient in recipe.recipeIngredients %}
-                <li>
-                    {{ recipeIngredient.ingredient.name }}
-                    {{ recipeIngredient.quantity }}{{ recipeIngredient.unitType }}
-                </li>
-            {% endfor %}
-        </ul>
-    </div>
+
     {% if recipe.user != app.user %}
         {{ form_start(form) }}
         <div class="form-group">
@@ -84,8 +108,18 @@
         </div>
         {{ form_end(form) }}
     {% endif %}
-    <h4 class="mt-4">Avis :</h4>
+
+    <div class="row align-items-center p-2 mt-5 pt-5 mb-5">
+        <div class="col border-bottom"></div>
+        <div class="col text-center col-md-auto mx-5">
+                <span>
+                     <i class="fa-comment-dots fa-solid fa-xl text-primary"></i> Commentaires
+                </span>
+        </div>
+        <div class="col border-bottom"></div>
+    </div>
+
     {% for mark in relatedMarks %}
-        {{ starMark.displayMarkWithStar(mark.mark, mark.comment, mark.user.fullname, mark.createdAt|display_date) }}
+        {{ starMark.displayMark(mark.mark, mark.comment, mark.user.fullname, mark.createdAt|display_date) }}
     {% endfor %}
 {% endblock %}
