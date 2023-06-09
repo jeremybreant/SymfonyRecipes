@@ -15,7 +15,7 @@ class RecipeTest extends KernelTestCase
             ->setDescription('This is the description of a beautifull recipe that i have made')
             ->setPrice(4.0)
             ->setDifficulty(4)
-            ->setPeopleRequired(5)
+            ->setFoodQuantity(5)
             ->setTime(120)
             ->setIsPublic(true)
             ->setIsFavorite(true)

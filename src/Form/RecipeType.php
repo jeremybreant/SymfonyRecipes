@@ -6,6 +6,7 @@ use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -42,7 +43,7 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'temps',
+                'label' => 'temps de préparation :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -51,25 +52,36 @@ class RecipeType extends AbstractType
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'temps',
+                'label' => 'temps de cuisson :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('peopleRequired', IntegerType::class,[
+            ->add('foodQuantity', IntegerType::class,[
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Nbr de personne :',
+                'label' => 'Quantité de nourriture :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('difficulty',  IntegerType::class,[
+            ->add('foodQuantityType', ChoiceType::class, [
+                'choices' => Recipe::getAvailableQuantityType(),
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'difficulté',
+                'label' => 'Unité :',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
+                ]
+            ])
+            ->add('difficulty', ChoiceType::class, [
+                'choices' => Recipe::getAvailabledifficulties(),
+                'attr' => [
+                    'class' => 'form-control'
+                ],
+                'label' => 'Difficulté :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -83,11 +95,12 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('price', MoneyType::class, [
+            ->add('price', ChoiceType::class, [
+                'choices' => Recipe::getAvailablePrices(),
                 'attr' => [
                     'class' => 'form-control'
                 ],
-                'label' => 'Prix',
+                'label' => 'Prix :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
