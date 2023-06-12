@@ -39,10 +39,13 @@
         </div>
         <div class="col border-bottom"></div>
     </div>
-    <div class="btn-group mt-4" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-outline-secondary">-</button>
-        <div class="text-primary btn custom-btn-group-text btn-outline-secondary">{{ recipe.foodQuantity }} {{ recipe.foodQuantityType }}</div>
-        <button type="button" class="btn btn-outline-secondary">+</button>
+    <div class="btn-group mt-4" role="group" aria-label="Basic example" {{ stimulus_controller('food-quantity') }}
+         data-food-quantity-requestedfoodquantity-value="{{ recipe.foodQuantity }}"
+         data-food-quantity-recipe-value="{{ recipe.toJSONString() }}"
+         >
+        <button type="button" class="btn btn-outline-secondary" {{ stimulus_action('food-quantity', 'decrementFoodQuantity') }}>-</button>
+        <div class="text-primary btn custom-btn-group-text btn-outline-secondary"><span id="foodQuantityNum">{{ recipe.foodQuantity }}</span> {{ recipe.foodQuantityType }}</div>
+        <button type="button" class="btn btn-outline-secondary" {{ stimulus_action('food-quantity', 'incrementFoodQuantity') }}>+</button>
     </div>
 
     <div class="mt-5">
@@ -50,9 +53,7 @@
             {% for recipeIngredient in recipe.recipeIngredients %}
             <div class="col-3 d-flex flex-column">
                 <div class="p-2 text-center h-100"><img class="w-75" src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}"></div>
-                <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }} {{ recipeIngredient.quantity }}{{ recipeIngredient.unitType }}</div>
-
-
+                <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }} <span id="{{ recipeIngredient.id }}">{{ recipeIngredient.quantity }}</span>{{ recipeIngredient.unitType }}</div>
             </div>
             {% endfor %}
         </div>
