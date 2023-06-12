@@ -3,14 +3,23 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Config\TwigExtra\StringConfig;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -18,7 +27,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\HasLifecycleCallbacks]
 #[Vich\Uploadable]
 #[UniqueEntity(
-    fields: ['user','name'],
+    fields: ['user', 'name'],
     message: 'Cet utilisateur a déjà créé cette recette',
     errorPath: 'name'
 )]
@@ -74,6 +83,7 @@ class Recipe
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 50)]
@@ -86,58 +96,71 @@ class Recipe
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
 
-
+    #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(1441)]
     #[Assert\Positive()]
     private ?int $preparationTime = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(1441)]
     #[Assert\PositiveOrZero()]
     private ?int $cookingTime = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(length: 255)]
     #[Assert\NotNull()]
     private ?string $difficulty;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     private string $description;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(nullable: false)]
     #[Assert\NotNull()]
     private string $price;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createdAt;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private bool $isFavorite;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private bool $isPublic;
 
+    #[Groups(['recipe_user'])]
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[Groups(['recipe_marks'])]
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
     private Collection $marks;
 
+    #[Groups(['recipe_recipeIngredients'])]
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $recipeIngredients;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     private ?int $foodQuantity = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(length: 255)]
     private ?string $foodQuantityType = null;
 
@@ -408,7 +431,7 @@ class Recipe
             return null;
         }
 
-        return round($averageMark,2);
+        return round($averageMark, 2);
     }
 
     /**
@@ -441,4 +464,14 @@ class Recipe
         return $this;
     }
 
+    public function toJSONString(): string
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer([$normalizer]);
+
+        $array = $serializer->normalize($this, null, ['groups' => ['recipe','recipe_recipeIngredients','recipeIngredients_recipe','recipeIngredient','recipeIngredient_ingredient','ingredient']]);
+        return json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    }
 }

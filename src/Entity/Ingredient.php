@@ -9,6 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
@@ -22,11 +23,13 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 )]
 class Ingredient
 {
+    #[Groups(['ingredient'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id;
 
+    #[Groups(['ingredient'])]
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
@@ -39,18 +42,22 @@ class Ingredient
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
 
+    #[Groups(['ingredient'])]
     #[ORM\Column]
     #[Assert\NotNull]
     private ?DateTimeImmutable $createdAt;
 
+    #[Groups(['ingredient'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
+    #[Groups(['ingredient_user'])]
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Groups(['ingredient_recipeIngredient'])]
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
     private Collection $recipeIngredients;
 
