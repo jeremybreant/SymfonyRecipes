@@ -1,3 +1,7 @@
 .custom-btn-group-text{
     pointer-events: none;
 }
+
+.custom-br-10{
+    border-radius: 10px;
+}

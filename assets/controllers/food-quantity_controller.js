@@ -57,11 +57,11 @@ export default class extends Controller {
         {
             return "";
         }
-        if(dividedQuantity === 0.10 || dividedQuantity === 0.30 || dividedQuantity === 0.40 || dividedQuantity === 0.60 || dividedQuantity === 0.70 || dividedQuantity === 0.90)
+        if(dividedQuantity === 0.10 || dividedQuantity === 0.30 || dividedQuantity === 0.70 || dividedQuantity === 0.90)
         {
             return dividedQuantity*10+"/10";
         }
-        if(dividedQuantity === 0.20 || dividedQuantity === 0.40 || dividedQuantity === 0.80)
+        if(dividedQuantity === 0.20 || dividedQuantity === 0.40 || dividedQuantity === 0.60 || dividedQuantity === 0.80)
         {
             return dividedQuantity*5+"/5";
         }

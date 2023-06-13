@@ -19,9 +19,11 @@
 
 {% macro displayMarkWithStar(mark) %}
     {% set roundedMark = mark|round %}
-    {% for i in 1..roundedMark %}
-        <span class="fa fa-star text-warning"></span>
-    {% endfor %}
+    {% if mark != 0 %}
+        {% for i in 1..roundedMark %}
+            <span class="fa fa-star text-warning"></span>
+        {% endfor %}
+    {% endif %}
     {% if mark <= 4 %}
         {% for i in range(1,5-roundedMark) %}
             <span class="fa fa-star"></span>

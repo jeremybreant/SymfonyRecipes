@@ -428,7 +428,7 @@ class Recipe
         $averageMark = $this->getAverage();
 
         if ($averageMark === null) {
-            return null;
+            return 0;
         }
 
         return round($averageMark, 2);
@@ -473,5 +473,10 @@ class Recipe
         $array = $serializer->normalize($this, null, ['groups' => ['recipe','recipe_recipeIngredients','recipeIngredients_recipe','recipeIngredient','recipeIngredient_ingredient','ingredient']]);
         return json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
+    }
+
+    public function getTotalTime(): string
+    {
+        return $this->preparationTime + $this->cookingTime;
     }
 }
