@@ -47,8 +47,10 @@
         <button type="button"
                 class="btn btn-outline-secondary" {{ stimulus_action('food-quantity', 'decrementFoodQuantity') }}>-
         </button>
-        <div class="text-primary btn custom-btn-group-text btn-outline-secondary"><span
-                    id="foodQuantityNum">{{ recipe.foodQuantity }}</span> {{ recipe.foodQuantityType }}</div>
+        <div class="text-primary btn custom-btn-group-text btn-outline-secondary">
+            <span id="foodQuantityNum">{{ recipe.foodQuantity }}</span>
+            {{ recipe.foodQuantityType }}
+        </div>
         <button type="button"
                 class="btn btn-outline-secondary" {{ stimulus_action('food-quantity', 'incrementFoodQuantity') }}>+
         </button>
