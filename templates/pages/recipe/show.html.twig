@@ -6,24 +6,36 @@
 
 {% block body %}
     <div class="d-flex justify-content-between">
-        <div class=""><h1>{{ recipe.name }}</h1></div>
-        <div class="">{{ recipe.getTotalTime()|min_to_hour }} <i
-                    class="fa-solid fa-clock fa-xl text-primary"></i></div>
-    </div>
-    <div class="d-flex justify-content-between">
-        <div class=""><h2>{{ starMark.displayMarkWithStar(recipe.getRoundedAverage()) }}</h2></div>
-        <div class="">
-            {% if recipe.price %}
-                {{ recipe.price }}
-            {% else %}
-                Non renseigné
-            {% endif %}
-            <i class="fa-solid fa-hand-holding-dollar fa-xl text-primary"></i>
+        <div class="d-flex flex-column bd-highlight mb-3">
+            <div><h1>{{ recipe.name }}</h1></div>
+            <div><h2>{{ starMark.displayMarkWithStar(recipe.getRoundedAverage()) }}</h2></div>
+            <div>
+                <i class="fa-comment-dots fa-solid text-primary"></i>
+                <a class="px-2" href="#comment">{{ recipe.getMarks()|length }} avis</a>
+            </div>
+            <div>
+                <span class="mt-2 badge bg-primary">Créée le {{ recipe.createdAt|date('d/m/Y') }}</span>
+            </div>
         </div>
-    </div>
-    <div class="d-flex justify-content-between">
-        <div class=""><span class="badge bg-primary">Créée le {{ recipe.createdAt|date('d/m/Y') }}</span></div>
-        <div class="">{{ recipe.difficulty }} <i class="fa-solid fa-book fa-xl text-primary"></i></div>
+
+        <div class="d-flex align-items-end flex-column bd-highlight">
+            <div class="py-3 text-right">
+                <span class="px-2">{{ recipe.getTotalTime()|min_to_hour }} </span>
+                <i class="fa-solid fa-clock fa-xl text-primary"></i>
+            </div>
+            <div class="py-3">
+                <span class="px-2">
+                 {% if recipe.price %}{{ recipe.price }}
+                 {% else %}Non renseigné
+                 {% endif %}
+                </span>
+                <i class="fa-solid fa-hand-holding-dollar fa-xl text-primary"></i>
+            </div>
+            <div class="py-3 text-right">
+                <span class="px-2">{{ recipe.difficulty }} </span>
+                <i class="fa-solid fa-book fa-xl text-primary"></i>
+            </div>
+        </div>
     </div>
 
     <div class="recipe_image mt-5 pt-5 text-center">
@@ -60,11 +72,12 @@
         <div class="row">
             {% for recipeIngredient in recipe.recipeIngredients %}
                 <div class="col col-4 col-md-3 d-flex flex-column">
-                    <div class="py-2 text-center h-100"><img class="w-75"
-                                                            src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}">
+                    <div class="py-2 text-center h-100">
+                        <img class="w-75" src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}">
                     </div>
-                    <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }} <span
-                                id="{{ recipeIngredient.id }}">{{ recipeIngredient.quantity }}</span>{{ recipeIngredient.unitType }}
+                    <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }}
+                        <span id="{{ recipeIngredient.id }}">{{ recipeIngredient.quantity }}</span>
+                        {{ recipeIngredient.unitType }}
                     </div>
                 </div>
             {% endfor %}
@@ -84,7 +97,9 @@
     <div class="row justify-content-center">
         <div class="col col-9 col-md-6">
             <div class="d-flex flex-column bd-highlight mb-3 bg-light custom-br-10">
-                <div class="p-2 bd-highlight text-center border-bottom"><strong>Temps total</strong> : {{ recipe.getTotalTime()|min_to_hour }}</div>
+                <div class="p-2 bd-highlight text-center border-bottom">
+                    <strong>Temps total</strong>
+                    : {{ recipe.getTotalTime()|min_to_hour }}</div>
                 <div class="d-flex justify-content-center">
                     <div class="d-flex flex-column bd-highlight mb-2 w-50">
                         <div class="pt-2 bd-highlight text-center"><strong>Préparation :</strong></div>
@@ -116,7 +131,7 @@
         <p>{{ recipe.description|raw }}</p>
     </div>
 
-    <div class="row align-items-center p-2 mt-5 mb-5">
+    <div id="comment" class="row align-items-center p-2 mt-5 mb-5">
         <div class="col border-bottom"></div>
         <div class="col text-center col-md-auto mx-5">
                 <span>
