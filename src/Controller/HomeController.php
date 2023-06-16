@@ -19,7 +19,7 @@ class HomeController extends AbstractController
     ): Response
     {
         return $this->render('pages/index.html.twig',[
-            'recipes' => $recipeRepository->findPublicRecipe(3)
+            'recipes' => $recipeRepository->findPublicRecipe(8)
         ]);
     }
 }

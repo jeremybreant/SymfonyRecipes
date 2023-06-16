@@ -26,7 +26,7 @@
             <th scope="col">Nom</th>
             <th scope="col">Temps de préparation</th>
             <th scope="col">Temps de cuisson</th>
-            <th scope="col">Nombre de personne</th>
+            <th scope="col">Quantité</th>
             <th scope="col">Difficulté</th>
             <th scope="col">Prix</th>
             <th scope="col">Date de création</th>
@@ -40,9 +40,9 @@
                 <td>{{ recipe.name }}</td>
                 <td>{{ (recipe.preparationTime is null) ? '--' : recipe.preparationTime|min_to_hour }}</td>
                 <td>{{ (recipe.cookingTime is null) ? '--' : recipe.cookingTime|min_to_hour }}</td>
-                <td>{{ (recipe.peopleRequired is null) ? '--' : recipe.peopleRequired }}</td>
+                <td>{{ (recipe.foodQuantity is null) ? '--' : recipe.foodQuantity }} {{ (recipe.foodQuantityType is null) ? '--' : recipe.foodQuantityType }}</td>
                 <td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
-                <td>{{ (recipe.price is null) ? '--' : recipe.price|number_format(2, '.', ',') }} €</td>
+                <td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
                 <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
                 <td>
                     {% if recipe.user == app.user %}

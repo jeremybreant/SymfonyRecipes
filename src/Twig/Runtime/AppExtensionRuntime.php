@@ -14,18 +14,24 @@ class AppExtensionRuntime implements RuntimeExtensionInterface
     public function minutesToHour($value): string
     {
         if ($value < 60) {
-            return sprintf('%smin', $value);
+            return sprintf('%s min', $value);
         }
 
-        $hours = floor($value / 60);
         $minutes = $value % 60;
+        $hours = floor(($value-$minutes) / 60);
 
         if ($minutes < 10) {
             $minutes = '0' . $minutes;
         }
 
-        $time = sprintf('%sh%s', $hours, $minutes);
+        $time = sprintf('%s h %s min', $hours, $minutes);
 
         return $time;
     }
+
+    public function displayDate($value): string
+    {
+        return sprintf('%s',$value->format('Y/m/d H:i:s'));
+    }
+
 }

@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\RecipeIngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[UniqueEntity(
     fields: ['recipe','ingredient'],
@@ -37,21 +38,26 @@ class RecipeIngredient
         ];
     }
 
+    #[Groups(['recipeIngredient'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['recipeIngredient'])]
     #[ORM\Column]
     private ?float $quantity = null;
 
+    #[Groups(['recipeIngredient'])]
     #[ORM\Column(length: 10)]
     private ?string $unitType = null;
 
+    #[Groups(['recipeIngredient_recipe'])]
     #[ORM\ManyToOne(inversedBy: 'recipeIngredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
+    #[Groups(['recipeIngredient_ingredient'])]
     #[ORM\ManyToOne(inversedBy: 'recipeIngredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Ingredient $ingredient = null;

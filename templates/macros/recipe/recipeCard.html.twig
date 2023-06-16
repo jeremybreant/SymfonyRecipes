@@ -1,0 +1,17 @@
+{% macro displayRecipeCard(id, name, nbrOfMark, averageMark, imgPath) %}
+    {% import "macros/mark/mark.html.twig" as starMark %}
+    <div class="">
+        <img class="custom-img-1-1 rounded-4" src="{{ imgPath }}"/>
+        <div>
+            <div>
+                {{ name }}
+            </div>
+            <div>
+                {{ starMark.displayMarkWithStar(averageMark) }}
+            </div>
+            <div>
+                {{ nbrOfMark }} avis
+            </div>
+        </div>
+    </div>
+{% endmacro %}

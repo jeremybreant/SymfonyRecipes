@@ -47,10 +47,17 @@
         </div>
     </div>
     <div class="form-group mt-4">
-        {{ form_label(form.peopleRequired) }}
-        {{ form_widget(form.peopleRequired) }}
+        {{ form_label(form.foodQuantity) }}
+        {{ form_widget(form.foodQuantity) }}
         <div class="form-error">
-            {{ form_errors(form.peopleRequired) }}
+            {{ form_errors(form.foodQuantity) }}
+        </div>
+    </div>
+    <div class="form-group mt-4">
+        {{ form_label(form.foodQuantityType) }}
+        {{ form_widget(form.foodQuantityType) }}
+        <div class="form-error">
+            {{ form_errors(form.foodQuantityType) }}
         </div>
     </div>
     <div class="form-group mt-4">
@@ -93,10 +100,12 @@
                 </div>
             {% endfor %}
         </div>
+
         <button type="button" class="btn btn-primary mt-4" {{ stimulus_action('form-collection', 'addCollectionElement') }}>Add a recipeIngredient</button>
     </div>
+
     <div class="form-group">
-        {{ form_row(form.submit, {'label': 'Modifier'}) }}
+        {{ form_row(form.submit, { 'label': 'Modifier une recette'}) }}
     </div>
     {{ form_end(form) }}
 

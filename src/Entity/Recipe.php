@@ -3,14 +3,23 @@
 namespace App\Entity;
 
 use App\Repository\RecipeRepository;
+use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Form\FormTypeInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
+use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Config\TwigExtra\StringConfig;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 
@@ -18,17 +27,63 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 #[ORM\HasLifecycleCallbacks]
 #[Vich\Uploadable]
 #[UniqueEntity(
-    fields: ['user','name'],
+    fields: ['user', 'name'],
     message: 'Cet utilisateur a déjà créé cette recette',
     errorPath: 'name'
 )]
 class Recipe
 {
+    public const PRICE_VERY_LOW = "Très bon marché";
+    public const PRICE_LOW = "Bon marché";
+    public const PRICE_MEDIUM = "Moyen";
+    public const PRICE_HIGH = "Assez cher";
+    public const PRICE_VERY_HIGH = "Très cher";
+
+    public static function getAvailablePrices()
+    {
+        return [
+            Recipe::PRICE_VERY_LOW => Recipe::PRICE_VERY_LOW,
+            Recipe::PRICE_LOW => Recipe::PRICE_LOW,
+            Recipe::PRICE_MEDIUM => Recipe::PRICE_MEDIUM,
+            Recipe::PRICE_HIGH => Recipe::PRICE_HIGH,
+            Recipe::PRICE_VERY_HIGH => Recipe::PRICE_VERY_HIGH
+        ];
+    }
+
+    public const DIFFICULTY_VERY_EASY = "Très facile";
+    public const DIFFICULTY_EASY = "Facile";
+    public const DIFFICULTY_MEDIUM = "Moyen";
+    public const DIFFICULTY_HARD = "Difficile";
+    public const DIFFICULTY_VERY_HARD = "Très difficile";
+
+    public static function getAvailableDifficulties()
+    {
+        return [
+            Recipe::DIFFICULTY_VERY_EASY => Recipe::DIFFICULTY_VERY_EASY,
+            Recipe::DIFFICULTY_EASY => Recipe::DIFFICULTY_EASY,
+            Recipe::DIFFICULTY_MEDIUM => Recipe::DIFFICULTY_MEDIUM,
+            Recipe::DIFFICULTY_HARD => Recipe::DIFFICULTY_HARD,
+            Recipe::DIFFICULTY_VERY_HARD => Recipe::DIFFICULTY_VERY_HARD
+        ];
+    }
+
+    public const QUANTITY_TYPE_PEOPLE = "personnes";
+    public const QUANTITY_TYPE_PIECE = "pieces";
+
+    public static function getAvailableQuantityType()
+    {
+        return [
+            Recipe::QUANTITY_TYPE_PEOPLE => Recipe::QUANTITY_TYPE_PEOPLE,
+            Recipe::QUANTITY_TYPE_PIECE => Recipe::QUANTITY_TYPE_PIECE
+        ];
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 50)]
@@ -41,60 +96,73 @@ class Recipe
     #[ORM\Column(nullable: true)]
     private ?string $imageName = null;
 
-
+    #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(1441)]
     #[Assert\Positive()]
     private ?int $preparationTime = null;
 
+    #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
     #[Assert\LessThan(1441)]
     #[Assert\PositiveOrZero()]
     private ?int $cookingTime = null;
 
-    #[ORM\Column(nullable: true)]
-    #[Assert\LessThan(value: 51)]
-    #[Assert\Positive()]
-    private ?int $peopleRequired = null;
+    #[Groups(['recipe'])]
+    #[ORM\Column(length: 255)]
+    #[Assert\NotNull()]
+    private ?string $difficulty;
 
-    #[ORM\Column(nullable: true)]
-    #[Assert\Range(min: 1, max: 5)]
-    private ?int $difficulty = null;
-
+    #[Groups(['recipe'])]
     #[ORM\Column(type: Types::TEXT)]
     #[Assert\NotBlank()]
     private string $description;
 
-    #[ORM\Column(nullable: true)]
-    #[Assert\Positive()]
-    #[Assert\LessThan(1001)]
-    private ?float $price = null;
+    #[Groups(['recipe'])]
+    #[ORM\Column(nullable: false)]
+    #[Assert\NotNull()]
+    private string $price;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private \DateTimeImmutable $createdAt;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private \DateTimeImmutable $updatedAt;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private bool $isFavorite;
 
+    #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull()]
     private bool $isPublic;
 
+    #[Groups(['recipe_user'])]
     #[ORM\ManyToOne(inversedBy: 'recipes')]
     #[ORM\JoinColumn(nullable: false)]
     private User $user;
 
+    #[Groups(['recipe_marks'])]
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
     private Collection $marks;
 
+    #[Groups(['recipe_recipeIngredients'])]
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
     private Collection $recipeIngredients;
+
+    #[Groups(['recipe'])]
+    #[ORM\Column]
+    private ?int $foodQuantity = null;
+
+    #[Groups(['recipe'])]
+    #[ORM\Column(length: 255)]
+    private ?string $foodQuantityType = null;
 
 
     /**
@@ -190,24 +258,36 @@ class Recipe
         return $this;
     }
 
-    public function getPeopleRequired(): ?int
+    public function getFoodQuantity(): ?int
     {
-        return $this->peopleRequired;
+        return $this->foodQuantity;
     }
 
-    public function setPeopleRequired(?int $peopleRequired): self
+    public function setFoodQuantity(?int $foodQuantity): self
     {
-        $this->peopleRequired = $peopleRequired;
+        $this->foodQuantity = $foodQuantity;
 
         return $this;
     }
 
-    public function getDifficulty(): ?float
+    public function getFoodQuantityType(): ?string
+    {
+        return $this->foodQuantityType;
+    }
+
+    public function setFoodQuantityType(string $foodQuantityType): self
+    {
+        $this->foodQuantityType = $foodQuantityType;
+
+        return $this;
+    }
+
+    public function getDifficulty(): ?string
     {
         return $this->difficulty;
     }
 
-    public function setDifficulty(?float $difficulty): self
+    public function setDifficulty(?string $difficulty): self
     {
         $this->difficulty = $difficulty;
 
@@ -226,12 +306,12 @@ class Recipe
         return $this;
     }
 
-    public function getPrice(): ?float
+    public function getPrice(): ?string
     {
         return $this->price;
     }
 
-    public function setPrice(?float $price): self
+    public function setPrice(?string $price): self
     {
         $this->price = $price;
 
@@ -348,10 +428,10 @@ class Recipe
         $averageMark = $this->getAverage();
 
         if ($averageMark === null) {
-            return null;
+            return 0;
         }
 
-        return round($averageMark,2);
+        return round($averageMark, 2);
     }
 
     /**
@@ -382,5 +462,21 @@ class Recipe
         }
 
         return $this;
+    }
+
+    public function toJSONString(): string
+    {
+        $classMetadataFactory = new ClassMetadataFactory(new AnnotationLoader(new AnnotationReader()));
+        $normalizer = new ObjectNormalizer($classMetadataFactory);
+        $serializer = new Serializer([$normalizer]);
+
+        $array = $serializer->normalize($this, null, ['groups' => ['recipe','recipe_recipeIngredients','recipeIngredients_recipe','recipeIngredient','recipeIngredient_ingredient','ingredient']]);
+        return json_encode($array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+    }
+
+    public function getTotalTime(): string
+    {
+        return $this->preparationTime + $this->cookingTime;
     }
 }

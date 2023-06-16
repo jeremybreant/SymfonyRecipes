@@ -1,0 +1,32 @@
+{% macro displayMark(mark, comment, markAuthor, creationDate) %}
+    <div class="pb-3 mt-2">
+        <div class="card-body">
+            <div class="card-text">
+                <div class="row">
+                    <div class="col-auto">
+                        {{ _self.displayMarkWithStar(mark) }}
+                    </div>
+                    <div class="col-auto">
+                        <strong>{{ markAuthor }}</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="card-text text-secondary">{{ creationDate }}</div>
+            <div class="card-text mt-2">{{ comment }}</div>
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro displayMarkWithStar(mark) %}
+    {% set roundedMark = mark|round %}
+    {% if mark != 0 %}
+        {% for i in 1..roundedMark %}
+            <span class="fa fa-star text-warning"></span>
+        {% endfor %}
+    {% endif %}
+    {% if mark <= 4 %}
+        {% for i in range(1,5-roundedMark) %}
+            <span class="fa fa-star"></span>
+        {% endfor %}
+    {% endif %}
+{% endmacro %}
