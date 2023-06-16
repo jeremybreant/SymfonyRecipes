@@ -1,4 +1,5 @@
 {% extends "base.html.twig" %}
+{% import "macros/recipe/recipeCard.html.twig" as recipeCard %}
 
 {% block body %}
     <div class="jumbotron">
@@ -13,26 +14,13 @@
     <div class="recipes mt-5">
         <h1>Recettes de la communauté</h1>
         {% if recipes is same as([]) %}
-            <h4>Il n'y a pas de recette</h4>
+        <h4>Il n'y a pas de recette</h4>
         {% else %}
-            <div class="d-flex justify-content-around flex-wrap mt-4">
+            <div class="row justify-content-center">
                 {% for recipe in recipes %}
-                    <div class="card border-primary mb-3" style="width: 23rem;">
-                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="card-header btn btn-light">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    {{ recipe.name }}
-                                </div>
-                                <div>
-                                    {{ recipe.getRoundedAverage() }} &#10032;
-                                </div>
-                            </div>
-                        </a>
-                        <div class="card-body">
-                            <h4 class="card-title">{{ recipe.name }}</h4>
-                            <p class="card-text">{{ recipe.description|slice(0,100) ~ "..." }}</p>
-                        </div>
-                    </div>
+                <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="col col-md-3 col-sm-6 col-10 p-4 custom-neutral">
+                    {{ recipeCard.displayRecipeCard(recipe.id, recipe.name, recipe.getMarks|length, recipe.getRoundedAverage, vich_uploader_asset(recipe,'imageFile')) }}
+                </a>
                 {% endfor %}
             </div>
         {% endif %}
