@@ -39,7 +39,7 @@
     </div>
 
     <div class="recipe_image mt-5 pt-5 text-center">
-        <img style="width: 75%;" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
+        <img class="w-75 custom-img-3-2 rounded-4" src="{{ vich_uploader_asset(recipe,'imageFile') }}">
     </div>
 
 
@@ -71,9 +71,9 @@
     <div class="mt-5">
         <div class="row">
             {% for recipeIngredient in recipe.recipeIngredients %}
-                <div class="col col-4 col-md-3 d-flex flex-column">
-                    <div class="py-2 text-center h-100">
-                        <img class="w-75" src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}">
+                <div class="col col-4 col-md-3 d-flex flex-column pt-4">
+                    <div class="py-2 text-center">
+                        <img class="w-75 custom-img-1-1 rounded-4" src="{{ vich_uploader_asset(recipeIngredient.ingredient,'imageFile') }}">
                     </div>
                     <div class="p-2 text-center">{{ recipeIngredient.ingredient.name }}
                         <span id="{{ recipeIngredient.id }}">{{ recipeIngredient.quantity }}</span>

@@ -2,6 +2,23 @@
     pointer-events: none;
 }
 
-.custom-br-10{
-    border-radius: 10px;
+.custom-img-1-1{
+    width: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+}
+
+.custom-img-3-2{
+    width: 100%;
+    aspect-ratio: 3/2;
+    object-fit: cover;
+}
+
+.custom-neutral{
+    color: var(--bs-body-color);
+    text-decoration: none;
+}
+.custom-neutral:hover{
+    color: var(--bs-body-color);
+    text-decoration: none;
 }
