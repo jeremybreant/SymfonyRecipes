@@ -6,20 +6,18 @@
     <h1>
         Modification de l'ingrédient
     </h1>
-
     {{ form_start(form) }}
-
     <div class="form-group">
         {{ form_label(form.name) }}
-        {{ form_widget(form.name) }}
-        <div class="form-error">
+        {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form_errors(form.name) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.name) }}
         </div>
     </div>
     <div class="form-group mt-4">
         {{ form_label(form.imageFile) }}
-        {{ form_widget(form.imageFile) }}
-        <div class="form-error">
+        {{ form_widget(form.imageFile, {'attr': {'class': 'form-control' ~ (form_errors(form.imageFile) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.imageFile) }}
         </div>
     </div>
