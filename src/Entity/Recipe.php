@@ -85,8 +85,8 @@ class Recipe
 
     #[Groups(['recipe'])]
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire")]
+    #[Assert\Length(min: 2, max: 50,minMessage: "Le nom doit faire une minimum de 2 caractères" ,maxMessage: "le nom ne peut pas dépasser 50 caractères" )]
     private string $name;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.
@@ -98,29 +98,29 @@ class Recipe
 
     #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
-    #[Assert\LessThan(1441)]
-    #[Assert\Positive()]
+    #[Assert\LessThan(1441,message: "Le temps de préparation doit être inférieur à 1441")]
+    #[Assert\Positive(message: "Le temps de préparation doit être une valeur positive")]
     private ?int $preparationTime = null;
 
     #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
-    #[Assert\LessThan(1441)]
-    #[Assert\PositiveOrZero()]
+    #[Assert\LessThan(1441,message: "Le temps de cuisson doit être inférieur à 1441")]
+    #[Assert\PositiveOrZero(message: "Le temps de cuisson doit être de 0 ou plus")]
     private ?int $cookingTime = null;
 
     #[Groups(['recipe'])]
     #[ORM\Column(length: 255)]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "Définir la difficulté est obligatoire")]
     private ?string $difficulty;
 
     #[Groups(['recipe'])]
     #[ORM\Column(type: Types::TEXT)]
-    #[Assert\NotBlank()]
+    #[Assert\NotBlank(message: "La description est obligatoire")]
     private string $description;
 
     #[Groups(['recipe'])]
     #[ORM\Column(nullable: false)]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "Le prix est obligatoire")]
     private string $price;
 
     #[Groups(['recipe'])]
@@ -135,12 +135,12 @@ class Recipe
 
     #[Groups(['recipe'])]
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "Le choix est obligatoire")]
     private bool $isFavorite;
 
     #[Groups(['recipe'])]
     #[ORM\Column]
-    #[Assert\NotNull()]
+    #[Assert\NotNull(message: "Le choix est obligatoire")]
     private bool $isPublic;
 
     #[Groups(['recipe_user'])]
@@ -154,14 +154,19 @@ class Recipe
 
     #[Groups(['recipe_recipeIngredients'])]
     #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
+    #[Assert\Valid()]
     private Collection $recipeIngredients;
 
     #[Groups(['recipe'])]
     #[ORM\Column]
+    #[Assert\LessThan(120,message: "La quantité de nourriture doit être inférieur à 120")]
+    #[Assert\Positive(message: "La quantité de nourriture doit être une valeur positive")]
+    #[Assert\NotBlank(message: "La quantité est obligatoire")]
     private ?int $foodQuantity = null;
 
     #[Groups(['recipe'])]
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le type de quantité est obligatoire")]
     private ?string $foodQuantityType = null;
 
 
