@@ -1,14 +1,29 @@
 {% macro printRecipeIngredientRow(recipeIngredient) %}
-        <div class="row">
-            <div class="col-sm-4">
-                {{ form_row(recipeIngredient.ingredient) }}
-            </div>
-            <div class="col-sm-4">
-                {{ form_row(recipeIngredient.quantity) }}
-            </div>
-            <div class="col-sm-4">
-                {{ form_row(recipeIngredient.unitType) }}
+    <div class="row">
+        <div class="col-sm-4 form-group">
+            {{ form_label(recipeIngredient.ingredient) }}
+            {{ form_widget(recipeIngredient.ingredient, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.ingredient) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(recipeIngredient.ingredient) }}
             </div>
         </div>
-        <button type="button" class="btn btn-primary mt-2" {{ stimulus_action('form-collection', 'removeCollectionElement') }}>remove a tag</button>
+        <div class="col-sm-4 form-group">
+            {{ form_label(recipeIngredient.quantity) }}
+            {{ form_widget(recipeIngredient.quantity, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.quantity) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(recipeIngredient.quantity) }}
+            </div>
+        </div>
+        <div class="col-sm-4 form-group">
+            {{ form_label(recipeIngredient.unitType) }}
+            {{ form_widget(recipeIngredient.unitType, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.unitType) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(recipeIngredient.unitType) }}
+            </div>
+        </div>
+    </div>
+    <button type="button"
+            class="btn btn-primary mt-2" {{ stimulus_action('form-collection', 'removeCollectionElement') }}>remove a
+        tag
+    </button>
 {% endmacro %}
