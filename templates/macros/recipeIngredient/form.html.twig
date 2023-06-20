@@ -1,29 +1,33 @@
 {% macro printRecipeIngredientRow(recipeIngredient) %}
-    <div class="row">
-        <div class="col-sm-4 form-group">
+<div class="recipeIngredientRow">
+    <div class="row align-items-end">
+        <div class="col-12 col-sm-5 form-group">
             {{ form_label(recipeIngredient.ingredient) }}
             {{ form_widget(recipeIngredient.ingredient, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.ingredient) is not empty ? ' is-invalid' : '')}}) }}
-            <div class="invalid-feedback">
-                {{ form_errors(recipeIngredient.ingredient) }}
-            </div>
         </div>
-        <div class="col-sm-4 form-group">
+        <div class="col-5 col-sm-3 form-group">
             {{ form_label(recipeIngredient.quantity) }}
             {{ form_widget(recipeIngredient.quantity, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.quantity) is not empty ? ' is-invalid' : '')}}) }}
-            <div class="invalid-feedback">
-                {{ form_errors(recipeIngredient.quantity) }}
-            </div>
         </div>
-        <div class="col-sm-4 form-group">
+        <div class="col-5 col-sm-3 form-group">
             {{ form_label(recipeIngredient.unitType) }}
             {{ form_widget(recipeIngredient.unitType, {'attr': {'class': 'form-control' ~ (form_errors(recipeIngredient.unitType) is not empty ? ' is-invalid' : '')}}) }}
+        </div>
+        <div class="col-2 col-sm-1">
+            <button type="button"
+                    class="btn btn-primary mt-2" {{ stimulus_action('form-collection', 'removeCollectionElement') }}><i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12 col-sm-5 is-invalid">
             <div class="invalid-feedback">
+                {{ form_errors(recipeIngredient.ingredient) }}
+                {{ form_errors(recipeIngredient.quantity) }}
                 {{ form_errors(recipeIngredient.unitType) }}
             </div>
         </div>
     </div>
-    <button type="button"
-            class="btn btn-primary mt-2" {{ stimulus_action('form-collection', 'removeCollectionElement') }}>remove a
-        tag
-    </button>
+</div>
+
 {% endmacro %}

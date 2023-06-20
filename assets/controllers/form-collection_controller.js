@@ -20,6 +20,6 @@ export default class extends Controller {
 
     removeCollectionElement(event)
     {
-        event.explicitOriginalTarget.parentElement.remove();
+        event.explicitOriginalTarget.closest('.recipeIngredientRow').remove();
     }
 }
