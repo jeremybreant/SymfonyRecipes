@@ -61,7 +61,15 @@ class RecipeController extends AbstractController
         $cache = new FilesystemAdapter();
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
             $item->expiresAfter(15);
-            return $recipeRepository->findPublicRecipe(null);
+
+            $recipes = $recipeRepository->findPublicRecipe(null);
+
+            // Force loading of mark collection before caching (because fetch="LAZY" by default)
+            foreach ($recipes as $recipe) {
+                $recipe->getMarks()->initialize();
+            }
+
+            return $recipes;
         });
 
         $recipes = $paginator->paginate(
