@@ -29,9 +29,6 @@ class RecipeIngredientType extends AbstractType
         $builder
             ->add('ingredient', EntityType::class, [
                 'class' => Ingredient::class,
-                'attr' => [
-                    'class' => 'form-control'
-                ],
                 'label' => 'Ingrédient :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
@@ -44,19 +41,14 @@ class RecipeIngredientType extends AbstractType
                 }
             ])
             ->add('quantity', NumberType::class,[
-                'attr' => [
-                    'class' => 'form-control'
-                ],
                 'label' => 'quantité :',
+                'required' => false,
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
             ->add('unitType', ChoiceType::class, [
                 'choices' => RecipeIngredient::getAvailableUnits(),
-                'attr' => [
-                    'class' => 'form-control'
-                ],
                 'label' => 'Unité :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'

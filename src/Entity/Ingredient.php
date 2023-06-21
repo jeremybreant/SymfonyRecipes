@@ -32,7 +32,7 @@ class Ingredient
     #[Groups(['ingredient'])]
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\Length(min: 2, max: 50,minMessage: "Le nom doit faire une minimum de 2 caractères" ,maxMessage: "le nom ne peut pas dépasser 50 caractères")]
     private string $name;
 
     // NOTE: This is not a mapped field of entity metadata, just a simple property.

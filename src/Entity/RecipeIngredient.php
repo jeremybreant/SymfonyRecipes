@@ -6,6 +6,7 @@ use App\Repository\RecipeIngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity(
     fields: ['recipe','ingredient'],
@@ -46,10 +47,13 @@ class RecipeIngredient
 
     #[Groups(['recipeIngredient'])]
     #[ORM\Column]
+    #[Assert\Range(min: 1, max: 1500, notInRangeMessage: "La quantité doit etre comprise entre 1 et 1500")]
+    #[Assert\NotBlank(message: "La quantité est obligatoire")]
     private ?float $quantity = null;
 
     #[Groups(['recipeIngredient'])]
     #[ORM\Column(length: 10)]
+    #[Assert\length(max: 10, maxMessage: "L'unité doit faire moins de 10 caractères")]
     private ?string $unitType = null;
 
     #[Groups(['recipeIngredient_recipe'])]
