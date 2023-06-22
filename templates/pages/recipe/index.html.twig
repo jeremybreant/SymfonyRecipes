@@ -1,4 +1,5 @@
 {% extends 'base.html.twig' %}
+{% import "macros/tools.html.twig" as tools %}
 
 {% block title %}StmfonyRecipes - Mes recettes{% endblock %}
 
@@ -19,37 +20,33 @@
         au total
     </div>
 
-    <table class="table table-hover mt-4">
+    <table class="table table-striped mt-4">
         <thead>
         <tr>
-            <th scope="col">Numéro</th>
+            <th scope="col">Image</th>
             <th scope="col">Nom</th>
-            <th scope="col">Temps de préparation</th>
-            <th scope="col">Temps de cuisson</th>
-            <th scope="col">Quantité</th>
             <th scope="col">Difficulté</th>
             <th scope="col">Prix</th>
-            <th scope="col">Date de création</th>
             <th scope="col">Action</th>
         </tr>
         </thead>
         <tbody>
         {% for recipe in recipes %}
-            <tr class="table-primary">
-                <th scope="row">{{ recipe.id }}</th>
+            <tr>
+                <td>
+                    <div class="recipes_images ">
+                        <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImage(vich_uploader_asset(recipe,'imageFile')) }}">
+                    </div>
+                </td>
                 <td>{{ recipe.name }}</td>
-                <td>{{ (recipe.preparationTime is null) ? '--' : recipe.preparationTime|min_to_hour }}</td>
-                <td>{{ (recipe.cookingTime is null) ? '--' : recipe.cookingTime|min_to_hour }}</td>
-                <td>{{ (recipe.foodQuantity is null) ? '--' : recipe.foodQuantity }} {{ (recipe.foodQuantityType is null) ? '--' : recipe.foodQuantityType }}</td>
                 <td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
                 <td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
-                <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
                 <td>
                     {% if recipe.user == app.user %}
-                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-success">Consulter</a>
-                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
+                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-success"><i class="fa-solid fa-eye"></i></a>
+                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
                         <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger"
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
+                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"><i class="fa-solid fa-trash-can"></i></a>
                     {% else %}
                         --
                     {% endif %}

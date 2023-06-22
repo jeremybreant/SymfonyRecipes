@@ -43,7 +43,7 @@ class RecipeController extends AbstractController
         $recipes = $paginator->paginate(
             $recipeRepository->findBy(['user' => $this->getUser()]), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
+            12 /*limit per page*/
         );
 
         return $this->render('pages/recipe/index.html.twig', [
@@ -76,7 +76,7 @@ class RecipeController extends AbstractController
             $data,
             /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
+            12 /*limit per page*/
         );
 
         return $this->render('pages/recipe/index_public.html.twig', [

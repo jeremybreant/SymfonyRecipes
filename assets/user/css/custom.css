@@ -22,3 +22,8 @@
     color: var(--bs-body-color);
     text-decoration: none;
 }
+
+.custom-img-size-40{
+    height: 40px;
+    width: 40px;
+}
