@@ -1,0 +1,7 @@
+{% macro provideDefaultImage(imgPath) %}
+    {% if imgPath %}
+        {{ imgPath }}
+    {% else %}
+        {{ asset('build/images/fakifv.jpg') }}
+    {% endif %}
+{% endmacro %}
