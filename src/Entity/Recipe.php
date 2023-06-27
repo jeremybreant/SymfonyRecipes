@@ -169,6 +169,9 @@ class Recipe
     #[Assert\NotBlank(message: "Le type de quantité est obligatoire")]
     private ?string $foodQuantityType = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favoriteRecipes')]
+    private Collection $usersLikingThisRecipe;
+
 
     /**
      * Constructor
@@ -179,6 +182,7 @@ class Recipe
         $this->updatedAt = new \DateTimeImmutable();
         $this->marks = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
+        $this->users = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -483,5 +487,32 @@ class Recipe
     public function getTotalTime(): string
     {
         return $this->preparationTime + $this->cookingTime;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsersLikingThisRecipe(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUsersLikingThisRecipe(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addFavoriteRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersLikingThisRecipe(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removeFavoriteRecipe($this);
+        }
+
+        return $this;
     }
 }
