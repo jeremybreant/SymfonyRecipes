@@ -10,9 +10,9 @@
     {% else %}
         <div class="row justify-content-center">
             {% for recipe in recipes %}
-                <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="col col-md-3 col-sm-6 col-10 p-4 custom-neutral">
+                <div class="col col-md-3 col-sm-6 col-10 p-4">
                     {{ recipeCard.displayRecipeCard(recipe.id, recipe.name, recipe.getMarks().Count(), recipe.getRoundedAverage(), vich_uploader_asset(recipe,'imageFile')) }}
-                </a>
+                </div>
             {% endfor %}
         </div>
         <div class="navigation d-flex justify-content-center mt-4">

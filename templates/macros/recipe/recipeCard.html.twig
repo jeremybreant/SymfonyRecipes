@@ -1,18 +1,26 @@
 {% macro displayRecipeCard(id, name, nbrOfMark, averageMark, imgPath) %}
     {% import "macros/tools.html.twig" as tools %}
     {% import "macros/mark/mark.html.twig" as starMark %}
-    <div class="">
-        <img class="custom-img-1-1 rounded-4" src="{{ tools.provideDefaultImage(imgPath) }}">
-        <div>
-            <div>
-                {{ name }}
-            </div>
-            <div>
-                {{ starMark.displayMarkWithStar(averageMark) }}
-            </div>
-            <div>
-                {{ nbrOfMark }} avis
-            </div>
+
+    <div class="position-relative">
+        <div class="position-absolute custom-card-fav-button">
+            {{ tools.provideClickableFavIcon() }}
         </div>
+        <a href="{{ path('recipe.show', { id: id}) }}" class="custom-neutral">
+            <img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow"
+                 src="{{ tools.provideDefaultImage(imgPath) }}">
+            <div class="mt-4">
+                <div>
+                    {{ name }}
+                </div>
+                <div>
+                    {{ starMark.displayMarkWithStar(averageMark) }}
+                </div>
+                <div>
+                    {{ nbrOfMark }} avis
+                </div>
+            </div>
+        </a>
     </div>
+
 {% endmacro %}

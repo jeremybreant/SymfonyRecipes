@@ -5,3 +5,16 @@
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
 {% endmacro %}
+
+{% macro provideClickableFavIcon() %}
+<div {{ stimulus_controller('tool') }} class="w-100 h-100">
+    <a {{ stimulus_action('tool', 'ani') }} style="border: 2px solid black" class="btn position-relative w-100 h-100 m-0 p-0 border-2 rounded-circle bg-white border custom-color-pink border-primary">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+            <i {{ stimulus_target('tool', 'icon') }} class="fa fa-heart"></i>
+        </div>
+    </a>
+</div>
+
+
+{% endmacro %}
+
