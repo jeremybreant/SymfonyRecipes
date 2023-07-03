@@ -328,4 +328,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function toggleFavoriteRecipe(Recipe $recipe): self
+    {
+        if($this->getFavoriteRecipes()->contains($recipe))
+        {
+            $this->removeFavoriteRecipe($recipe);
+        }
+        else{
+            $this->addFavoriteRecipe($recipe);
+        }
+        return $this;
+    }
 }

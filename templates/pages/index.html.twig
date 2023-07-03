@@ -19,7 +19,7 @@
             <div class="row justify-content-center">
                 {% for recipe in recipes %}
                     <div class="col col-md-3 col-sm-6 col-10 p-4">
-                        {{ recipeCard.displayRecipeCard(recipe.id, recipe.name, recipe.getMarks().Count(), recipe.getRoundedAverage(), vich_uploader_asset(recipe,'imageFile'))|raw }}
+                        {{ recipeCard.displayRecipeCard(recipe) }}
                     </div>
                 {% endfor %}
             </div>

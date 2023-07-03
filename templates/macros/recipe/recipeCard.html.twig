@@ -1,23 +1,27 @@
-{% macro displayRecipeCard(id, name, nbrOfMark, averageMark, imgPath) %}
+{% macro displayRecipeCard(recipe) %}
     {% import "macros/tools.html.twig" as tools %}
     {% import "macros/mark/mark.html.twig" as starMark %}
 
     <div class="position-relative">
-        <div class="position-absolute custom-card-fav-button">
-            {{ tools.provideClickableFavIcon() }}
-        </div>
-        <a href="{{ path('recipe.show', { id: id}) }}" class="custom-neutral">
+            <div class="position-absolute custom-card-fav-button">
+                {% if app.user %}
+                    {{ tools.provideClickableFavIcon(recipe.id, app.user.getfavoriteRecipes().contains(recipe)) }}
+                {% else %}
+                    {{ tools.provideNotConnectedFavIcon() }}
+                {% endif %}
+            </div>
+        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
             <img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow"
-                 src="{{ tools.provideDefaultImage(imgPath) }}">
+                 src="{{ tools.provideDefaultImage(vich_uploader_asset(recipe,'imageFile')|raw) }}">
             <div class="mt-4">
                 <div>
-                    {{ name }}
+                    {{ recipe.name }}
                 </div>
                 <div>
-                    {{ starMark.displayMarkWithStar(averageMark) }}
+                    {{ starMark.displayMarkWithStar(recipe.getRoundedAverage()) }}
                 </div>
                 <div>
-                    {{ nbrOfMark }} avis
+                    {{ recipe.getMarks().Count() }} avis
                 </div>
             </div>
         </a>
