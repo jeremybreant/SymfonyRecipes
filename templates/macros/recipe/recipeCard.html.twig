@@ -3,7 +3,7 @@
     {% import "macros/mark/mark.html.twig" as starMark %}
 
     <div class="position-relative">
-            <div class="position-absolute custom-card-fav-button">
+            <div class="position-absolute custom-fav-button custom-card-top-right-corner">
                 {% if app.user %}
                     {{ tools.provideClickableFavIcon(recipe.id, app.user.getfavoriteRecipes().contains(recipe)) }}
                 {% else %}
