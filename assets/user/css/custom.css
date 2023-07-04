@@ -1,3 +1,4 @@
+
 .custom-btn-group-text{
     pointer-events: none;
 }
@@ -27,3 +28,28 @@
     height: 40px;
     width: 40px;
 }
+
+.custom-color-pink{
+    color: var(--bs-pink) !important;
+}
+
+.custom-border-pink{
+    border-color: var(--bs-pink) !important;
+}
+
+.custom-heart{
+    width: 45%;
+    height: 45%;
+}
+
+.custom-fav-button{
+    width: 45px;
+    height: 45px;
+    aspect-ratio: 1/1;
+}
+
+.custom-card-top-right-corner{
+    top: 10px;
+    right: 10px;
+}
+

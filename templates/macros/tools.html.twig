@@ -5,3 +5,28 @@
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
 {% endmacro %}
+
+{% macro provideClickableFavIcon(id, isFavorite) %}
+<div {{ stimulus_controller('tool') }} data-tool-recipeid-value="{{ id }}" class="w-100 h-100">
+    <a {{ stimulus_action('tool', 'toggleFav') }}" class="btn position-relative w-100 h-100 m-0 p-0 border-2 rounded-circle bg-white border custom-color-pink border-primary">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+            {% if isFavorite %}
+                <i {{ stimulus_target('tool', 'icon') }} class="fas fa-heart"></i>
+            {% else %}
+                <i {{ stimulus_target('tool', 'icon') }} class="far fa-heart"></i>
+            {% endif %}
+        </div>
+    </a>
+</div>
+{% endmacro %}
+
+{% macro provideNotConnectedFavIcon() %}
+    <div class="w-100 h-100">
+        <a href="{{ path('security.login') }}" class="btn position-relative w-100 h-100 m-0 p-0 border-2 rounded-circle bg-white border custom-color-pink border-primary">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                <i class="far fa-heart"></i>
+        </div>
+        </a>
+    </div>
+{% endmacro %}
+
