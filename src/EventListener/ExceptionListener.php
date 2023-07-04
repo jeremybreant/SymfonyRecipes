@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 // src/EventListener/ExceptionListener.php
 namespace App\EventListener;
