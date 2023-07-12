@@ -1,7 +1,7 @@
 # Variables
 DOCKER = docker
 DOCKER_COMPOSE = docker-compose
-EXEC = $(DOCKER) exec -w /var/www/project www_symfonyrecipe_dev
+EXEC = $(DOCKER) exec -w /var/www/project www_symfonyrecipe
 PHP = $(EXEC) php
 COMPOSER = $(EXEC) composer
 YARN = $(EXEC) yarn
@@ -16,6 +16,8 @@ RED = /bin/echo -e "\x1b[31m\#\# $1\x1b[0m"
 init: ## Init the project
 	$(MAKE) start
 	$(MAKE) composer-install
+	$(MAKE) yarn-install
+	$(MAKE) yarn-encore-dev
 
 cache-clear: ## Clear cache
 	$(SYMFONY_CONSOLE) cache:clear
