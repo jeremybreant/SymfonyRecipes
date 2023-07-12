@@ -29,3 +29,5 @@ yarn-error.log
 ###> VichUploader-bundle ###
 public/images
 ###< sVichUploader-bundle ###
+
+/project/
