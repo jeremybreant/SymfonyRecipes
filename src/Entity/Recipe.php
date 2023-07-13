@@ -485,7 +485,7 @@ class Recipe
 
     }
 
-    public function getTotalTime(): string
+    public function getTotalTime(): int
     {
         return $this->preparationTime + $this->cookingTime;
     }
