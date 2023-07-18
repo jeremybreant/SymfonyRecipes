@@ -58,6 +58,6 @@
 @media only screen and (max-device-width: 767px) {
     /* Ajoute 5px à toutes les tailles */
     html {
-      font-size: calc(1rem + 5px);
+      font-size: calc(1rem + 10px);
     }
   }
