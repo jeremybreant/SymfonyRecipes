@@ -47,6 +47,13 @@
     height: 45px;
     aspect-ratio: 1/1;
 }
+@media only screen and (max-device-width: 767px) {
+    /* Ajoute 5px à toutes les tailles */
+    .custom-fav-button{
+        width: 70px;
+        height: 70px;
+    }
+  }
 
 .custom-card-top-right-corner{
     top: 10px;
