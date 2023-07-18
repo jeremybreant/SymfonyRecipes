@@ -53,3 +53,11 @@
     right: 10px;
 }
 
+
+/* Styles pour les appareils de petite taille */
+@media only screen and (max-width: 767px) {
+    /* Ajoute 5px à toutes les tailles */
+    html {
+      font-size: calc(1rem + 5px);
+    }
+  }
