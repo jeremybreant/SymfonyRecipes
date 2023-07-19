@@ -19,7 +19,7 @@
         {% endblock %}
 
         {% block flash %}
-            <div class="container mt-4">
+            <div class="container mt-4 px-3">
                 {% for label, messages in app.flashes %}
                     {% for message in messages %}
                         <div class="alert alert-dismissible alert-{{ label }}">
@@ -29,10 +29,10 @@
                 {% endfor %}
             </div>
         {% endblock %}
-        <div id="body" class="container mt-4" style="padding-bottom: 10rem;">
+        <div id="body" class="container mt-4 px-3">
             {% block body %}{% endblock %}
         </div>
-        <div id="footer" class="w-100">
+        <div id="footer" class="w-100 mt-5">
             {% block footer %}
                 {% include "partials/_footer.html.twig" %}
             {% endblock %}
