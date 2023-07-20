@@ -48,11 +48,11 @@
                 <td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
                 <td>
                     {% if recipe.user == app.user %}
-                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-success"><i class="fa-solid fa-eye"></i></a>
-                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
-                        <a href="{{ path('recipe.start-check', { id: recipe.id}) }}" class="btn btn-warning"
+                        <a title="Visualiser la recette" href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-secondary"><i class="fa-solid fa-eye"></i></a>
+                        <a title="Modifier la recette" href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
+                        <a title="Lancer la vérification de la recette" href="{{ path('recipe.start-check', { id: recipe.id}) }}" class="btn btn-success"
                            onclick="return confirm('Êtes-vous sûr de vouloir lancer la vérification de votre recette ?');"><i class="fa-regular fa-circle-check"></i></a>
-                        <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger"
+                        <a title="Supprimer la recette" href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger"
                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"><i class="fa-solid fa-trash-can"></i></a>
                     {% else %}
                         --
