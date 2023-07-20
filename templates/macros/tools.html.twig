@@ -30,3 +30,29 @@
     </div>
 {% endmacro %}
 
+{% macro provideStatusTag(statusValue) %}
+    <span class="badge 
+    {% if statusValue == "Non approuvée" %}
+        bg-secondary
+    {% elseif statusValue == "En cours d'approbation" %}
+        bg-info
+    {% elseif statusValue == "Approuvée" %}
+        bg-success
+    {% elseif statusValue == "Refusée" %}
+        bg-danger
+    {% endif %}
+    ">
+    {{statusValue}}
+    </span>
+{% endmacro %}
+
+{% macro providePublicTag(isPublic) %}
+    <span class="badge 
+    {% if isPublic %}
+        bg-success">Public
+    {% else %}
+        bg-danger">Privée
+    {% endif %}
+    </span>
+{% endmacro %}
+

@@ -141,6 +141,7 @@ class RecipeController extends AbstractController
     ):Response
     {
         $originalRecipeIngredients = new ArrayCollection();
+        $originalRecipe = clone $recipe;
 
         // dynamic recipeingredient - Create an ArrayCollection of the current recipeIngredient objects in the database for this recipe
         foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
@@ -152,22 +153,27 @@ class RecipeController extends AbstractController
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid())
         {
-            $recipe = $form->getData();
+            $newRecipe = $form->getData();
 
             // dynamic recipeingredient - checking if some are removed in the form
             foreach ($originalRecipeIngredients as $recipeIngredient) {
-                if (false === $recipe->getRecipeIngredients()->contains($recipeIngredient)) {
+                if (false === $newRecipe->getRecipeIngredients()->contains($recipeIngredient)) {
                     // dynamic recipeingredient - if it's the case removing them from db
                     $manager->remove($recipeIngredient);
                 }
             }
+            //reset status in order to not show inapropriate content
+            if($originalRecipe != $newRecipe)
+            {
+                $newRecipe->setStatus(Recipe::STATUS_NOT_APPROVED);
+            }
 
-            $manager->persist($recipe);
+            $manager->persist($newRecipe);
             $manager->flush();
 
             $this->addFlash(
                 'success',
-                sprintf('Votre recette %s a été modifié avec succès', $recipe->getName())
+                sprintf('Votre recette %s a été modifié avec succès', $newRecipe->getName())
             );
 
             return $this->redirectToRoute('recipe.index');
@@ -282,5 +288,35 @@ class RecipeController extends AbstractController
             'relatedMarks' => $relatedMarks,
             'form' => $form->createView()
         ]);
+    }
+
+    /**
+     * This controller allow access to a public recipe
+     *
+     * @param Recipe $recipe
+     * @return Response
+     */
+    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
+    #[Route('/recette/{id}/start-check', 'recipe.start-check', methods: ['GET'])]
+    public function startCheck(
+        Recipe $recipe,
+        EntityManagerInterface $manager
+    ) : Response
+    {
+        if($recipe->getStatus() !== Recipe::STATUS_NOT_APPROVED){
+            
+            return $this->redirectToRoute('recipe.index');
+        }
+
+        $recipe->setStatus(Recipe::STATUS_IN_APPROBATION);
+        $manager->persist($recipe);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            sprintf('La recette %s est désormais en cours approbation', $recipe->getName())
+        );
+        
+        return $this->redirectToRoute('recipe.index');
     }
 }
