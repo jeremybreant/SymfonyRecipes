@@ -96,7 +96,7 @@ class RecipeCrudController extends AbstractCrudController
             
             ImageField::new('imageName', 'Image')
                 ->setBasePath('/images/recette')
-                ->onlyOnIndex()
+                ->hideOnForm()
                 ->setFormType(VichImageType::class),
 
             Field::new('imageFile', 'Image')
@@ -125,10 +125,16 @@ class RecipeCrudController extends AbstractCrudController
         $refuseRecipe = Action::new('refuseApprobation', 'Refuser l\'approbation', 'fas fa-xmark')
             ->linkToCrudAction('refuseApprobation')
             ->setCssClass('btn btn-danger');
+
+        $acceptRecipe = Action::new('approbate', 'Approuver', 'fas fa-check')
+            ->linkToCrudAction('approbate')
+            ->setCssClass('btn btn-success');
         
         return $actions
             // ...
-            ->add(Crud::PAGE_EDIT, $refuseRecipe)
+            ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_DETAIL, $refuseRecipe)
+            ->add(Crud::PAGE_DETAIL, $acceptRecipe)
         ;
     }
 
@@ -140,6 +146,22 @@ class RecipeCrudController extends AbstractCrudController
         $entityManager->persist($recipe);
         $entityManager->flush();
         $this->addFlash('success', 'L\'approbation a été refusée avec succès !');
+    
+        $url = $this->adminUrlGenerator->setController(RecipeCrudController::class)
+            ->setAction(Action::INDEX)
+            ->generateUrl();
+
+        return $this->redirect($url);
+    }
+
+    public function approbate(AdminContext $context, EntityManagerInterface $entityManager)
+    {
+        /** @var Recipe $recipe */
+        $recipe = $context->getEntity()->getInstance();
+        $recipe->setStatus(Recipe::STATUS_APPROVED);
+        $entityManager->persist($recipe);
+        $entityManager->flush();
+        $this->addFlash('success', 'L\'approbation a été accepté avec succès !');
     
         $url = $this->adminUrlGenerator->setController(RecipeCrudController::class)
             ->setAction(Action::INDEX)
