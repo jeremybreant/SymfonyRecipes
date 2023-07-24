@@ -84,6 +84,16 @@ class Recipe
     public const STATUS_APPROVED = "Approuvée";
     public const STATUS_REFUSED = "Refusée";
 
+    public static function getAvailableStatus()
+    {
+        return [
+            Recipe::STATUS_NOT_APPROVED => Recipe::STATUS_NOT_APPROVED,
+            Recipe::STATUS_IN_APPROBATION => Recipe::STATUS_IN_APPROBATION,
+            Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED,
+            Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED
+        ];
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]

@@ -68,6 +68,7 @@ class AppFixture extends Fixture
         $priceConst = Recipe::getAvailablePrices();
         $difficultyConst = Recipe::getAvailableDifficulties();
         $quantityTypeConst = Recipe::getAvailableQuantityType();
+        $statusConst = Recipe::getAvailableStatus();
         $recipes = [];
         for ($i = 0; $i < 25; $i++) {
             $recipe = new Recipe();
@@ -81,7 +82,8 @@ class AppFixture extends Fixture
                 ->setCookingTime(mt_rand(0, 1) == 1 ? mt_rand(0, 1440) : null)
                 ->setIsFavorite(mt_rand(0, 1) == 1)
                 ->setUser($users[mt_rand(0, count($users) - 1)])
-                ->setIsPublic(mt_rand(0, 1) == 1);
+                ->setIsPublic(mt_rand(0, 1) == 1)
+                ->setStatus($statusConst[array_rand($statusConst)]);
 
             $recipes[$i] = $recipe;
             $manager->persist($recipe);
