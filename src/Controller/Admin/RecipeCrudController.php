@@ -68,8 +68,9 @@ class RecipeCrudController extends AbstractCrudController
                 Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED, 
                 Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED,
             ])
+            ->setTemplatePath('admin/field/tag_field_template.html.twig')
             ->setColumns(6),
-            //->setCssClass("badge badge-info"),
+            
             DateTimeField::new("updatedAt")
             ->setDisabled(),
 
@@ -79,18 +80,23 @@ class RecipeCrudController extends AbstractCrudController
                 ->setColumns(6),      
             NumberField::new('preparationTime')
                 ->setDisabled()
+                ->hideOnIndex()
                 ->setColumns(6),
             NumberField::new('cookingTime')
                 ->setDisabled()
+                ->hideOnIndex()
                 ->setColumns(6),
             NumberField::new('foodQuantity')
                 ->setDisabled()
+                ->hideOnIndex()
                 ->setColumns(6),
             TextField::new('foodQuantityType')
                 ->setDisabled()
+                ->hideOnIndex()
                 ->setColumns(6),
             TextField::new('difficulty')
                 ->setDisabled()
+                ->hideOnIndex()
                 ->setColumns(6),
             TextareaField::new('description')  
                 ->setDisabled()
