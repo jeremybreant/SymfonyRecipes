@@ -4,7 +4,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Entity\Recipe;
-use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\QueryBuilder;
 use EasyCorp\Bundle\EasyAdminBundle\Collection\FieldCollection;
@@ -17,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\Field;
 use EasyCorp\Bundle\EasyAdminBundle\Field\FormField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
@@ -49,6 +49,7 @@ class RecipeCrudController extends AbstractCrudController
             ->setEntityLabelInSingular('Demande d\'approbation')
 
             ->setPageTitle("index","Symfony Recipes - Administration des demandes d'approbation")
+            ->showEntityActionsInlined()
 
             ->setPaginatorPageSize(10)
             ;
@@ -68,6 +69,9 @@ class RecipeCrudController extends AbstractCrudController
                 Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED,
             ])
             ->setColumns(6),
+            //->setCssClass("badge badge-info"),
+            DateTimeField::new("updatedAt")
+            ->setDisabled(),
 
             FormField::addPanel("Informations à vérifier"),
             TextField::new('name')
@@ -90,6 +94,7 @@ class RecipeCrudController extends AbstractCrudController
                 ->setColumns(6),
             TextareaField::new('description')  
                 ->setDisabled()
+                ->renderAsHtml()
                 ->setColumns(12),
 
             FormField::addPanel("Image info"),
@@ -135,6 +140,11 @@ class RecipeCrudController extends AbstractCrudController
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_DETAIL, $refuseRecipe)
             ->add(Crud::PAGE_DETAIL, $acceptRecipe)
+            ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT)
+            ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
+            ->remove(Crud::PAGE_INDEX, Action::DELETE)
         ;
     }
 

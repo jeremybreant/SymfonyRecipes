@@ -39,8 +39,7 @@ class UserCrudController extends AbstractCrudController
             TextField::new('fullName'),
             TextField::new('email')
                 ->hideOnForm(),
-            ArrayField::new('roles')
-                ->hideOnIndex(),
+            ArrayField::new('roles'),
             DateTimeField::new('createdAt')
                 ->hideOnForm()
         ];
