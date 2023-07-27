@@ -79,6 +79,21 @@ class Recipe
         ];
     }
 
+    public const STATUS_NOT_APPROVED = "Non approuvée";
+    public const STATUS_IN_APPROBATION = "En cours d'approbation";
+    public const STATUS_APPROVED = "Approuvée";
+    public const STATUS_REFUSED = "Refusée";
+
+    public static function getAvailableStatus()
+    {
+        return [
+            Recipe::STATUS_NOT_APPROVED => Recipe::STATUS_NOT_APPROVED,
+            Recipe::STATUS_IN_APPROBATION => Recipe::STATUS_IN_APPROBATION,
+            Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED,
+            Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED
+        ];
+    }
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -173,6 +188,9 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'favoriteRecipes')]
     private Collection $usersLikingThisRecipe;
 
+    #[ORM\Column(length: 50, options: ["default" => self::STATUS_NOT_APPROVED])]
+    private ?string $status = null;
+
 
     /**
      * Constructor
@@ -184,9 +202,11 @@ class Recipe
         $this->marks = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->status = self::STATUS_NOT_APPROVED;
     }
 
     #[ORM\PrePersist]
+    #[ORM\PreUpdate]
     public function setUpdatedAtValue(): void
     {
         $this->updatedAt = new \DateTimeImmutable();
@@ -513,6 +533,18 @@ class Recipe
         if ($this->users->removeElement($user)) {
             $user->removeFavoriteRecipe($this);
         }
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
