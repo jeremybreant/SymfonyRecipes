@@ -29,6 +29,9 @@ class AppFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
 
+        $categoryFixtures = new CategoryFixture();
+        $categoryFixtures->load($manager);
+
         //Users
         $admin = new User();
         $admin->setFullName('Administrateur de SymRecipe')
@@ -57,7 +60,7 @@ class AppFixture extends Fixture
         $ingredients = [];
         for ($i = 0; $i < 50; $i++) {
             $ingredient = new Ingredient();
-            $ingredient->setName($this->faker->word(1))
+            $ingredient->setName($this->faker->word())
                 ->setUser($users[mt_rand(0, count($users) - 1)]);
 
             $ingredients[$i] = $ingredient;
@@ -72,7 +75,7 @@ class AppFixture extends Fixture
         $recipes = [];
         for ($i = 0; $i < 25; $i++) {
             $recipe = new Recipe();
-            $recipe->setName($this->faker->word(1))
+            $recipe->setName($this->faker->word())
                 ->setPrice($priceConst[array_rand($priceConst)])
                 ->setDifficulty($difficultyConst[array_rand($difficultyConst)])
                 ->setDescription($this->faker->text(200))
