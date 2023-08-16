@@ -45,6 +45,7 @@ class CategoryRepository extends ServiceEntityRepository
             ->andWhere('c.slug = :val')
             ->setParameter('val', $value)
             ->getQuery()
+            ->setMaxResults(1)
             ->getOneOrNullResult()
         ;
     }

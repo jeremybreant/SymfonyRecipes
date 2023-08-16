@@ -27,10 +27,14 @@ class Category
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'childCategories')]
     private Collection $parentCategories;
 
+    #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'categories')]
+    private Collection $recipes;
+
     public function __construct()
     {
         $this->childCategories = new ArrayCollection();
         $this->parentCategories = new ArrayCollection();
+        $this->recipes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -116,6 +120,33 @@ class Category
     {
         if ($this->parentCategories->removeElement($parentCategory)) {
             $parentCategory->removeChildCategory($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Recipe>
+     */
+    public function getRecipes(): Collection
+    {
+        return $this->recipes;
+    }
+
+    public function addRecipe(Recipe $recipe): self
+    {
+        if (!$this->recipes->contains($recipe)) {
+            $this->recipes->add($recipe);
+            $recipe->addCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipe(Recipe $recipe): self
+    {
+        if ($this->recipes->removeElement($recipe)) {
+            $recipe->removeCategory($this);
         }
 
         return $this;

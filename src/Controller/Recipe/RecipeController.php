@@ -11,6 +11,7 @@ use App\Form\RecipeType;
 use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
@@ -52,6 +53,32 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    #[Route('/recette/random', 'recipe.random', methods: ['GET'])]
+    public function randomRecipe(
+        EntityManagerInterface $manager,
+        RecipeRepository $recipeRepository,
+        Request $request
+    ): Response
+    {
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
+            $item->expiresAfter(15);
+
+            /** @var Recipe[] */
+            $recipes = $recipeRepository->findPublicRecipe(null);
+
+            // Force loading of mark collection before caching (because fetch="LAZY" by default)
+            foreach ($recipes as $recipe) {
+                $recipe->getMarks()->toArray();
+            }
+
+            return $recipes;
+        });
+
+        $randomRecipe = $data[rand(0, count($data)-1)];
+        return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
+    }
+
     #[Route('/recette/publique', 'recipe.index.public', methods: ['GET'])]
     public function publicRecipes(
         RecipeRepository $recipeRepository,
@@ -63,11 +90,12 @@ class RecipeController extends AbstractController
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
             $item->expiresAfter(15);
 
+            /** @var Recipe[] */
             $recipes = $recipeRepository->findPublicRecipe(null);
 
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
-                $recipe->getMarks()->initialize();
+                $recipe->getMarks()->toArray();
             }
 
             return $recipes;

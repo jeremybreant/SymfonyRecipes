@@ -191,6 +191,9 @@ class Recipe
     #[ORM\Column(length: 50, options: ["default" => self::STATUS_NOT_APPROVED])]
     private ?string $status = null;
 
+    #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'recipes')]
+    private Collection $categories;
+
 
     /**
      * Constructor
@@ -203,6 +206,7 @@ class Recipe
         $this->recipeIngredients = new ArrayCollection();
         $this->usersLikingThisRecipe = new ArrayCollection();
         $this->status = self::STATUS_NOT_APPROVED;
+        $this->categories = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -545,6 +549,30 @@ class Recipe
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Category>
+     */
+    public function getCategories(): Collection
+    {
+        return $this->categories;
+    }
+
+    public function addCategory(Category $category): self
+    {
+        if (!$this->categories->contains($category)) {
+            $this->categories->add($category);
+        }
+
+        return $this;
+    }
+
+    public function removeCategory(Category $category): self
+    {
+        $this->categories->removeElement($category);
 
         return $this;
     }
