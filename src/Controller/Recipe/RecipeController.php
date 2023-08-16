@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Recipe;
 
 use App\Entity\Mark;
 use App\Entity\Recipe;

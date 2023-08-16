@@ -201,7 +201,7 @@ class Recipe
         $this->updatedAt = new \DateTimeImmutable();
         $this->marks = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
-        $this->users = new ArrayCollection();
+        $this->usersLikingThisRecipe = new ArrayCollection();
         $this->status = self::STATUS_NOT_APPROVED;
     }
 
@@ -515,13 +515,13 @@ class Recipe
      */
     public function getUsersLikingThisRecipe(): Collection
     {
-        return $this->users;
+        return $this->usersLikingThisRecipe;
     }
 
     public function addUsersLikingThisRecipe(User $user): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users->add($user);
+        if (!$this->usersLikingThisRecipe->contains($user)) {
+            $this->usersLikingThisRecipe->add($user);
             $user->addFavoriteRecipe($this);
         }
 
@@ -530,7 +530,7 @@ class Recipe
 
     public function removeUsersLikingThisRecipe(User $user): self
     {
-        if ($this->users->removeElement($user)) {
+        if ($this->usersLikingThisRecipe->removeElement($user)) {
             $user->removeFavoriteRecipe($this);
         }
 
