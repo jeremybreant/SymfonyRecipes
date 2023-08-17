@@ -124,7 +124,7 @@ class CategoryFixture extends Fixture
                 ->addMultipleChildCategories($boucheeOuAmuseBouche),
             (new Category())->setSlug("cocktail-aperitif")->setName("cocktail apéritif")
                 ->addMultipleChildCategories($boucheeOuAmuseBouche),
-            (new Category())->setSlug("apero-pas-cher")->setName("cocktail apéritif")
+            (new Category())->setSlug("apero-pas-cher")->setName("apéro pas cher")
                 ->addMultipleChildCategories($cocktailAperitif),
             (new Category())->setSlug("aperitif-de-noël")->setName("apéritif de noël")
         );
