@@ -35,13 +35,23 @@ class RecipeByCategoryController extends AbstractController
         Request $request
     ): Response
     {
+        $category = $categoryRepository->findOneBySlug($categorySlug);
+
         $cache = new FilesystemAdapter();
-        $data = $cache->get('category-'.$categorySlug, function (ItemInterface $item) use ($categoryRepository, $categorySlug){
-            $item->expiresAfter(15);
+        $data = $cache->get('category-'.$categorySlug, function (ItemInterface $item) use ($category){
+            $item->expiresAfter(60);
 
-            $category = $categoryRepository->findOneBySlug($categorySlug);
+            $recipes = $category->getRecipes()->toArray();
 
-            $recipes = $category->getRecipes();
+            $allSubCategories = $category->getSubCatRecurcive();
+            if(!empty($allSubCategories)){
+                foreach($allSubCategories as $subCategory){
+                    $subCatRecipes = $subCategory->getRecipes();
+                    foreach($subCatRecipes as $subCatRecipe){
+                        array_push($recipes, $subCatRecipe);
+                    }
+                }
+            }
 
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
@@ -58,8 +68,10 @@ class RecipeByCategoryController extends AbstractController
             12 /*limit per page*/
         );
 
-        return $this->render('pages/recipe/index_public.html.twig', [
-            'recipes' => $recipes
+        return $this->render('pages/recipe/index_categories.html.twig', [
+            'recipes' => $recipes,
+            'main_category' => $category,
+            'sub_categories' => $category->getChildCategories()->toArray()
         ]);
     }
 }

@@ -151,4 +151,54 @@ class Category
 
         return $this;
     }
+
+    public function getSubCatRecurcive(): ?array
+    {
+        $totalSubCat = array();
+
+        $subCats = $this->getChildCategories()->toArray();
+        if(empty($subCats))
+        {
+            return null;
+        }
+        
+        foreach($subCats as $subCat){
+            array_push($totalSubCat, $subCat);
+            $subSubCats = $subCat->getSubCatRecurcive();
+            if(empty($subSubCats))
+            {
+                continue;
+            }
+            foreach($subSubCats as $subSubCat){
+                array_push($totalSubCat, $subSubCat);
+            }
+        }
+
+        return $totalSubCat;
+    }
+
+    public function getParentCatRecurcive(): ?array
+    {
+        $totalParentCats = array();
+
+        $parentCats = $this->getParentCategories()->toArray();
+        if(empty($parentCats))
+        {
+            return null;
+        }
+        
+        foreach($parentCats as $parentCat){
+            array_push($totalParentCats, $parentCat);
+            $parentParentCats = $parentCat->getParentCatRecurcive();
+            if(empty($parentParentCats))
+            {
+                continue;
+            }
+            foreach($parentParentCats as $parentParentCat){
+                array_push($totalParentCats, $parentParentCat);
+            }
+        }
+
+        return $totalParentCats;
+    }
 }

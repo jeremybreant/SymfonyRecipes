@@ -9,10 +9,13 @@ use App\Entity\Mark;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
+
+use function PHPUnit\Framework\isNull;
 
 class AppFixture extends Fixture
 {
@@ -21,9 +24,12 @@ class AppFixture extends Fixture
      */
     private Generator $faker;
 
-    public function __construct()
+    public CategoryRepository $catergoryRepository;
+
+    public function __construct(CategoryRepository $catergoryRepository)
     {
         $this->faker = Factory::create('fr_FR');
+        $this->catergoryRepository = $catergoryRepository;
     }
 
     public function load(ObjectManager $manager): void
@@ -31,6 +37,7 @@ class AppFixture extends Fixture
 
         $categoryFixtures = new CategoryFixture();
         $categoryFixtures->load($manager);
+        $categories = $this->catergoryRepository->findAll();
 
         //Users
         $admin = new User();
@@ -43,7 +50,7 @@ class AppFixture extends Fixture
         $users[] = $admin;
         $manager->persist($admin);
 
-        for ($i = 0; $i < 10; $i++) {
+        for ($i = 0; $i < 75; $i++) {
 
             $user = new User();
             $user->setFullName($this->faker->name())
@@ -58,7 +65,7 @@ class AppFixture extends Fixture
 
         //Ingredients
         $ingredients = [];
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 300; $i++) {
             $ingredient = new Ingredient();
             $ingredient->setName($this->faker->word())
                 ->setUser($users[mt_rand(0, count($users) - 1)]);
@@ -73,7 +80,7 @@ class AppFixture extends Fixture
         $quantityTypeConst = Recipe::getAvailableQuantityType();
         $statusConst = Recipe::getAvailableStatus();
         $recipes = [];
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $recipe = new Recipe();
             $recipe->setName($this->faker->word())
                 ->setPrice($priceConst[array_rand($priceConst)])
@@ -87,6 +94,22 @@ class AppFixture extends Fixture
                 ->setUser($users[mt_rand(0, count($users) - 1)])
                 ->setIsPublic(mt_rand(0, 1) == 1)
                 ->setStatus($statusConst[array_rand($statusConst)]);
+
+            /** @var Category */
+            $selectedCat = $categories[rand(0,count($categories)-1)];
+            $recipeCategories = array();
+            array_push($recipeCategories, $selectedCat);
+
+            if(!isNull($selectedCat->getParentCatRecurcive())){
+                $parentCats = $selectedCat->getParentCatRecurcive()->toArray();
+                foreach($parentCats as $parentCategory){
+                    array_push($recipeCategories, $parentCategory);
+                }
+            }      
+
+            foreach($recipeCategories as $recipeCategory){
+                $recipe->addCategory($recipeCategory);
+            }
 
             $recipes[$i] = $recipe;
             $manager->persist($recipe);

@@ -11,7 +11,6 @@ use App\Form\RecipeType;
 use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */

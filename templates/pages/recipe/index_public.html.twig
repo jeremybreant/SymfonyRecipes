@@ -4,8 +4,14 @@
 {% block title %}StmfonyRecipes - Les recettes{% endblock %}
 
 {% block body %}
-    <h1>Recettes de la communauté</h1>
-    {% if recipes is same as([]) %}
+    {% if main_category is defined %}
+        <h1>Recettes {{ main_category.name }}</h1>
+    {% else %}
+        <h1>Recettes de la communauté</h1>
+    {% endif %}
+    {% block recipe_tags %}
+    {% endblock %}
+    {% if recipes.items is same as([]) %}
         <h4>Il n'y a pas de recette</h4>
     {% else %}
         <div class="row justify-content-center">

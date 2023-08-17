@@ -1,0 +1,15 @@
+{% extends './pages/recipe/index_public.html.twig' %}
+
+{% block recipe_tags %}
+    <div class="container mb-3 mt-3">
+        <div class="row justify-content-md-center">
+            <div class="col col-auto">
+                {% for category in sub_categories %}
+                    <a class="badge bg-light custom-neutral" href="{{ path('recipe.by.category', {categorySlug : category.getSlug }) }}">
+                        {{ category.getName }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div> 
+    </div>
+{% endblock %}
