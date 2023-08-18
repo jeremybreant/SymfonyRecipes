@@ -6,8 +6,14 @@ use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
+#[UniqueEntity(
+    fields: ['slug'],
+    message: 'Cette catégorie à un nom déjà utilisé',
+    errorPath: 'name'
+)]
 class Category
 {
     #[ORM\Id]
@@ -200,5 +206,22 @@ class Category
         }
 
         return $totalParentCats;
+    }
+
+    public function getRootCat(){
+
+        /** @var Category[] */
+        $parentCats = $this->getParentCategories()->toArray();
+        if(empty($parentCats))
+        {
+            return $this;
+        }
+
+        while(!empty($parentCats)){ 
+            $previousCats = $parentCats;  
+            $parentCats = $parentCats[0]->getParentCategories()->toArray();
+        }
+        
+        return $previousCats[0];
     }
 }

@@ -56,6 +56,7 @@ class RecipeByCategoryController extends AbstractController
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
                 $recipe->getMarks()->toArray();
+                $recipe->getCategories()->toArray();
             }
 
             return $recipes;

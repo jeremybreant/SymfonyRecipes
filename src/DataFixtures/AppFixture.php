@@ -118,6 +118,8 @@ class AppFixture extends Fixture
         //RecipeIngredient
         $unitConst = RecipeIngredient::getAvailableUnits();
         foreach ($recipes as $recipe) {
+            $ingredientNumber = mt_rand(1, 10);
+            $ingredientAdded = 0;
             foreach ($ingredients as $ingredient) {
                 // 1 out of 10
                 if (mt_rand(0, 9) === 0) {
@@ -127,6 +129,10 @@ class AppFixture extends Fixture
                         ->setQuantity(mt_rand(1, 5))
                         ->setUnitType($unitConst[array_rand($unitConst)]);
                     $manager->persist($recipeIngredient);
+                    $ingredientAdded++ ;
+                }
+                if ($ingredientNumber == $ingredientAdded){
+                    break;
                 }
             }
         }

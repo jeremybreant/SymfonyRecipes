@@ -61,7 +61,7 @@ class RecipeController extends AbstractController
     {
         $cache = new FilesystemAdapter();
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
-            $item->expiresAfter(15);
+            $item->expiresAfter(300);
 
             /** @var Recipe[] */
             $recipes = $recipeRepository->findPublicRecipe(null);
@@ -69,6 +69,7 @@ class RecipeController extends AbstractController
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
                 $recipe->getMarks()->toArray();
+                $recipe->getCategories()->toArray();
             }
 
             return $recipes;
@@ -87,7 +88,7 @@ class RecipeController extends AbstractController
     {
         $cache = new FilesystemAdapter();
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
-            $item->expiresAfter(15);
+            $item->expiresAfter(300);
 
             /** @var Recipe[] */
             $recipes = $recipeRepository->findPublicRecipe(null);
@@ -95,6 +96,7 @@ class RecipeController extends AbstractController
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
                 $recipe->getMarks()->toArray();
+                $recipe->getCategories()->toArray();
             }
 
             return $recipes;

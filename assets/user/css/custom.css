@@ -60,6 +60,20 @@
     right: 10px;
 }
 
+.custom-card-bottom-left-corner{
+    bottom: 10px;
+    left: 10px;
+}
+
+.custom-no-pointer-event{
+    pointer-events: none;
+}
+
+.custom-over-image-tag{
+    opacity: 50%;
+    background-color: black;
+}
+
 
 /* Styles pour les appareils de petite taille */
 @media only screen and (max-device-width: 767px) {
