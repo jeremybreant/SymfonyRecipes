@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\Recipe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -39,6 +40,18 @@ class RecipeRepository extends ServiceEntityRepository
         return $queryBuilder
             ->getQuery()
             ->getResult();
+
+    }
+
+    public function findPublicRecipeswithCategoryQuery(?int $nbRecipes, $categoryId): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere(':categoryValue MEMBER OF r.categories')
+            ->setParameter('categoryValue', $categoryId)
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+
 
     }
 

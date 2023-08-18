@@ -31,22 +31,24 @@ class RecipeByCategoryController extends AbstractController
     public function publicRecipesByCategories(
         string $categorySlug,
         CategoryRepository $categoryRepository,
+        RecipeRepository $recipeRepository,
         PaginatorInterface $paginator,
         Request $request
     ): Response
     {
         $category = $categoryRepository->findOneBySlug($categorySlug);
 
+        /*
         $cache = new FilesystemAdapter();
         $data = $cache->get('category-'.$categorySlug, function (ItemInterface $item) use ($category){
             $item->expiresAfter(60);
 
-            $recipes = $category->getRecipes()->toArray();
+            $recipes = $category->getPublicRecipes();
 
             $allSubCategories = $category->getSubCatRecurcive();
             if(!empty($allSubCategories)){
                 foreach($allSubCategories as $subCategory){
-                    $subCatRecipes = $subCategory->getRecipes();
+                    $subCatRecipes = $subCategory->getPublicRecipes();
                     foreach($subCatRecipes as $subCatRecipe){
                         array_push($recipes, $subCatRecipe);
                     }
@@ -61,9 +63,10 @@ class RecipeByCategoryController extends AbstractController
 
             return $recipes;
         });
+        */
 
         $recipes = $paginator->paginate(
-            $data,
+            $query = $recipeRepository->findPublicRecipeswithCategoryQuery(null, $category),
             /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             12 /*limit per page*/

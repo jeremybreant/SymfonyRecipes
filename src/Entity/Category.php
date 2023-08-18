@@ -92,6 +92,7 @@ class Category
     {
         if (!$this->childCategories->contains($childCategory)) {
             $this->childCategories->add($childCategory);
+            $childCategory->addParentCategory($this);
         }
 
         return $this;
@@ -223,5 +224,16 @@ class Category
         }
         
         return $previousCats[0];
+    }
+
+    public function getPublicRecipes(): array
+    {
+        $publicRecipes = array();
+        foreach($this->recipes as $recipe){
+            if($recipe->getIsPublic()){
+                array_push($publicRecipes, $recipe);
+            }
+        }
+        return $publicRecipes;
     }
 }

@@ -15,6 +15,7 @@ use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
+use Symfony\Component\Console\Output\ConsoleOutput;
 use function PHPUnit\Framework\isNull;
 
 class AppFixture extends Fixture
@@ -35,11 +36,14 @@ class AppFixture extends Fixture
     public function load(ObjectManager $manager): void
     {
 
+        $output = new ConsoleOutput();
+
         $categoryFixtures = new CategoryFixture();
         $categoryFixtures->load($manager);
         $categories = $this->catergoryRepository->findAll();
 
         //Users
+        $output->writeln('Users');
         $admin = new User();
         $admin->setFullName('Administrateur de SymRecipe')
             ->setPseudo(null)
@@ -64,6 +68,7 @@ class AppFixture extends Fixture
         }
 
         //Ingredients
+        $output->writeln('Ingredients');
         $ingredients = [];
         for ($i = 0; $i < 300; $i++) {
             $ingredient = new Ingredient();
@@ -75,6 +80,7 @@ class AppFixture extends Fixture
         }
 
         //Recipes
+        $output->writeln('Recipes');
         $priceConst = Recipe::getAvailablePrices();
         $difficultyConst = Recipe::getAvailableDifficulties();
         $quantityTypeConst = Recipe::getAvailableQuantityType();
@@ -99,15 +105,19 @@ class AppFixture extends Fixture
             $selectedCat = $categories[rand(0,count($categories)-1)];
             $recipeCategories = array();
             array_push($recipeCategories, $selectedCat);
-
-            if(!isNull($selectedCat->getParentCatRecurcive())){
-                $parentCats = $selectedCat->getParentCatRecurcive()->toArray();
+            $output->writeln('Selected Cat : '.$selectedCat->getName());
+            if(!empty($selectedCat->getParentCategories()->toArray())){
+                $output->writeln('Going deeper');
+                $parentCats = $selectedCat->getParentCatRecurcive();
+                $output->writeln('Going back');
                 foreach($parentCats as $parentCategory){
+                    $output->writeln('Parent Category : '.$parentCategory->getName());
                     array_push($recipeCategories, $parentCategory);
                 }
             }      
 
             foreach($recipeCategories as $recipeCategory){
+                $output->writeln('Adding category : '.$recipeCategory->getName());
                 $recipe->addCategory($recipeCategory);
             }
 
@@ -116,6 +126,7 @@ class AppFixture extends Fixture
         }
 
         //RecipeIngredient
+        $output->writeln('RecipeIngredient');
         $unitConst = RecipeIngredient::getAvailableUnits();
         foreach ($recipes as $recipe) {
             $ingredientNumber = mt_rand(1, 10);
@@ -139,6 +150,7 @@ class AppFixture extends Fixture
 
 
         //Marks
+        $output->writeln('Marks');
         foreach ($users as $user) {
             foreach ($recipes as $recipe) {
                 if (mt_rand(0, 1)) {
@@ -154,6 +166,7 @@ class AppFixture extends Fixture
         }
 
         //Contact
+        $output->writeln('Contact');
         for ($i = 0; $i < 5; $i++) {
             $contact = new Contact();
             $contact->setFullName($this->faker->name())

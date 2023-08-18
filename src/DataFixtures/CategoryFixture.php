@@ -7,12 +7,15 @@ namespace App\DataFixtures;
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\OutputInterface;
 
 class CategoryFixture extends Fixture
 {
-
     public function load(ObjectManager $manager): void
     {
+
+        $output = new ConsoleOutput();
         //          Sub - 3
         $dipEtTartinade = array(
             (new Category())->setSlug("tapenade")->setName("tapenade"),
@@ -787,6 +790,7 @@ class CategoryFixture extends Fixture
         );
 
         foreach($allCategoriesData as $mainCategory){
+            $output->writeln('CategoryFixture > '.$mainCategory->getName());
             $manager->persist($mainCategory);
         }
         $manager->flush();
