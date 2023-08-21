@@ -51,8 +51,17 @@ class RecipeRepository extends ServiceEntityRepository
             ->setParameter('categoryValue', $categoryId)
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery();
+    }
 
-
+    public function findRecipesBasedOnNameQuery(?int $nbRecipes, $keyword): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere('r.name LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+            
     }
 
     public function save(Recipe $entity, bool $flush = false): void

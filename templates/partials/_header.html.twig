@@ -78,9 +78,9 @@
 </nav>
 <div class="bg-primary">
 	<div class="container pb-3">
-		<form class="input-group">
+		<form class="input-group" action="{{ path('recipe.search') }}">
             <button class="input-group-text custom-rounded-start-5 bg-white custom-border-right-0" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
-			<input class="form-control custom-border-left-0 custom-no-form-input-focus" type="search" placeholder="Je cherche ...">
+			<input class="form-control custom-border-left-0 custom-no-form-input-focus" name="keyword" id="keyword" type="text" placeholder="Je cherche ...">
 			<button class="input-group-text custom-rounded-end-5 px-4" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
 		</form>
 	</div>
