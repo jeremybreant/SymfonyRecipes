@@ -101,6 +101,7 @@
     border-left: 0;
   }
 
-.custom-focus-no-outline:focus{
+.custom-no-form-input-focus:focus{
     box-shadow: 0 0 0 0 !important;
+    border-color: var(--bs-border-color);
 }
