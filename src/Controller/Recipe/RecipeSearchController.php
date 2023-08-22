@@ -23,7 +23,7 @@ class RecipeSearchController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/recette/recherche', name: 'recipe.search', methods: ['GET','POST'], priority: 1)]
+    #[Route('/recette/recherche', name: 'recipe.search', methods: ['GET'], priority: 1)]
     public function search(
         RecipeRepository $recipeRepository,
         PaginatorInterface $paginator,
@@ -37,9 +37,14 @@ class RecipeSearchController extends AbstractController
             $request->query->getInt('page', 1), /*page number*/
             12 /*limit per page*/
         );
+        
+        $totalCountQuery = $recipeRepository->findRecipesBasedOnNameQuery(null, $keyword);
+        $totalCount = count($totalCountQuery->getScalarResult());
 
-        return $this->render('pages/recipe/index_public.html.twig', [
+        return $this->render('pages/recipe/index_search.html.twig', [
             'recipes' => $recipes,
+            'keyword' => $keyword,
+            'totalCount' => $totalCount
         ]);
     }
 }

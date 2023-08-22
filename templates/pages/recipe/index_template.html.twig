@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+{% import "macros/recipe/recipeCard.html.twig" as recipeCard %}
+
+{% block title %}StmfonyRecipes - Les recettes{% endblock %}
+
+{% block body %}
+    {% block recipe_variations %}
+    {% endblock %}
+    <hr class="my-4">
+    {% if recipes.items is same as([]) %}
+        <h4>Il n'y a pas de recette</h4>
+    {% else %}
+        <div class="row justify-content-center">
+            {% for recipe in recipes %}
+                <div class="col col-lg-3 col-md-6 col-sm-6 col-10 p-4">
+                    {{ recipeCard.displayRecipeCard(recipe) }}
+                </div>
+            {% endfor %}
+        </div>
+        <div class="navigation d-flex justify-content-center mt-4">
+            {{ knp_pagination_render(recipes) }}
+        </div>
+    {% endif %}
+{% endblock %}
