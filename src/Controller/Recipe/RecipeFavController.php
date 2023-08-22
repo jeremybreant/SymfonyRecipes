@@ -3,16 +3,13 @@ declare(strict_types=1);
 
 namespace App\Controller\Recipe;
 
-use App\Entity\Mark;
-use App\Entity\Recipe;
-use App\Form\MarkType;
-use App\Repository\MarkRepository;
+
+use App\Entity\User;
 use App\Repository\RecipeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,6 +18,36 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RecipeFavController extends AbstractController
 {
+        /**
+     * This route iss to display all recipes
+     *
+     * @param PaginatorInterface $paginator
+     * @param Request $request
+     * @return Response
+     */
+    #[Route('/recette/favoris', name: 'recipe.favorite', methods: ['GET'], priority: 1)]
+    public function search(
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        
+        $user = $this->getUser();
+        $recipes = $user->getFavoriteRecipes(null);
+    
+        $recipes = $paginator->paginate(
+            $recipes,
+            /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            12 /*limit per page*/
+        );
+        
+        $totalCount = count($recipes);
+
+        return $this->render('pages/recipe/index_favorite.html.twig', [
+            'recipes' => $recipes,
+            'totalCount' => $totalCount
+        ]);
+    }
 
     #[IsGranted('ROLE_USER')]
     #[Route('/toggle-recipe-fav', name: 'recipefav.toggle', methods: ['POST'])]
@@ -43,6 +70,7 @@ class RecipeFavController extends AbstractController
         //*
         $recipe = $recipeRepository->find($request->request->get("recipeId"));
 
+        /** @var User */
         $user = $this->getUser();
         $user->toggleFavoriteRecipe($recipe);
         $cache->delete('recipes');

@@ -12,6 +12,7 @@ use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Query;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -63,8 +64,9 @@ class RecipeController extends AbstractController
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
             $item->expiresAfter(300);
 
-            /** @var Recipe[] */
-            $recipes = $recipeRepository->findPublicRecipe(null);
+            /** @var Query */
+            $query = $recipeRepository->findPublicRecipeQuery(null);
+            $recipes = $query->getResult();
 
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
@@ -86,25 +88,10 @@ class RecipeController extends AbstractController
         Request $request
     ): Response
     {
-        $cache = new FilesystemAdapter();
-        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
-            $item->expiresAfter(300);
-
-            /** @var Recipe[] */
-            $recipes = $recipeRepository->findPublicRecipe(null);
-
-            // Force loading of mark collection before caching (because fetch="LAZY" by default)
-            foreach ($recipes as $recipe) {
-                $recipe->getMarks()->toArray();
-                $recipe->getCategories()->toArray();
-            }
-
-            return $recipes;
-        });
+        $query = $recipeRepository->findPublicRecipeQuery(null);
 
         $recipes = $paginator->paginate(
-            $data,
-            /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
+            $query, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
             12 /*limit per page*/
         );
