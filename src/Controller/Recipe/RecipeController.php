@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Controller;
+namespace App\Controller\Recipe;
 
 use App\Entity\Mark;
 use App\Entity\Recipe;
@@ -52,6 +52,33 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    #[Route('/recette/random', 'recipe.random', methods: ['GET'])]
+    public function randomRecipe(
+        EntityManagerInterface $manager,
+        RecipeRepository $recipeRepository,
+        Request $request
+    ): Response
+    {
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
+            $item->expiresAfter(300);
+
+            /** @var Recipe[] */
+            $recipes = $recipeRepository->findPublicRecipe(null);
+
+            // Force loading of mark collection before caching (because fetch="LAZY" by default)
+            foreach ($recipes as $recipe) {
+                $recipe->getMarks()->toArray();
+                $recipe->getCategories()->toArray();
+            }
+
+            return $recipes;
+        });
+
+        $randomRecipe = $data[rand(0, count($data)-1)];
+        return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
+    }
+
     #[Route('/recette/publique', 'recipe.index.public', methods: ['GET'])]
     public function publicRecipes(
         RecipeRepository $recipeRepository,
@@ -61,13 +88,15 @@ class RecipeController extends AbstractController
     {
         $cache = new FilesystemAdapter();
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
-            $item->expiresAfter(15);
+            $item->expiresAfter(300);
 
+            /** @var Recipe[] */
             $recipes = $recipeRepository->findPublicRecipe(null);
 
             // Force loading of mark collection before caching (because fetch="LAZY" by default)
             foreach ($recipes as $recipe) {
-                $recipe->getMarks()->initialize();
+                $recipe->getMarks()->toArray();
+                $recipe->getCategories()->toArray();
             }
 
             return $recipes;

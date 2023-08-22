@@ -17,6 +17,7 @@ class AppExtension extends AbstractExtension
             // Reference: https://twig.symfony.com/doc/3.x/advanced.html#automatic-escaping
             new TwigFilter('min_to_hour', [AppExtensionRuntime::class, 'minutesToHour']),
             new TwigFilter('display_date', [AppExtensionRuntime::class, 'displayDate']),
+            new TwigFilter('get_root_category', [AppExtensionRuntime::class, 'getRootCategory']),
         ];
     }
 }
