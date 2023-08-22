@@ -105,3 +105,11 @@
     box-shadow: 0 0 0 0 !important;
     border-color: var(--bs-border-color);
 }
+
+.custom-pr-1 {
+    padding-right: 0.25rem !important;
+  }
+
+.custom-pr-2 {
+    padding-right: 0.5rem !important;
+  }
