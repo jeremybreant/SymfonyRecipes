@@ -11,6 +11,7 @@ use App\Entity\RecipeIngredient;
 use App\Entity\User;
 use App\Repository\CategoryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
@@ -18,7 +19,7 @@ use Faker\Generator;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use function PHPUnit\Framework\isNull;
 
-class AppFixture extends Fixture
+class AppFixture extends Fixture implements FixtureGroupInterface
 {
     /**
      * @var Generator
@@ -26,6 +27,11 @@ class AppFixture extends Fixture
     private Generator $faker;
 
     public CategoryRepository $catergoryRepository;
+
+    public static function getGroups(): array
+    {
+        return ['groupApp'];
+    }
 
     public function __construct(CategoryRepository $catergoryRepository)
     {

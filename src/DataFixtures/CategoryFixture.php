@@ -6,12 +6,18 @@ namespace App\DataFixtures;
 
 use App\Entity\Category;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CategoryFixture extends Fixture
+class CategoryFixture extends Fixture implements FixtureGroupInterface
 {
+
+    public static function getGroups(): array
+    {
+        return ['groupCategory'];
+    }
     public function load(ObjectManager $manager): void
     {
 
