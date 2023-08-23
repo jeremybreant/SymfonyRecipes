@@ -117,15 +117,15 @@
             "ckeditor:install": "symfony-cmd"
         },
         "post-install-cmd": [
-            "@auto-scripts"
+            "@auto-scripts",
+            "php bin/console doctrine:fixtures:load -n --verbose --group=groupCategory"
         ],
         "post-update-cmd": [
             "@auto-scripts"
         ],
         "compile": [
             "php bin/console doctrine:migrations:migrate",
-            "composer install",
-            "php bin/console doctrine:fixtures:load -n --verbose --group=groupCategory"
+            "composer install"
         ]
     },
     "conflict": {
