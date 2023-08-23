@@ -11,17 +11,14 @@ use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class CategoryFixture extends Fixture implements FixtureGroupInterface
+class CategoryFixture extends Fixture
 {
-
-    public static function getGroups(): array
-    {
-        return ['groupCategory'];
-    }
     public function load(ObjectManager $manager): void
     {
 
         $output = new ConsoleOutput();
+
+        $output->writeln('CategoryFixture > Start reached');
         //          Sub - 3
         $dipEtTartinade = array(
             (new Category())->setSlug("tapenade")->setName("tapenade"),
@@ -796,10 +793,10 @@ class CategoryFixture extends Fixture implements FixtureGroupInterface
         );
 
         foreach($allCategoriesData as $mainCategory){
-            $output->writeln('CategoryFixture > '.$mainCategory->getName());
             $manager->persist($mainCategory);
         }
         $manager->flush();
+        $output->writeln('CategoryFixture > end reached');
 
         /*
         (new Category())->setSlug("xxx")->setName("xxx"),
