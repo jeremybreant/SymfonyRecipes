@@ -33,6 +33,8 @@ class RecipeRepository extends ServiceEntityRepository
     {
         $queryBuilder = $this->createQueryBuilder('r')
             ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
             ->orderBy('r.createdAt', 'DESC');
         if ($nbRecipes !== 0 && $nbRecipes !== null) {
             $queryBuilder->setMaxResults($nbRecipes);
@@ -48,6 +50,8 @@ class RecipeRepository extends ServiceEntityRepository
             ->where('r.isPublic = 1')
             ->andWhere(':categoryValue MEMBER OF r.categories')
             ->setParameter('categoryValue', $categoryId)
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
             ->orderBy('r.createdAt', 'DESC')
             ->getQuery();
     }
@@ -56,6 +60,8 @@ class RecipeRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
             ->andWhere('r.name LIKE :keyword')
             ->setParameter('keyword', '%'.$keyword.'%')
             ->orderBy('r.createdAt', 'DESC')
