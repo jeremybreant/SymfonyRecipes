@@ -64,12 +64,12 @@
 				{% else %}
 					<li class="nav-item">
 						<a class="nav-link{% if app.request.get('_route') == 'security.login' %} active{% endif %}" href="{{ path('security.login') }}">
-							Connexion
+							<i class="fa-solid fa-lock-open fa-lg custom-pr-2"></i>Connexion
 						</a>
 					</li>
 					<li class="nav-item">
 						<a class="nav-link{% if app.request.get('_route') == 'security.registration' %} active{% endif %}" href="{{ path('security.registration') }}">
-							Inscription
+							<i class="fa-solid fa-user-pen fa-lg custom-pr-2"></i>Inscription
 						</a>
 					</li>
 				{% endif %}
