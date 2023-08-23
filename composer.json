@@ -119,6 +119,8 @@
         "post-install-cmd": [
             "@auto-scripts",
             "composer require doctrine/doctrine-fixtures-bundle --dev",
+            "composer update",
+            "php bin/console cache:clear",
             "php bin/console doctrine:fixtures:load -n --verbose --group=groupCategory"
         ],
         "post-update-cmd": [
