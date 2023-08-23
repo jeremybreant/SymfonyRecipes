@@ -111,19 +111,15 @@ class AppFixture extends Fixture implements FixtureGroupInterface
             $selectedCat = $categories[rand(0,count($categories)-1)];
             $recipeCategories = array();
             array_push($recipeCategories, $selectedCat);
-            $output->writeln('Selected Cat : '.$selectedCat->getName());
             if(!empty($selectedCat->getParentCategories()->toArray())){
-                $output->writeln('Going deeper');
                 $parentCats = $selectedCat->getParentCatRecurcive();
-                $output->writeln('Going back');
                 foreach($parentCats as $parentCategory){
-                    $output->writeln('Parent Category : '.$parentCategory->getName());
                     array_push($recipeCategories, $parentCategory);
                 }
             }      
 
             foreach($recipeCategories as $recipeCategory){
-                $output->writeln('Adding category : '.$recipeCategory->getName());
+
                 $recipe->addCategory($recipeCategory);
             }
 
