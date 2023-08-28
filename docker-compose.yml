@@ -9,6 +9,7 @@ services:
       - database-data:/var/lib/mysql
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_DATABASE: symfonyrecipes
     networks:
       - dev
     ports:
