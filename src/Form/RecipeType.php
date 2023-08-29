@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Recipe;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -81,18 +85,24 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('isFavorite', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Favoris ?',
-                'label_attr' => [
-                    'class' => 'form-check-label'
-                ]
-            ])
             ->add('isPublic', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Public ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
+                ]
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => Category::class,
+                'multiple' => true,
+                'label' => 'Catégories :',
+                'choice_label' => 'name',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
+                },
+                'label_attr' => [
+                    'class' => 'form-label'
                 ]
             ])
             ->add('imageFile', VichImageType::class, [

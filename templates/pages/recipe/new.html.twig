@@ -70,17 +70,17 @@
         </div>
     </div>
     <div class="form-check mt-4">
-        {{ form_label(form.isFavorite) }}
-        {{ form_widget(form.isFavorite, {'attr': {'class': 'form-check-input' ~ (form_errors(form.isFavorite) is not empty ? ' is-invalid' : '')}}) }}
-        <div class="invalid-feedback">
-            {{ form_errors(form.isFavorite) }}
-        </div>
-    </div>
-    <div class="form-check mt-4">
         {{ form_label(form.isPublic) }}
         {{ form_widget(form.isPublic, {'attr': {'class': 'form-check-input' ~ (form_errors(form.isPublic) is not empty ? ' is-invalid' : '')}}) }}
         <div class="invalid-feedback">
             {{ form_errors(form.isPublic) }}
+        </div>
+    </div>
+    <div class="form-group mt-4">
+        {{ form_label(form.categories) }}
+        {{ form_widget(form.categories, {'attr': {'class': 'form-select' ~ (form_errors(form.categories) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.categories) }}
         </div>
     </div>
     <div class="form-group mt-4">
