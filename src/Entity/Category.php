@@ -10,11 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: CategoryRepository::class)]
-#[UniqueEntity(
-    fields: ['slug'],
-    message: 'Cette catégorie à un nom déjà utilisé',
-    errorPath: 'name'
-)]
 class Category
 {
     #[ORM\Id]
@@ -28,19 +23,18 @@ class Category
     #[ORM\Column(length: 50)]
     private ?string $slug = null;
 
-    #[ORM\ManyToMany(targetEntity: self::class, cascade: ['persist'], inversedBy: 'parentCategories')]
-    private Collection $childCategories;
-
-    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'childCategories')]
-    private Collection $parentCategories;
-
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'categories')]
     private Collection $recipes;
+
+    #[ORM\ManyToOne(targetEntity: self::class, inversedBy: 'childCategories')]
+    private ?self $parentCategory = null;
+
+    #[ORM\OneToMany(mappedBy: 'parentCategory', cascade: ['persist'], targetEntity: self::class)]
+    private Collection $childCategories;
 
     public function __construct()
     {
         $this->childCategories = new ArrayCollection();
-        $this->parentCategories = new ArrayCollection();
         $this->recipes = new ArrayCollection();
     }
 
@@ -69,66 +63,6 @@ class Category
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getChildCategories(): Collection
-    {
-        return $this->childCategories;
-    }
-
-    public function addMultipleChildCategories(array $childCategories): self
-    {
-        foreach($childCategories as $childCategory)
-        {
-            $this->addChildCategory($childCategory);
-        }
-        return $this;
-    }
-    public function addChildCategory(self $childCategory): self
-    {
-        if (!$this->childCategories->contains($childCategory)) {
-            $this->childCategories->add($childCategory);
-            $childCategory->addParentCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeChildCategory(self $childCategory): self
-    {
-        $this->childCategories->removeElement($childCategory);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, self>
-     */
-    public function getParentCategories(): Collection
-    {
-        return $this->parentCategories;
-    }
-
-    public function addParentCategory(self $parentCategory): self
-    {
-        if (!$this->parentCategories->contains($parentCategory)) {
-            $this->parentCategories->add($parentCategory);
-            $parentCategory->addChildCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeParentCategory(self $parentCategory): self
-    {
-        if ($this->parentCategories->removeElement($parentCategory)) {
-            $parentCategory->removeChildCategory($this);
-        }
 
         return $this;
     }
@@ -189,19 +123,15 @@ class Category
     {
         $totalParentCats = array();
 
-        $parentCats = $this->getParentCategories()->toArray();
-        if(empty($parentCats))
+        $parentCat = $this->getParentCategory();
+        if($parentCat === null)
         {
             return null;
         }
-        
-        foreach($parentCats as $parentCat){
-            array_push($totalParentCats, $parentCat);
-            $parentParentCats = $parentCat->getParentCatRecurcive();
-            if(empty($parentParentCats))
-            {
-                continue;
-            }
+        array_push($totalParentCats, $parentCat);
+        $parentParentCats = $parentCat->getParentCatRecurcive();
+        if(null != $parentParentCats)
+        {
             foreach($parentParentCats as $parentParentCat){
                 array_push($totalParentCats, $parentParentCat);
             }
@@ -210,21 +140,22 @@ class Category
         return $totalParentCats;
     }
 
-    public function getRootCat(){
+    public function getRootCat(): Category
+    {
 
-        /** @var Category[] */
-        $parentCats = $this->getParentCategories()->toArray();
-        if(empty($parentCats))
+        /** @var Category */
+        $parentCat = $this->getParentCategory();
+        if(empty($parentCat))
         {
             return $this;
         }
 
-        while(!empty($parentCats)){ 
-            $previousCats = $parentCats;  
-            $parentCats = $parentCats[0]->getParentCategories()->toArray();
+        while(!empty($parentCat)){ 
+            $previousCat = $parentCat;  
+            $parentCat = $parentCat->getParentCategory();
         }
         
-        return $previousCats[0];
+        return $previousCat;
     }
 
     public function getPublicRecipes(): array
@@ -236,5 +167,71 @@ class Category
             }
         }
         return $publicRecipes;
+    }
+
+    public function getParentCategory(): ?self
+    {
+        return $this->parentCategory;
+    }
+
+    public function setParentCategory(?self $parentCategory): static
+    {
+        if ($this->parentCategory != $parentCategory) {
+            if($this->parentCategory != null)
+            {
+                //removing child from previous parent
+                $this->parentCategory->removeChildCategory($this);
+            }
+            //defining new parent
+            $this->parentCategory = $parentCategory;
+            
+            if($this->parentCategory != null)
+            {
+                //adding child to new parent
+                $this->parentCategory->addChildCategory($this);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getChildCategories(): Collection
+    {
+        return $this->childCategories;
+    }
+
+    public function addMultipleChildCategories(array $childCategories): self
+    {
+        foreach($childCategories as $childCategory)
+        {
+            $this->addChildCategory($childCategory);
+        }
+
+        return $this;
+    }
+
+    public function addChildCategory(self $childCategory): static
+    {
+        if (!$this->childCategories->contains($childCategory)) {
+            $this->childCategories->add($childCategory);
+            $childCategory->setParentCategory($this);
+        }
+
+        return $this;
+    }
+
+    public function removeChildCategory(self $childCategory): static
+    {
+        if ($this->childCategories->removeElement($childCategory)) {
+            // set the owning side to null (unless already changed)
+            if ($childCategory->getParentCategory() === $this) {
+                $childCategory->setParentCategory(null);
+            }
+        }
+
+        return $this;
     }
 }

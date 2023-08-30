@@ -67,13 +67,7 @@ class CategoryFixture extends Fixture
             (new Category())->setSlug("cake-sale-aperitif")->setName("cake salé apéritif "),
             (new Category())->setSlug("dip-et-tartinade")->setName("dip et tartinade")
                 ->addMultipleChildCategories($dipEtTartinade),
-            (new Category())->setSlug("aperitif-legume")->setName("apéritif légume"),
-            (new Category())->setSlug("aperitif-dinatoire-vegan")->setName("apéritif dînatoire vegan")
-                ->addMultipleChildCategories($aperitifDinatoireVegan),
-            (new Category())->setSlug("aperitif-dinatoire-sans-gluten")->setName("apéritif dînatoire sans gluten")
-                ->addMultipleChildCategories($aperitifDinatoireSansGluten),
-            (new Category())->setSlug("aperitif-dinatoire-vegetarien")->setName("apéritif dînatoire vegetarien")
-                ->addMultipleChildCategories($aperitifDinatoireVegetarien),
+            (new Category())->setSlug("aperitif-legume")->setName("apéritif légume")
         );
 
         //      Sub - 2 
@@ -427,8 +421,7 @@ class CategoryFixture extends Fixture
             (new Category())->setSlug("creme-au-chocolat")->setName("crème au chocolat"),
             (new Category())->setSlug("glace-au-chocolat")->setName("glace au chocolat"),
             (new Category())->setSlug("profiteroles")->setName("profiteroles"),
-            (new Category())->setSlug("Tarte-au-chocolat")->setName("Tarte au chocolat"),
-            (new Category())->setSlug("gateau-au-chocolat")->setName("gâteau au chocolat"),
+            (new Category())->setSlug("Tarte-au-chocolat")->setName("Tarte au chocolat")
         );
 
         //          Sub - 3

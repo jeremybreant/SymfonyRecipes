@@ -3,8 +3,12 @@ declare(strict_types=1);
 
 namespace App\Form;
 
+use App\Entity\Category;
 use App\Entity\Recipe;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Eckinox\TinymceBundle\Form\Type\TinymceType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -67,8 +71,13 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('description', CKEditorType::class, [
-                'config_name' => 'my_custom_config',
+            ->add("description", TinymceType::class, [
+                "attr" => [
+                    "class" => "form-control",
+                    "toolbar" => "bold italic underline | bullist numlist",
+                    "menubar" => "",
+                    "statusbar" => ""
+                ],
                 'label' => 'Description',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
@@ -81,18 +90,24 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('isFavorite', CheckboxType::class, [
-                'required' => false,
-                'label' => 'Favoris ?',
-                'label_attr' => [
-                    'class' => 'form-check-label'
-                ]
-            ])
             ->add('isPublic', CheckboxType::class, [
                 'required' => false,
                 'label' => 'Public ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
+                ]
+            ])
+            ->add('categories', EntityType::class, [
+                'class' => Category::class,
+                'multiple' => true,
+                'label' => 'Catégories :',
+                'choice_label' => 'name',
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
+                },
+                'label_attr' => [
+                    'class' => 'form-label'
                 ]
             ])
             ->add('imageFile', VichImageType::class, [

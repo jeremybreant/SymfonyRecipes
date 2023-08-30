@@ -114,7 +114,7 @@ class AppFixture extends Fixture implements DependentFixtureInterface
             $selectedCat = $categories[rand(0,count($categories)-1)];
             $recipeCategories = array();
             array_push($recipeCategories, $selectedCat);
-            if(!empty($selectedCat->getParentCategories()->toArray())){
+            if(null != $selectedCat->getParentCategory()){
                 $parentCats = $selectedCat->getParentCatRecurcive();
                 foreach($parentCats as $parentCategory){
                     array_push($recipeCategories, $parentCategory);

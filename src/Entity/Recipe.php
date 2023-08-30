@@ -576,4 +576,34 @@ class Recipe
 
         return $this;
     }
+
+    /**
+     * 
+     */
+    public static function isModificationThatRequireStatusReset(Recipe $oldRecipe, Recipe $newRecipe):  bool
+    {
+        //Equalizing non required fields to not raise flag
+        $or = clone $oldRecipe;
+        $nr = clone $newRecipe;
+
+        $or->setIsPublic(false);
+        $nr->setIsPublic(false);
+
+
+        if($or == $nr)
+        {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * If modficiation are required this method is called
+     */
+    public function statusResetAfterModification(): self
+    {
+        $this->setStatus(Recipe::STATUS_NOT_APPROVED);
+
+        return $this;
+    }
 }

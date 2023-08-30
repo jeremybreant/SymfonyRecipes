@@ -179,9 +179,9 @@ class RecipeController extends AbstractController
                 }
             }
             //reset status in order to not show inapropriate content
-            if($originalRecipe != $newRecipe)
+            if(Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe))
             {
-                $newRecipe->setStatus(Recipe::STATUS_NOT_APPROVED);
+                $newRecipe->statusResetAfterModification();
             }
 
             $manager->persist($newRecipe);
