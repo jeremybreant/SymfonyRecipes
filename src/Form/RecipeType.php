@@ -7,8 +7,8 @@ use App\Entity\Category;
 use App\Entity\Recipe;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\QueryBuilder;
+use Eckinox\TinymceBundle\Form\Type\TinymceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use FOS\CKEditorBundle\Form\Type\CKEditorType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -71,8 +71,13 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('description', CKEditorType::class, [
-                'config_name' => 'my_custom_config',
+            ->add("description", TinymceType::class, [
+                "attr" => [
+                    "class" => "form-control",
+                    "toolbar" => "bold italic underline | bullist numlist",
+                    "menubar" => "",
+                    "statusbar" => ""
+                ],
                 'label' => 'Description',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
