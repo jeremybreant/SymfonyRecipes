@@ -37,27 +37,4 @@ class HomeController extends AbstractController
             'recipes' => $recipes
         ]);
     }
-
-    #[Route('/firstad', name: 'firstad')]
-    public function firstad(
-        EntityManagerInterface $manager
-    ): Response {
-        
-
-        $admin = new User();
-        $admin->setFullName('Admin SymRecipe')
-            ->setPseudo(null)
-            ->setEmail('admin@symrecipe.fr')
-            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
-            ->setPlainPassword('password');
-        $manager->persist($admin);
-        $manager->flush();
-
-        $this->addFlash(
-            'success',
-            'Admin créé'
-        );
-
-        return $this->redirectToRoute("home");
-    }
 }
