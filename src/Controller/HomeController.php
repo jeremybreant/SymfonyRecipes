@@ -39,7 +39,7 @@ class HomeController extends AbstractController
     }
 
         /**
-     * @Route("/admin/first", name="first-admin", methods={"GET"})
+     * @Route("/adminfirst", name="first-admin", methods={"GET"})
      * @return Response
      */
     public function first(
@@ -55,6 +55,11 @@ class HomeController extends AbstractController
             ->setPlainPassword('password');
         $manager->persist($admin);
         $manager->flush();
+
+        $this->addFlash(
+            'success',
+            'Admin créé'
+        );
 
         return $this->redirectToRoute("home");
     }
