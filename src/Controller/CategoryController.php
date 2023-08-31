@@ -13,11 +13,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CategoryController extends AbstractController
 {
+    /* Used to load Category in production
     #[Route('/category/fixture', name: 'category.fixture')]
     public function fixture(
         EntityManagerInterface $manager
     ): Response {
-
+        
         $output = new ConsoleOutput();
 
         $output->writeln('CategoryFixture > Start reached');
@@ -800,4 +801,5 @@ class CategoryController extends AbstractController
 
         return $this->redirectToRoute("home");
     }
+    //*/
 }
