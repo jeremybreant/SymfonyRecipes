@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use App\Repository\RecipeRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -34,5 +36,26 @@ class HomeController extends AbstractController
         return $this->render('pages/index.html.twig',[
             'recipes' => $recipes
         ]);
+    }
+
+        /**
+     * @Route("/admin/first", name="first-admin", methods={"GET"})
+     * @return Response
+     */
+    public function first(
+        EntityManagerInterface $manager
+    ): Response
+    {
+
+        $admin = new User();
+        $admin->setFullName('Admin SymRecipe')
+            ->setPseudo(null)
+            ->setEmail('admin@symrecipe.fr')
+            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+            ->setPlainPassword('password');
+        $manager->persist($admin);
+        $manager->flush();
+
+        return $this->redirectToRoute("home");
     }
 }

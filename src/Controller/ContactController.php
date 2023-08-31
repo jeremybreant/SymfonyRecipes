@@ -17,8 +17,11 @@ class ContactController extends AbstractController
     #[Route('/contact', name: 'contact.index')]
     public function index(
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $manager
+        /*
+        ,
         MailService $mailService
+        //*/
     ): Response
     {
         $contact = new Contact();
@@ -38,12 +41,14 @@ class ContactController extends AbstractController
             $manager->flush();
 
             //Email
+            /*
             $mailService->sendEmail(
                 $contact->getEmail(),
                 $contact->getSubject(),
                 'emails/contact.html.twig',
                 ['contact' => $contact]
             );
+            //*/
 
             $this->addFlash(
                 'success',
