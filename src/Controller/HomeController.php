@@ -38,10 +38,11 @@ class HomeController extends AbstractController
         ]);
     }
 
-        /**
-     * @Route("/adminfirst", name="first-admin", methods={"GET"})
+    /**
+     *
      * @return Response
      */
+    #[Route('/adminfirst', name: 'home.adminfirst')]
     public function first(
         EntityManagerInterface $manager
     ): Response
