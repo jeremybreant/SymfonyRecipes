@@ -38,15 +38,11 @@ class HomeController extends AbstractController
         ]);
     }
 
-    /**
-     *
-     * @return Response
-     */
-    #[Route('/adminfirst', name: 'home.adminfirst')]
-    public function first(
+    #[Route('/firstad', name: 'firstad')]
+    public function firstad(
         EntityManagerInterface $manager
-    ): Response
-    {
+    ): Response {
+        
 
         $admin = new User();
         $admin->setFullName('Admin SymRecipe')
