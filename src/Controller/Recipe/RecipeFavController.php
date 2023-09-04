@@ -18,7 +18,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class RecipeFavController extends AbstractController
 {
-        /**
+    /**
      * This route iss to display all recipes
      *
      * @param PaginatorInterface $paginator
@@ -28,19 +28,20 @@ class RecipeFavController extends AbstractController
     #[Route('/recette/favoris', name: 'recipe.favorite', methods: ['GET'], priority: 1)]
     public function search(
         PaginatorInterface $paginator,
-        Request $request
+        RecipeRepository $recipeRepository,
+        Request $request,
     ): Response {
-        
+
         $user = $this->getUser();
-        $recipes = $user->getFavoriteRecipes(null);
-    
+
         $recipes = $paginator->paginate(
-            $recipes,
+            $recipeRepository->findRecipesLikedByTheUserQuery(null, $user),
             /*$recipeRepository->findPublicRecipe(null), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
-            12 /*limit per page*/
+            $request->query->getInt('page', 1),
+            /*page number*/
+            12, /*limit per page*/
         );
-        
+
         $totalCount = count($recipes);
 
         return $this->render('pages/recipe/index_favorite.html.twig', [
@@ -55,8 +56,7 @@ class RecipeFavController extends AbstractController
         Request $request,
         RecipeRepository $recipeRepository,
         EntityManagerInterface $manager
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $cache = new FilesystemAdapter();
 
         // Créer un tableau de données

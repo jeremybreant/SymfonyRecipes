@@ -69,6 +69,22 @@ class RecipeRepository extends ServiceEntityRepository
             
     }
 
+    public function findRecipesLikedByTheUserQuery(?int $nbRecipes, $user): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
+            ->innerJoin('r.usersLikingThisRecipe', 'u') // Utilisation de innerJoin pour correspondre à la table de liaison
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+
+        
+            
+    }
+
     public function save(Recipe $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
