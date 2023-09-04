@@ -69,7 +69,6 @@ class Ingredient
     {
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
-        $this->recipes = new ArrayCollection();
         $this->recipeIngredients = new ArrayCollection();
     }
 
