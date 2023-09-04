@@ -36,8 +36,8 @@
                         <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImage(vich_uploader_asset(ingredient,'imageFile')) }}">
                     </div>
                 </td>
-                <td>{{ ingredient.name }}</td>
-                <td>
+                <td class="align-middle">{{ ingredient.name }}</td>
+                <td class="align-middle">
                     <a title="Modifier l'ingrédient" href="{{ path('ingredient.edit', { id: ingredient.id}) }}" class="btn btn-info"><i class="fa-solid fa-pen-to-square"></i></a>
                     <a title="Supprimer l'ingrédient" href="{{ path('ingredient.delete', { id: ingredient.id}) }}" class="btn btn-danger"
                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');"><i class="fa-solid fa-trash-can"></i></a>

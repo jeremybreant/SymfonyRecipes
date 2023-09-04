@@ -49,14 +49,14 @@
 							<img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImage(vich_uploader_asset(recipe,'imageFile')) }}">
 						</div>
 					</td>
-					<td>{{ recipe.name }}</td>
-					<td>
+					<td class="align-middle">{{ recipe.name }}</td>
+					<td class="align-middle">
 						{{tools.provideStatusTag(recipe.status)}}
 						{{tools.providePublicTag(recipe.isPublic)}}
 					</td>
-					<td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
-					<td>{{ (recipe.price is null) ? '--' : recipe.price }}</td>
-					<td>
+					<td class="align-middle">{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
+					<td class="align-middle">{{ (recipe.price is null) ? '--' : recipe.price }}</td>
+					<td class="align-middle">
 						{% if recipe.user == app.user %}
 							<a title="Visualiser la recette" href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-secondary">
 								<i class="fa-solid fa-eye"></i>
