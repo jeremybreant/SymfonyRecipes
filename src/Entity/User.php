@@ -24,11 +24,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $id;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: "fullName notNull")]
+    #[Assert\NotBlank(message: "Votre nom ne peut pas être null")]
     #[Assert\Length(min: 2, max: 50)]
     private string $fullName;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Veuillez entrer un pseudo")]
     #[Assert\Length(min: 2, max: 50)]
     private ?string $pseudo = null;
 

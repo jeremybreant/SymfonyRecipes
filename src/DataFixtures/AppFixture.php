@@ -56,7 +56,7 @@ class AppFixture extends Fixture implements DependentFixtureInterface
         $output->writeln('Users');
         $admin = new User();
         $admin->setFullName('Administrateur de SymRecipe')
-            ->setPseudo(null)
+            ->setPseudo($this->faker->firstName())
             ->setEmail('admin@symrecipe.fr')
             ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
             ->setPlainPassword('password');
@@ -67,7 +67,7 @@ class AppFixture extends Fixture implements DependentFixtureInterface
 
             $user = new User();
             $user->setFullName($this->faker->name())
-                ->setPseudo(mt_rand(0, 1) === 1 ? $this->faker->firstName() : null)
+                ->setPseudo($this->faker->firstName())
                 ->setEmail($this->faker->email())
                 ->setRoles(['ROLE_USER'])
                 ->setPlainPassword('password');
