@@ -1,18 +1,18 @@
-{% macro displayMark(mark, comment, markAuthor, creationDate) %}
+{% macro displayMark(mark) %}
     <div class="pb-3 mt-2">
         <div class="card-body">
             <div class="card-text">
                 <div class="row">
                     <div class="col-auto">
-                        {{ _self.displayMarkWithStar(mark) }}
+                        {{ _self.displayMarkWithStar(mark.mark) }}
                     </div>
                     <div class="col-auto">
-                        <strong>{{ markAuthor }}</strong>
+                        <strong>{{ mark.user.pseudo }}</strong>
                     </div>
                 </div>
             </div>
-            <div class="card-text text-secondary">{{ creationDate }}</div>
-            <div class="card-text mt-2">{{ comment }}</div>
+            <div class="card-text text-secondary">{{ mark.createdAt|display_date }}</div>
+            <div class="card-text mt-2">{{ mark.comment }}</div>
         </div>
     </div>
 {% endmacro %}

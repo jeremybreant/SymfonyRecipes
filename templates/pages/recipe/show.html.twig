@@ -161,7 +161,7 @@
     {% endif %}
 
     {% for mark in relatedMarks %}
-        {{ starMark.displayMark(mark.mark, mark.comment, mark.user.fullname, mark.createdAt|display_date) }}
+        {{ starMark.displayMark(mark) }}
     {% endfor %}
 
     {% if recipe.user != app.user %}
