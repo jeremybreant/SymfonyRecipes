@@ -16,7 +16,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[Vich\Uploadable]
 #[UniqueEntity(
     fields: ['name','user'],
     message: 'Cet utilisateur a déjà créé cet ingrédient',
@@ -35,13 +34,6 @@ class Ingredient
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50,minMessage: "Le nom doit faire une minimum de 2 caractères" ,maxMessage: "le nom ne peut pas dépasser 50 caractères")]
     private string $name;
-
-    // NOTE: This is not a mapped field of entity metadata, just a simple property.
-    #[Vich\UploadableField(mapping: 'ingredient_images', fileNameProperty: 'imageName')]
-    private ?File $imageFile = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?string $imageName = null;
 
     #[Groups(['ingredient'])]
     #[ORM\Column]
@@ -62,6 +54,9 @@ class Ingredient
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
     private Collection $recipeIngredients;
 
+    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class)]
+    private Collection $images;
+
     /**
      * Constructor
      */
@@ -70,6 +65,7 @@ class Ingredient
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new \DateTimeImmutable();
         $this->recipeIngredients = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): int
@@ -87,41 +83,6 @@ class Ingredient
         $this->name = $name;
 
         return $this;
-    }
-
-    /**
-     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
-     * of 'UploadedFile' is injected into this setter to trigger the update. If this
-     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
-     * must be able to accept an instance of 'File' as the bundle will inject one here
-     * during Doctrine hydration.
-     *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
-     */
-    public function setImageFile(?File $imageFile = null): void
-    {
-        $this->imageFile = $imageFile;
-
-        if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
-        }
-    }
-
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageName(?string $imageName): void
-    {
-        $this->imageName = $imageName;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
     }
 
     public function getCreatedAt(): DateTimeImmutable
@@ -188,6 +149,36 @@ class Ingredient
             // set the owning side to null (unless already changed)
             if ($recipeIngredient->getIngredient() === $this) {
                 $recipeIngredient->setIngredient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setIngredients($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getIngredients() === $this) {
+                $image->setIngredients(null);
             }
         }
 
