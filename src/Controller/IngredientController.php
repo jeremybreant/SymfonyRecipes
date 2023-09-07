@@ -3,9 +3,11 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\Images;
 use App\Entity\Ingredient;
 use App\Form\IngredientType;
 use App\Repository\IngredientRepository;
+use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
@@ -31,11 +33,12 @@ class IngredientController extends AbstractController
     public function index(
         IngredientRepository $ingredientRepository,
         PaginatorInterface $paginator,
-        Request $request): Response
-    {
+        Request $request
+    ): Response {
         $ingredients = $paginator->paginate(
             $ingredientRepository->findBy(['user' => $this->getUser()]), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('page', 1),
+            /*page number*/
             10 /*limit per page*/
         );
 
@@ -56,15 +59,13 @@ class IngredientController extends AbstractController
     public function new(
         Request $request,
         EntityManagerInterface $manager
-    ) : Response
-    {
+    ): Response {
         $ingredient = new Ingredient();
         $ingredient->setUser($this->getUser());
         $form = $this->createForm(IngredientType::class, $ingredient);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $ingredient = $form->getData();
 
             $manager->persist($ingredient);
@@ -96,15 +97,27 @@ class IngredientController extends AbstractController
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
-        Ingredient $ingredient
-    ):Response
-    {
+        Ingredient $ingredient,
+        PictureService $pictureService
+    ): Response {
         $form = $this->createForm(IngredientType::class, $ingredient);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $ingredient = $form->getData();
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            // On définit le dossier de destination
+            $folder = 'ingredients';
+
+            // On appelle le service d'ajout
+            $fichier = $pictureService->add($images, $folder, 300, 300);
+
+            $img = new Images();
+            $img->setName($fichier);
+            $ingredient->addImage($img);
 
             $manager->persist($ingredient);
             $manager->flush();
@@ -134,17 +147,13 @@ class IngredientController extends AbstractController
     public function delete(
         Ingredient $ingredient,
         EntityManagerInterface $entityManager
-    ) : Response
-    {
-        if(!$ingredient)
-        {
+    ): Response {
+        if (!$ingredient) {
             $this->addFlash(
                 'danger',
                 'L\'ingrédient n\'a pas été trouvé'
             );
-        }
-        else
-        {
+        } else {
             $entityManager->remove($ingredient);
             $entityManager->flush();
 

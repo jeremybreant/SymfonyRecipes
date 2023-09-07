@@ -54,7 +54,7 @@ class Ingredient
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
     private Collection $recipeIngredients;
 
-    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class)]
+    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class, cascade:['persist'])]
     private Collection $images;
 
     /**

@@ -24,25 +24,28 @@ class PictureService
         }
 
         // On donne un nouveau nom à l'image
-        $file = md5(uniqId()) . 'webp';
+        $file = md5(uniqId()) . '.webp';
+
+        // On récupère le chemin de l'image
+        $picture_path = $picture->getPathName();
 
         // On récupère les infos de l'image
-        $picture_infos = getimagesize($picture->getClientOriginalName());
+        $picture_infos = getimagesize($picture_path);
 
         if ($picture_infos === false) {
             throw new Exception('Format d\'image invalide');
         }
-
+        
         // On vérifie le format de l'image
         switch ($picture_infos['mime']) {
             case 'image/png':
-                $picture_source = imagecreatefrompng($picture->getClientOriginalName());
+                $picture_source = imagecreatefrompng($picture_path);
                 break;
             case 'image/jpeg':
-                $picture_source = imagecreatefromjpeg($picture->getClientOriginalName());
+                $picture_source = imagecreatefromjpeg($picture_path);
                 break;
             case 'image/wbp':
-                $picture_source = imagecreatefromwebp($picture->getClientOriginalName());
+                $picture_source = imagecreatefromwebp($picture_path);
                 break;
             default:
                 throw new Exception('Format d\'image incorrecte');
