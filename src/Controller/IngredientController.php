@@ -58,7 +58,8 @@ class IngredientController extends AbstractController
     #[IsGranted('ROLE_USER')]
     public function new(
         Request $request,
-        EntityManagerInterface $manager
+        EntityManagerInterface $manager,
+        PictureService $pictureService
     ): Response {
         $ingredient = new Ingredient();
         $ingredient->setUser($this->getUser());
@@ -67,6 +68,19 @@ class IngredientController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredient = $form->getData();
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            // On définit le dossier de destination
+            $folder = 'ingredients';
+
+            // On appelle le service d'ajout
+            $fichier = $pictureService->add($images, $folder, 300, 300);
+
+            $img = new Images();
+            $img->setName($fichier);
+            $ingredient->addImage($img);
 
             $manager->persist($ingredient);
             $manager->flush();
