@@ -19,6 +19,9 @@ class Images
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?ingredient $ingredients = null;
 
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    private ?Recipe $recipe = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -44,6 +47,18 @@ class Images
     public function setIngredients(?ingredient $ingredients): static
     {
         $this->ingredients = $ingredients;
+
+        return $this;
+    }
+
+    public function getRecipe(): ?Recipe
+    {
+        return $this->recipe;
+    }
+
+    public function setRecipe(?Recipe $recipe): static
+    {
+        $this->recipe = $recipe;
 
         return $this;
     }

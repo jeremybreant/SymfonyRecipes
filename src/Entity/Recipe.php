@@ -26,7 +26,6 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
 #[ORM\HasLifecycleCallbacks]
-#[Vich\Uploadable]
 #[UniqueEntity(
     fields: ['user', 'name'],
     message: 'Cet utilisateur a déjà créé cette recette',
@@ -104,13 +103,6 @@ class Recipe
     #[Assert\NotBlank(message: "Le nom est obligatoire")]
     #[Assert\Length(min: 2, max: 50,minMessage: "Le nom doit faire une minimum de 2 caractères" ,maxMessage: "le nom ne peut pas dépasser 50 caractères" )]
     private string $name;
-
-    // NOTE: This is not a mapped field of entity metadata, just a simple property.
-    #[Vich\UploadableField(mapping: 'recipe_images', fileNameProperty: 'imageName')]
-    private ?File $imageFile = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?string $imageName = null;
 
     #[Groups(['recipe'])]
     #[ORM\Column(nullable: true)]
@@ -194,6 +186,9 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'recipes')]
     private Collection $categories;
 
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Images::class, cascade:['persist'])]
+    private Collection $images;
+
 
     /**
      * Constructor
@@ -207,6 +202,7 @@ class Recipe
         $this->usersLikingThisRecipe = new ArrayCollection();
         $this->status = self::STATUS_NOT_APPROVED;
         $this->categories = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -231,41 +227,6 @@ class Recipe
         $this->name = $name;
 
         return $this;
-    }
-
-    /**
-     * If manually uploading a file (i.e. not using Symfony Form) ensure an instance
-     * of 'UploadedFile' is injected into this setter to trigger the update. If this
-     * bundle's configuration parameter 'inject_on_load' is set to 'true' this setter
-     * must be able to accept an instance of 'File' as the bundle will inject one here
-     * during Doctrine hydration.
-     *
-     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile|null $imageFile
-     */
-    public function setImageFile(?File $imageFile = null): void
-    {
-        $this->imageFile = $imageFile;
-
-        if (null !== $imageFile) {
-            // It is required that at least one field changes if you are using doctrine
-            // otherwise the event listeners won't be called and the file is lost
-            $this->updatedAt = new \DateTimeImmutable();
-        }
-    }
-
-    public function getImageFile(): ?File
-    {
-        return $this->imageFile;
-    }
-
-    public function setImageName(?string $imageName): void
-    {
-        $this->imageName = $imageName;
-    }
-
-    public function getImageName(): ?string
-    {
-        return $this->imageName;
     }
 
     public function getPreparationTime(): ?int
@@ -603,6 +564,36 @@ class Recipe
     public function statusResetAfterModification(): self
     {
         $this->setStatus(Recipe::STATUS_NOT_APPROVED);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setRecipe($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getRecipe() === $this) {
+                $image->setRecipe(null);
+            }
+        }
 
         return $this;
     }

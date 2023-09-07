@@ -45,9 +45,9 @@
 			{% for recipe in recipes %}
 				<tr>
 					<td>
-						<div class="recipes_images ">
-							<img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImage(vich_uploader_asset(recipe,'imageFile')) }}">
-						</div>
+                    <div class="ingredient_images">
+                        <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImageForRecipe(recipe.images) }}">
+                    </div>
 					</td>
 					<td class="align-middle">{{ recipe.name }}</td>
 					<td class="align-middle">

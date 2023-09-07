@@ -85,10 +85,10 @@
         </div>
     </div>
     <div class="form-group mt-4">
-        {{ form_label(form.imageFile) }}
-        {{ form_widget(form.imageFile, {'attr': {'class': 'form-control' ~ (form_errors(form.imageFile) is not empty ? ' is-invalid' : '')}}) }}
+        {{ form_label(form.images) }}
+        {{ form_widget(form.images, {'attr': {'class': 'form-control' ~ (form_errors(form.images) is not empty ? ' is-invalid' : '')}}) }}
         <div class="invalid-feedback">
-            {{ form_errors(form.imageFile) }}
+            {{ form_errors(form.images) }}
         </div>
     </div>
     <h3 class="mt-4">Ingredients</h3>

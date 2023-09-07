@@ -18,7 +18,7 @@
 			</div>
 		{% endif %}
 		<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
-			<img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow" src="{{ tools.provideDefaultImage(vich_uploader_asset(recipe,'imageFile')|raw) }}">
+			<img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow" src="{{ tools.provideDefaultImageForRecipe(recipe.images) }}">
 		</a>
 	</div>
 	<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
