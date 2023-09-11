@@ -182,21 +182,4 @@ class IngredientController extends AbstractController
 
         return $this->redirectToRoute('ingredient.index');
     }
-
-    #[IsGranted('ROLE_USER')]
-    #[Route('/ingredient/suppression/image', name: 'ingredient.image.delete', methods: ['POST'])]
-    public function deleteImage(Request $request, ImagesRepository $imagesRepository, EntityManagerInterface $manager, PictureService $pictureService): JsonResponse
-    {
-        $image = $imagesRepository->find($request->request->get("imageId"));
-        // On récupère le nom de l'image
-        $filename = $image->getName();
-
-        if ($pictureService->delete($filename, 'ingredients', 300, 300)) {
-            $manager->remove($image);
-            $manager->flush();
-            return new JsonResponse(['success' => true], 200);
-        }
-        // La suppression a échoué
-        return new JsonResponse(['error' => 'Erreur de suppression'], 400);
-    }
 }

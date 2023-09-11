@@ -1,5 +1,6 @@
-{% extends "base.html.twig" %}
 {% import "macros/tools.html.twig" as tools %}
+
+{% extends "base.html.twig" %}
 
 {% block title %}StmfonyRecipes - Modification ingrédient
 {% endblock %}
@@ -25,19 +26,19 @@
 	</div>
 
 	{# On affiche les images si on est en édition #}
+	<a class="custom-anchor" id="images"></a>
 	<h2>Images</h2>
 	<div class="row">
 		{% for image in ingredient.images %}
-			<div {{ stimulus_controller('images') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
+			<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
 				data-images-imageid-value="{{ image.id }}"
+				data-images-folder-value="ingredients"
 			>
 				<div class="py-2 text-center">
-					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ tools.provideDefaultImageForIngredient(ingredient.images) }}">
+					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ asset('images/ingredients/mini/300x300-' ~ image.name) }}">
 				</div>
-				<div class="p-2 text-center" {{ stimulus_target('images', 'image') }}>
-				    <button type="button"
-                		class="btn btn-primary mt-4" {{ stimulus_action('images', 'deleteImages') }}>Ajouter un ingrédient
-        			</button>
+				<div class="p-2 text-center">
+				    <a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>
 				</div>
 			</div>
 		{% endfor %}

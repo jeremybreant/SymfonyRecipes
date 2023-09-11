@@ -223,7 +223,8 @@ class RecipeController extends AbstractController
         }
 
         return $this->render('pages/recipe/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'recipe' => $recipe
         ]);
     }
 

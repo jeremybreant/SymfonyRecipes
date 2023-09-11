@@ -1,4 +1,5 @@
 {% import "macros/recipeIngredient/form.html.twig" as recipeIngredientMacro %}
+{% import "macros/tools.html.twig" as tools %}
 
 {% extends "base.html.twig" %}
 
@@ -91,6 +92,26 @@
             {{ form_errors(form.images) }}
         </div>
     </div>
+
+    {# On affiche les images si on est en édition #}
+	<a class="custom-anchor" id="images"></a>
+	<h2>Images</h2>
+	<div class="row">
+		{% for image in recipe.images %}
+			<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
+				data-images-imageid-value="{{ image.id }}"
+				data-images-folder-value="recettes"
+			>
+				<div class="py-2 text-center">
+					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ asset('images/recettes/mini/300x300-' ~ image.name) }}">
+				</div>
+				<div class="p-2 text-center" >
+				    <a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+
     <h3 class="mt-4">Ingredients</h3>
     <div {{ stimulus_controller('form-collection') }}
             data-form-collection-index-value="{{ form.recipeIngredients|length > 0 ? form.recipeIngredients|last.vars.name + 1 : 0 }}"
