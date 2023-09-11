@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\Images;
 use App\Entity\Ingredient;
 use App\Form\IngredientType;
+use App\Repository\ImagesRepository;
 use App\Repository\IngredientRepository;
 use App\Service\PictureService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +14,7 @@ use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -145,7 +147,8 @@ class IngredientController extends AbstractController
         }
 
         return $this->render('pages/ingredient/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'ingredient' => $ingredient
         ]);
     }
 
@@ -178,5 +181,22 @@ class IngredientController extends AbstractController
         }
 
         return $this->redirectToRoute('ingredient.index');
+    }
+
+    #[IsGranted('ROLE_USER')]
+    #[Route('/ingredient/suppression/image', name: 'ingredient.image.delete', methods: ['POST'])]
+    public function deleteImage(Request $request, ImagesRepository $imagesRepository, EntityManagerInterface $manager, PictureService $pictureService): JsonResponse
+    {
+        $image = $imagesRepository->find($request->request->get("imageId"));
+        // On récupère le nom de l'image
+        $filename = $image->getName();
+
+        if ($pictureService->delete($filename, 'ingredients', 300, 300)) {
+            $manager->remove($image);
+            $manager->flush();
+            return new JsonResponse(['success' => true], 200);
+        }
+        // La suppression a échoué
+        return new JsonResponse(['error' => 'Erreur de suppression'], 400);
     }
 }
