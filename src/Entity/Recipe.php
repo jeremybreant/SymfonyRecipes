@@ -144,11 +144,6 @@ class Recipe
     #[Groups(['recipe'])]
     #[ORM\Column]
     #[Assert\NotNull(message: "Le choix est obligatoire")]
-    private bool $isFavorite;
-
-    #[Groups(['recipe'])]
-    #[ORM\Column]
-    #[Assert\NotNull(message: "Le choix est obligatoire")]
     private bool $isPublic;
 
     #[Groups(['recipe_user'])]
@@ -328,18 +323,6 @@ class Recipe
     public function getUpdatedAt(): ?\DateTimeImmutable
     {
         return $this->updatedAt;
-    }
-
-    public function getIsFavorite(): ?bool
-    {
-        return $this->isFavorite;
-    }
-
-    public function setIsFavorite(bool $isFavorite): self
-    {
-        $this->isFavorite = $isFavorite;
-
-        return $this;
     }
 
     public function getIsPublic(): ?bool
@@ -538,11 +521,13 @@ class Recipe
         return $this;
     }
 
-    /**
-     * 
-     */
-    public static function isModificationThatRequireStatusReset(Recipe $oldRecipe, Recipe $newRecipe):  bool
+    public static function isModificationThatRequireStatusReset(Recipe $oldRecipe, Recipe $newRecipe, bool $isExternalRequirement = false):  bool
     {
+        //Si des prérequis externe nécessite un reset de status
+        if($isExternalRequirement){
+            return true;
+        }
+
         //Equalizing non required fields to not raise flag
         $or = clone $oldRecipe;
         $nr = clone $newRecipe;
