@@ -20,4 +20,13 @@ class AppExtension extends AbstractExtension
             new TwigFilter('get_root_category', [AppExtensionRuntime::class, 'getRootCategory']),
         ];
     }
+
+    public function getFunctions(): array
+    {
+        return [
+            new TwigFunction('file_exists', [AppExtensionRuntime::class, 'isFileExist']),
+        ];
+    }
+
+
 }

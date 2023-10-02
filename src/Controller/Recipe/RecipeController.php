@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Recipe;
 
+use App\Entity\Images;
 use App\Entity\Mark;
 use App\Entity\Recipe;
 use App\Entity\RecipeIngredient;
@@ -10,6 +11,7 @@ use App\Form\MarkType;
 use App\Form\RecipeType;
 use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
+use App\Service\PictureService;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
@@ -40,11 +42,11 @@ class RecipeController extends AbstractController
         RecipeRepository $recipeRepository,
         PaginatorInterface $paginator,
         Request $request
-    ): Response
-    {
+    ): Response {
         $recipes = $paginator->paginate(
             $recipeRepository->findBy(['user' => $this->getUser()]), /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('page', 1),
+            /*page number*/
             12 /*limit per page*/
         );
 
@@ -58,10 +60,9 @@ class RecipeController extends AbstractController
         EntityManagerInterface $manager,
         RecipeRepository $recipeRepository,
         Request $request
-    ): Response
-    {
+    ): Response {
         $cache = new FilesystemAdapter();
-        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository){
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository) {
             $item->expiresAfter(300);
 
             /** @var Query */
@@ -77,7 +78,7 @@ class RecipeController extends AbstractController
             return $recipes;
         });
 
-        $randomRecipe = $data[rand(0, count($data)-1)];
+        $randomRecipe = $data[rand(0, count($data) - 1)];
         return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
     }
 
@@ -86,13 +87,13 @@ class RecipeController extends AbstractController
         RecipeRepository $recipeRepository,
         PaginatorInterface $paginator,
         Request $request
-    ): Response
-    {
+    ): Response {
         $query = $recipeRepository->findPublicRecipeQuery(null);
 
         $recipes = $paginator->paginate(
             $query, /* query NOT result */
-            $request->query->getInt('page', 1), /*page number*/
+            $request->query->getInt('page', 1),
+            /*page number*/
             12 /*limit per page*/
         );
 
@@ -110,9 +111,9 @@ class RecipeController extends AbstractController
     #[Route('/recette/creation', 'recipe.new', methods: ['GET', 'POST'])]
     public function new(
         Request $request,
-        EntityManagerInterface $manager
-    ) : Response
-    {
+        EntityManagerInterface $manager,
+        PictureService $pictureService
+    ): Response {
         $recipe = new Recipe();
         $recipe->addRecipeIngredient(new RecipeIngredient());
 
@@ -120,9 +121,23 @@ class RecipeController extends AbstractController
 
         $form = $this->createForm(RecipeType::class, $recipe);
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $recipe = $form->getData();
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'recettes';
+
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
+
+                $img = new Images();
+                $img->setName($fichier);
+                $recipe->addImage($img);
+            }
 
             $manager->persist($recipe);
             $manager->flush();
@@ -153,9 +168,9 @@ class RecipeController extends AbstractController
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
-        Recipe $recipe
-    ):Response
-    {
+        Recipe $recipe,
+        PictureService $pictureService
+    ): Response {
         $originalRecipeIngredients = new ArrayCollection();
         $originalRecipe = clone $recipe;
 
@@ -167,8 +182,7 @@ class RecipeController extends AbstractController
         $form = $this->createForm(RecipeType::class, $recipe);
 
         $form->handleRequest($request);
-        if($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $newRecipe = $form->getData();
 
             // dynamic recipeingredient - checking if some are removed in the form
@@ -178,9 +192,29 @@ class RecipeController extends AbstractController
                     $manager->remove($recipeIngredient);
                 }
             }
+
+            // On définit un booléen pour déterminer d'autre facteur de modification de la 
+            $isExternalRequirement = false;
+
+            // On récupère les images
+            $images = $form->get('images')->getData();
+
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'recettes';
+
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
+
+                $img = new Images();
+                $img->setName($fichier);
+                $newRecipe->addImage($img);
+
+                $isExternalRequirement = true;
+            }
+
             //reset status in order to not show inapropriate content
-            if(Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe))
-            {
+            if (Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe, $isExternalRequirement)) {
                 $newRecipe->statusResetAfterModification();
             }
 
@@ -196,7 +230,8 @@ class RecipeController extends AbstractController
         }
 
         return $this->render('pages/recipe/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'recipe' => $recipe
         ]);
     }
 
@@ -212,17 +247,13 @@ class RecipeController extends AbstractController
     public function delete(
         Recipe $recipe,
         EntityManagerInterface $entityManager
-    ) : Response
-    {
-        if(!$recipe)
-        {
+    ): Response {
+        if (!$recipe) {
             $this->addFlash(
                 'danger',
                 'La recette n\'a pas été trouvé'
             );
-        }
-        else
-        {
+        } else {
             $entityManager->remove($recipe);
             $entityManager->flush();
 
@@ -242,17 +273,15 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
-    #[Route('/recette/{id}', 'recipe.show', methods: ['GET','POST'])]
+    #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
     public function show(
         Recipe $recipe,
         Request $request,
         MarkRepository $markRepository,
         EntityManagerInterface $manager
-    ) : Response
-    {
+    ): Response {
 
-        if($request->getUser() === $recipe->getUser())
-        {
+        if ($request->getUser() === $recipe->getUser()) {
             return $this->render('pages/recipe/show.html.twig', [
                 'recipe' => $recipe
             ]);
@@ -266,8 +295,7 @@ class RecipeController extends AbstractController
 
         $form = $this->createForm(MarkType::class, $mark);
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid())
-        {
+        if ($form->isSubmitted() && $form->isValid()) {
             $mark = $form->getData();
 
             $existingMark = $markRepository->findOneBy([
@@ -275,16 +303,15 @@ class RecipeController extends AbstractController
                 'recipe' => $recipe
             ]);
 
-            if($existingMark){
+            if ($existingMark) {
                 $this->addFlash(
                     'success',
                     sprintf('La note pour %s a bien été modifiée', $recipe->getName())
                 );
                 $existingMark->setMark($mark->getMark());
                 $existingMark->setComment($mark->getComment());
-                $existingMark->setCreatedAt(New \DateTimeImmutable());
-            }
-            else {
+                $existingMark->setCreatedAt(new \DateTimeImmutable());
+            } else {
                 $this->addFlash(
                     'success',
                     'Votre note a bien été prise en compte'
@@ -317,10 +344,9 @@ class RecipeController extends AbstractController
     public function startCheck(
         Recipe $recipe,
         EntityManagerInterface $manager
-    ) : Response
-    {
-        if($recipe->getStatus() !== Recipe::STATUS_NOT_APPROVED){
-            
+    ): Response {
+        if ($recipe->getStatus() !== Recipe::STATUS_NOT_APPROVED) {
+
             return $this->redirectToRoute('recipe.index');
         }
 
@@ -332,7 +358,7 @@ class RecipeController extends AbstractController
             'success',
             sprintf('La recette %s est désormais en cours approbation', $recipe->getName())
         );
-        
+
         return $this->redirectToRoute('recipe.index');
     }
 }

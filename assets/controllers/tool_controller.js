@@ -7,7 +7,7 @@ export default class extends Controller {
     static values = {
         recipeid: Number
     }
-    static targets = ["icon"]
+    static targets = ["icon"];
 
     toggleFav() {
 

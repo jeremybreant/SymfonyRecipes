@@ -5,12 +5,11 @@ namespace App\Form;
 
 use App\Entity\Ingredient;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class IngredientType extends AbstractType
 {
@@ -23,21 +22,17 @@ class IngredientType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('imageFile', VichImageType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'required' => false,
-                'label' => 'Image :',
-                'label_attr' => [
-                    'class' => 'form-label mt-4'
-                ]
-            ])
             ->add('submit', SubmitType::class, [
                 'attr' => [
                     'class' => 'btn btn-primary mt-4'
                 ],
                 'label' => 'Need context for the name'
+            ])
+            ->add('images', FileType::class, [
+                'label' => false,
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false
             ])
         ;
     }
