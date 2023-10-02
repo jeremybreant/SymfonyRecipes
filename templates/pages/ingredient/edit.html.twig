@@ -27,7 +27,7 @@
 
 	{# On affiche les images si on est en édition #}
 	<a class="custom-anchor" id="images"></a>
-	<h2>Images</h2>
+	<h2 class="mt-4">Images</h2>
 	<div class="row">
 		{% for image in ingredient.images %}
 			<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
@@ -35,7 +35,13 @@
 				data-images-folder-value="ingredients"
 			>
 				<div class="py-2 text-center">
-					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ asset('images/ingredients/mini/300x300-' ~ image.name) }}">
+					<img class="w-75 shadow custom-img-1-1 rounded-4" 
+					{% if file_exists(asset('ingredients/mini/300x300-' ~ image.name)) %}
+						src="{{ asset('images/ingredients/mini/300x300-' ~ image.name) }}"
+					{% else %}
+						src="{{ asset('build/images/fakifv.jpg') }}"
+					{% endif %}
+					>
 				</div>
 				<div class="p-2 text-center">
 				    <a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>

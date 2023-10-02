@@ -124,19 +124,20 @@ class RecipeController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $recipe = $form->getData();
 
-
             // On récupère les images
             $images = $form->get('images')->getData();
 
-            // On définit le dossier de destination
-            $folder = 'recettes';
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'recettes';
 
-            // On appelle le service d'ajout
-            $fichier = $pictureService->add($images, $folder, 300, 300);
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
 
-            $img = new Images();
-            $img->setName($fichier);
-            $recipe->addImage($img);
+                $img = new Images();
+                $img->setName($fichier);
+                $recipe->addImage($img);
+            }
 
             $manager->persist($recipe);
             $manager->flush();
@@ -191,25 +192,31 @@ class RecipeController extends AbstractController
                     $manager->remove($recipeIngredient);
                 }
             }
-            //reset status in order to not show inapropriate content
-            if (Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe)) {
-                $newRecipe->statusResetAfterModification();
-            }
 
+            // On définit un booléen pour déterminer d'autre facteur de modification de la 
+            $isExternalRequirement = false;
 
             // On récupère les images
             $images = $form->get('images')->getData();
 
-            // On définit le dossier de destination
-            $folder = 'recettes';
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'recettes';
 
-            // On appelle le service d'ajout
-            $fichier = $pictureService->add($images, $folder, 300, 300);
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
 
-            $img = new Images();
-            $img->setName($fichier);
-            $newRecipe->addImage($img);
+                $img = new Images();
+                $img->setName($fichier);
+                $newRecipe->addImage($img);
 
+                $isExternalRequirement = true;
+            }
+
+            //reset status in order to not show inapropriate content
+            if (Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe, $isExternalRequirement)) {
+                $newRecipe->statusResetAfterModification();
+            }
 
             $manager->persist($newRecipe);
             $manager->flush();

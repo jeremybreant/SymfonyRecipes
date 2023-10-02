@@ -74,15 +74,17 @@ class IngredientController extends AbstractController
             // On récupère les images
             $images = $form->get('images')->getData();
 
-            // On définit le dossier de destination
-            $folder = 'ingredients';
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'ingredients';
 
-            // On appelle le service d'ajout
-            $fichier = $pictureService->add($images, $folder, 300, 300);
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
 
-            $img = new Images();
-            $img->setName($fichier);
-            $ingredient->addImage($img);
+                $img = new Images();
+                $img->setName($fichier);
+                $ingredient->addImage($img);
+            }
 
             $manager->persist($ingredient);
             $manager->flush();
@@ -125,15 +127,17 @@ class IngredientController extends AbstractController
             // On récupère les images
             $images = $form->get('images')->getData();
 
-            // On définit le dossier de destination
-            $folder = 'ingredients';
+            if ($images != null) {
+                // On définit le dossier de destination
+                $folder = 'ingredients';
 
-            // On appelle le service d'ajout
-            $fichier = $pictureService->add($images, $folder, 300, 300);
+                // On appelle le service d'ajout
+                $fichier = $pictureService->add($images, $folder, 300, 300);
 
-            $img = new Images();
-            $img->setName($fichier);
-            $ingredient->addImage($img);
+                $img = new Images();
+                $img->setName($fichier);
+                $ingredient->addImage($img);
+            }
 
             $manager->persist($ingredient);
             $manager->flush();
