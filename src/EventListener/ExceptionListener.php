@@ -13,10 +13,9 @@ class ExceptionListener
 {
     private $router;
 
-    public function __construct(RouterInterface $router, /*SessionInterface $session*/)
+    public function __construct(RouterInterface $router)
     {
         $this->router = $router;
-        //$this->session = $session;
     }
 
     public function __invoke(ExceptionEvent $event): void

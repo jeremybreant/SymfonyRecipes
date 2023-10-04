@@ -164,7 +164,7 @@
         {{ starMark.displayMark(mark) }}
     {% endfor %}
 
-    {% if recipe.user != app.user %}
+    {% if form is defined %}
         <div class="row align-items-center p-2 mt-5 mb-5">
             <div class="col border-bottom"></div>
             <div class="col border-bottom"></div>

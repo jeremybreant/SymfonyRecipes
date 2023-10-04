@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -272,7 +273,6 @@ class RecipeController extends AbstractController
      * @param Recipe $recipe
      * @return Response
      */
-    #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
     #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
     public function show(
         Recipe $recipe,
@@ -281,15 +281,23 @@ class RecipeController extends AbstractController
         EntityManagerInterface $manager
     ): Response {
 
-        if ($request->getUser() === $recipe->getUser()) {
-            return $this->render('pages/recipe/show.html.twig', [
-                'recipe' => $recipe
-            ]);
+        // Si ce n'est pas l'auteur et que la recette n'est pas sensé être accessible au public
+        if(!$recipe->isAccessibleByPublic() && $request->getUser() !== $recipe->getUser()){
+            throw new AccessDeniedHttpException("Access denied");
         }
 
+        // récupération des nhotes associées
         $relatedMarks = $markRepository->findBy([
             'recipe' => $recipe
         ]);
+
+        // Si ce sont des personnes ne pouvant pas noter cette recette
+        if ($request->getUser() === $recipe->getUser() or $request->getUser() === null) {
+            return $this->render('pages/recipe/show.html.twig', [
+                'recipe' => $recipe,
+                'relatedMarks' => $relatedMarks
+            ]);
+        }
 
         $mark = new Mark();
 
@@ -326,6 +334,7 @@ class RecipeController extends AbstractController
 
             return $this->redirectToRoute('recipe.index.public');
         }
+        
         return $this->render('pages/recipe/show.html.twig', [
             'recipe' => $recipe,
             'relatedMarks' => $relatedMarks,
