@@ -16,7 +16,7 @@ export default class extends Controller {
             let imageTarget = this.imageTarget;
             $.ajax({
                 url: '/image/suppression',
-                method: 'POST',
+                method: 'DELETE',
                 data: {
                     imageId: this.imageidValue,
                     folder: this.folderValue
