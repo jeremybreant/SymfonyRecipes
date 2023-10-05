@@ -25,14 +25,18 @@ class ExceptionController extends AbstractController
         if ($statusCode === "403") {
             $this->addFlash(
                 'danger',
-                sprintf('<strong>403 :</strong> Il semblerait que la page que vous cherchiez à accéder vous est interdite. Vous avez été redirigé à l\'accueuil.')
+                sprintf('<strong>403 :</strong> Il semblerait que la page que vous cherchiez à accéder vous est interdite. Vous avez été redirigé à l\'accueuil.<br>
+                <strong>Message d\'erreur:</strong> %s',
+                $message)
             );
         }
 
         if ($statusCode === "404") {
             $this->addFlash(
                 'danger',
-                sprintf('<strong>404 :</strong> Il semblerait que la page que vous cherchiez à accéder n\'existe pas. Vous avez été redirigé à l\'accueuil.')
+                sprintf('<strong>404 :</strong> Il semblerait que la page que vous cherchiez à accéder n\'existe pas. Vous avez été redirigé à l\'accueuil.<br>
+                <strong>Message d\'erreur:</strong> %s',
+                $message)
             );
         }
 
