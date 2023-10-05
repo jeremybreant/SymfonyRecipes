@@ -140,6 +140,7 @@ class RecipeController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $recipe->addImage($img);
             }
 
@@ -218,6 +219,7 @@ class RecipeController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $newRecipe->addImage($img);
 
                 $isExternalRequirement = true;
