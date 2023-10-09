@@ -33,7 +33,7 @@
             <tr>
                 <td>
                     <div class="ingredient_images">
-                        <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImageForIngredient(ingredient.images[0]) }}">
+                        <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImageFromArray(ingredient.images, 'ingredients') }}">
                     </div>
                 </td>
                 <td class="align-middle">{{ ingredient.name }}</td>

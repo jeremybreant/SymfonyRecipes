@@ -18,7 +18,7 @@
 			</div>
 		{% endif %}
 		<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
-			<img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow" src="{{ tools.provideDefaultImageForRecipe(recipe.images[0]) }}">
+			<img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow" src="{{ tools.provideDefaultImageFromArray(recipe.images, 'recettes') }}">
 		</a>
 	</div>
 	<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
