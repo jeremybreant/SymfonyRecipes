@@ -4,11 +4,14 @@ declare(strict_types=1);
 // src/EventListener/ExceptionListener.php
 namespace App\EventListener;
 
+use Symfony\Component\DependencyInjection\Attribute\When;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+
+#[When(env: 'prod')]
 class ExceptionListener
 {
     private $router;
