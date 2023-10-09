@@ -103,7 +103,7 @@
 				data-images-folder-value="recettes"
 			>
 				<div class="py-2 text-center">
-					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ asset('images/recettes/mini/300x300-' ~ image.name) }}">
+					<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ tools.provideDefaultImageForRecipe(image) }}">
 				</div>
 				<div class="p-2 text-center" >
 				    <a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>

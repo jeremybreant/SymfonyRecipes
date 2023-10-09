@@ -1,6 +1,6 @@
 {% macro provideDefaultImageForIngredient(images) %}
     {% if images is not empty %}
-        {{ asset('images/ingredients/mini/300x300-' ~ images[0].name) }}
+        {{ asset('images/ingredients/mini/300x300-' ~ images.name) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
@@ -8,7 +8,7 @@
 
 {% macro provideDefaultImageForRecipe(images) %}
     {% if images is not empty %}
-        {{ asset('images/recettes/mini/300x300-' ~ images[0].name) }}
+        {{ asset('images/recettes/mini/300x300-' ~ images.name) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
