@@ -36,7 +36,7 @@ class ExceptionListener
                     [
                         "X-Status-Code" => $exception->getStatusCode(), 
                         "X-Code" => $exception->getCode(),
-                        "X-Message" => $exception->getMessage(),
+                        "X-Message" => $exception->getMessage()
                     ]
                 ),
 
@@ -52,7 +52,7 @@ class ExceptionListener
                 'exception.server-error',
                 [
                     "X-Code" => $exception->getCode(),
-                    "X-Message" => $exception->getMessage(),
+                    "X-Message" => $exception->getMessage()
                 ]
             ),
 
