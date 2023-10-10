@@ -83,6 +83,7 @@ class IngredientController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $ingredient->addImage($img);
             }
 
@@ -136,6 +137,7 @@ class IngredientController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $ingredient->addImage($img);
             }
 

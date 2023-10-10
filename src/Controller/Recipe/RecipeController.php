@@ -22,6 +22,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\ItemInterface;
@@ -44,7 +45,8 @@ class RecipeController extends AbstractController
         Request $request
     ): Response {
         $recipes = $paginator->paginate(
-            $recipeRepository->findBy(['user' => $this->getUser()]), /* query NOT result */
+            $recipeRepository->findBy(['user' => $this->getUser()]),
+            /* query NOT result */
             $request->query->getInt('page', 1),
             /*page number*/
             12 /*limit per page*/
@@ -91,7 +93,8 @@ class RecipeController extends AbstractController
         $query = $recipeRepository->findPublicRecipeQuery(null);
 
         $recipes = $paginator->paginate(
-            $query, /* query NOT result */
+            $query,
+            /* query NOT result */
             $request->query->getInt('page', 1),
             /*page number*/
             12 /*limit per page*/
@@ -114,6 +117,7 @@ class RecipeController extends AbstractController
         EntityManagerInterface $manager,
         PictureService $pictureService
     ): Response {
+
         $recipe = new Recipe();
         $recipe->addRecipeIngredient(new RecipeIngredient());
 
@@ -136,6 +140,7 @@ class RecipeController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $recipe->addImage($img);
             }
 
@@ -164,13 +169,19 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Route('/recette/edit/{id}', 'recipe.edit', methods: ['GET', 'POST'])]
-    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
+    #[IsGranted('ROLE_USER')]
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
         Recipe $recipe,
         PictureService $pictureService
     ): Response {
+
+        // Security Control
+        if ($this->getUser() != $recipe->getUser()) {
+            throw new AccessDeniedHttpException("Edit Access denied");
+        }
+
         $originalRecipeIngredients = new ArrayCollection();
         $originalRecipe = clone $recipe;
 
@@ -208,6 +219,7 @@ class RecipeController extends AbstractController
 
                 $img = new Images();
                 $img->setName($fichier);
+                $img->setUser($this->getUser());
                 $newRecipe->addImage($img);
 
                 $isExternalRequirement = true;
@@ -243,11 +255,17 @@ class RecipeController extends AbstractController
      * @return Response
      */
     #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ['GET'])]
-    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
+    #[IsGranted('ROLE_USER')]
     public function delete(
         Recipe $recipe,
         EntityManagerInterface $entityManager
     ): Response {
+
+        // Security Control
+        if ($this->getUser() != $recipe->getUser()) {
+            throw new AccessDeniedHttpException("Delete Access denied");
+        }
+
         if (!$recipe) {
             $this->addFlash(
                 'danger',
@@ -272,7 +290,6 @@ class RecipeController extends AbstractController
      * @param Recipe $recipe
      * @return Response
      */
-    #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
     #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
     public function show(
         Recipe $recipe,
@@ -281,15 +298,23 @@ class RecipeController extends AbstractController
         EntityManagerInterface $manager
     ): Response {
 
-        if ($request->getUser() === $recipe->getUser()) {
-            return $this->render('pages/recipe/show.html.twig', [
-                'recipe' => $recipe
-            ]);
+        // Si ce n'est pas l'auteur et que la recette n'est pas sensé être accessible au public
+        if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser()) {
+            throw new AccessDeniedHttpException("View Access denied");
         }
 
+        // récupération des nhotes associées
         $relatedMarks = $markRepository->findBy([
             'recipe' => $recipe
         ]);
+
+        // Si ce sont des personnes ne pouvant pas noter cette recette
+        if ($this->getUser() === $recipe->getUser() or $this->getUser() === null) {
+            return $this->render('pages/recipe/show.html.twig', [
+                'recipe' => $recipe,
+                'relatedMarks' => $relatedMarks
+            ]);
+        }
 
         $mark = new Mark();
 
@@ -339,12 +364,18 @@ class RecipeController extends AbstractController
      * @param Recipe $recipe
      * @return Response
      */
-    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
+    #[IsGranted('ROLE_USER')]
     #[Route('/recette/{id}/start-check', 'recipe.start-check', methods: ['GET'])]
     public function startCheck(
         Recipe $recipe,
         EntityManagerInterface $manager
     ): Response {
+
+        // Security Control
+        if ($this->getUser() != $recipe->getUser()) {
+            throw new AccessDeniedHttpException("Start-check Access denied");
+        }
+
         if ($recipe->getStatus() !== Recipe::STATUS_NOT_APPROVED) {
 
             return $this->redirectToRoute('recipe.index');

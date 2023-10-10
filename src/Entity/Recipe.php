@@ -582,4 +582,11 @@ class Recipe
 
         return $this;
     }
+
+    public function isAccessibleByPublic(): bool
+    {
+        if(!$this->isPublic) return false;
+        if($this->getStatus() !== Recipe::STATUS_APPROVED) return false;
+        return true;
+    }
 }

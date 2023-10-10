@@ -1,18 +1,19 @@
-{% macro provideDefaultImageForIngredient(images) %}
-    {% if images is not empty %}
-        {{ asset('images/ingredients/mini/300x300-' ~ images[0].name) }}
+{% macro provideDefaultImageFromSingleImage(image, directory) %}
+    {% if image is not empty and file_exists(directory ~ '/mini/300x300-' ~ image.name) %}
+        {{ asset('images/' ~ directory ~ '/mini/300x300-' ~ image.name) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
 {% endmacro %}
 
-{% macro provideDefaultImageForRecipe(images) %}
-    {% if images is not empty %}
-        {{ asset('images/recettes/mini/300x300-' ~ images[0].name) }}
+{% macro provideDefaultImageFromArray(images, directory) %}
+    {% if images is not empty and file_exists(directory ~ '/mini/300x300-' ~ images[0].name) %}
+        {{ asset('images/' ~ directory ~ '/mini/300x300-' ~ images[0].name) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
 {% endmacro %}
+
 
 {% macro provideClickableFavIcon(id, isFavorite) %}
 <div {{ stimulus_controller('tool') }} data-tool-recipeid-value="{{ id }}" class="w-100 h-100">

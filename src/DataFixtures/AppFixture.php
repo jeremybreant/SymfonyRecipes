@@ -105,7 +105,6 @@ class AppFixture extends Fixture implements DependentFixtureInterface
                 ->setFoodQuantityType($quantityTypeConst[array_rand($quantityTypeConst)])
                 ->setPreparationTime(mt_rand(2, 600))
                 ->setCookingTime(mt_rand(0, 1) == 1 ? mt_rand(0, 1440) : null)
-                ->setIsFavorite(mt_rand(0, 1) == 1)
                 ->setUser($users[mt_rand(0, count($users) - 1)])
                 ->setIsPublic(mt_rand(0, 1) == 1)
                 ->setStatus($statusConst[array_rand($statusConst)]);

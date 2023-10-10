@@ -71,6 +71,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Recipe::class, inversedBy: 'usersLikingThisRecipe')]
     private Collection $favoriteRecipes;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Images::class)]
+    private Collection $images;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -119,6 +122,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->recipes = new ArrayCollection();
         $this->marks = new ArrayCollection();
         $this->favoriteRecipes = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -342,4 +346,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
         return $this;
     }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getUser() === $this) {
+                $image->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
 }
