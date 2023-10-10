@@ -31,12 +31,17 @@ class ImageController extends AbstractController
         // On récupère le nom de l'image
         $filename = $image->getName();
 
-        if ($pictureService->delete($filename, $folder, 300, 300)) {
-            $manager->remove($image);
-            $manager->flush();
-            return new JsonResponse(['success' => true], 200);
+        $path = $this->getParameter('images_directory');
+        if(file_exists($path.$filename))
+        {
+            if(!$pictureService->delete($filename, $folder, 300, 300))
+            {
+                // La suppression a échoué
+                return new JsonResponse(['error' => 'Erreur de suppression'], 400);
+            }
         }
-        // La suppression a échoué
-        return new JsonResponse(['error' => 'Erreur de suppression'], 400);
+        $manager->remove($image);
+        $manager->flush();
+        return new JsonResponse(['success' => true], 200);      
     }
 }
