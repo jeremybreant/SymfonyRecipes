@@ -22,6 +22,12 @@ use Symfony\Component\Validator\Constraints as Assert;
 )]
 class Ingredient implements ImagesInterface
 {
+
+    public const PICTURE_SIZE_WIDTH = 300;
+    public const PICTURE_SIZE_HEIGHT = 300;
+
+    public const PICTURE_DIRECTORY = "ingredients/";
+
     #[Groups(['ingredient'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -182,5 +188,10 @@ class Ingredient implements ImagesInterface
         }
 
         return $this;
+    }
+
+    public function getImagesDirectory(): string
+    {
+        return Ingredient::IMAGE_DIRECTORY;
     }
 }

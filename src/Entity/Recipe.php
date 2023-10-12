@@ -11,18 +11,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Config\TwigExtra\StringConfig;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -93,6 +88,10 @@ class Recipe implements ImagesInterface
             Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED
         ];
     }
+
+    public const PICTURE_SIZE_WIDTH = 600;
+    public const PICTURE_SIZE_HEIGHT = 600;
+    public const PICTURE_DIRECTORY = "recettes/";
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

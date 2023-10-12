@@ -30,6 +30,12 @@ class Images implements PictureServiceInterface
     #[ORM\Column(length: 50)]
     private ?string $pictureDirectory = null;
 
+    #[ORM\Column]
+    private ?int $pictureHeight = 250;
+
+    #[ORM\Column]
+    private ?int $pictureWidth = 250;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -98,5 +104,34 @@ class Images implements PictureServiceInterface
         $this->pictureDirectory = $pictureDirectory;
 
         return $this;
+    }
+
+    public function getPictureHeight(): ?int
+    {
+        return $this->pictureHeight;
+    }
+
+    public function setPictureHeight(int $pictureHeight): static
+    {
+        $this->pictureHeight = $pictureHeight;
+
+        return $this;
+    }
+
+    public function getPictureWidth(): ?int
+    {
+        return $this->pictureWidth;
+    }
+
+    public function setPictureWidth(int $pictureWidth): static
+    {
+        $this->pictureWidth = $pictureWidth;
+
+        return $this;
+    }
+
+    public function providePicturePath(): string
+    {
+        return $this->pictureDirectory.$this->pictureWidth.'x'.$this->pictureHeight.'/'.$this->name;
     }
 }

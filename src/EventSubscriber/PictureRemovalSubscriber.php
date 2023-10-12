@@ -36,6 +36,6 @@ class PictureRemovalSubscriber implements EventSubscriber
             return;
         }
 
-        $this->pictureService->delete($entity->getPictureName(), $entity->getPictureDirectory(), 300, 300);
+        $this->pictureService->delete($entity->getPictureName(), $entity->getPictureDirectory(), $entity->getPictureWidth(), $entity->getPictureHeight());
     }
 }

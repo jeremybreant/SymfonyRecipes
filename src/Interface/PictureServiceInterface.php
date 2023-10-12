@@ -16,4 +16,14 @@ interface PictureServiceInterface
      * @return string
      */
     public function getPictureDirectory();
+
+    /**
+     * @return int
+     */
+    public function getPictureWidth();
+
+    /**
+     * @return int
+     */
+    public function getPictureHeight();
 }

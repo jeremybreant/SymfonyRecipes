@@ -16,7 +16,7 @@ class PictureService
         $this->params = $params;
     }
 
-    public function add(UploadedFile $picture, ?string $folder = '', ?int $width = 250, ?int $height = 250)
+    public function add(UploadedFile $picture, string $folder, int $width, int $height)
     {
         // On donne un nouveau nom à l'image
         $file = md5(uniqId()) . '.webp';
@@ -74,33 +74,33 @@ class PictureService
         $resized_picutre = imagecreatetruecolor($width, $height);
         imagecopyresampled($resized_picutre, $picture_source, 0, 0, $src_x, $src_y, $width, $height, $squareSize, $squareSize);
 
-        $path = $this->params->get('images_directory') . $folder;
+        $path = $this->params->get('images_path') . $folder;
 
         // On crée le dossier de destination s'il n'existe pas
-        $miniPath = $path . 'mini/';
-        if (!file_exists($miniPath)) {
-            mkdir($miniPath, 0755, true);
+        $sizePath = $path . $width . 'x' . $height . '/';
+        if (!file_exists($sizePath)) {
+            mkdir($sizePath, 0755, true);
         }
 
         // On stocke l'image recadrée
-        imagewebp($resized_picutre, $miniPath . $width . 'x' . $height . '-' . $file);
+        imagewebp($resized_picutre, $sizePath . $file);
         $picture->move($path, $file);
 
         return $file;
     }
 
-    public function delete(string $file, ?string $folder = '', ?int $width = 250, ?int $height = 250)
+    public function delete(string $file, string $folder, int $width, int $height)
     {
         if ($file !== 'default.webp') {
 
             $success = false;
-            $path = $this->params->get('images_directory') . $folder;
+            $path = $this->params->get('images_path') . $folder;
 
-            $miniPath = $path . 'mini/';
-            $mini = $miniPath . $width . 'x' . $height . '-' . $file;
+            $sizePath = $path . $width . 'x' . $height . '/';
+            $pictureFilePath = $sizePath . $file;
 
-            if(file_exists($mini)){
-                unlink($mini);
+            if(file_exists($pictureFilePath)){
+                unlink($pictureFilePath);
                 $success = true;
             }
 

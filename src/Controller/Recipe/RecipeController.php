@@ -129,19 +129,19 @@ class RecipeController extends AbstractController
             $recipe = $form->getData();
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = $this->getParameter('recipe_folder');
-
+            if ($image != null) {
                 // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+                $fichier = $pictureService->add($image, Recipe::PICTURE_DIRECTORY, Recipe::PICTURE_SIZE_WIDTH, Recipe::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
-                $img->setPictureDirectory($folder);
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Recipe::PICTURE_DIRECTORY)
+                ->setPictureWidth(Recipe::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
+
                 $recipe->addImage($img);
             }
 
@@ -209,22 +209,20 @@ class RecipeController extends AbstractController
             $isExternalRequirement = false;
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = $this->getParameter('recipe_folder');
-
+            if ($image != null) {
                 // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+                $fichier = $pictureService->add($image, Recipe::PICTURE_DIRECTORY, Recipe::PICTURE_SIZE_WIDTH, Recipe::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
-                $img->setPictureDirectory($folder);
-                $newRecipe->addImage($img);
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Recipe::PICTURE_DIRECTORY)
+                ->setPictureWidth(Recipe::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
 
-                $isExternalRequirement = true;
+                $newRecipe->addImage($img);
             }
 
             //reset status in order to not show inapropriate content
