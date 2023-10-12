@@ -133,7 +133,7 @@ class RecipeController extends AbstractController
 
             if ($images != null) {
                 // On définit le dossier de destination
-                $folder = 'recettes';
+                $folder = $this->getParameter('recipe_folder');
 
                 // On appelle le service d'ajout
                 $fichier = $pictureService->add($images, $folder, 300, 300);
@@ -141,6 +141,7 @@ class RecipeController extends AbstractController
                 $img = new Images();
                 $img->setName($fichier);
                 $img->setUser($this->getUser());
+                $img->setPictureDirectory($folder);
                 $recipe->addImage($img);
             }
 
@@ -212,7 +213,7 @@ class RecipeController extends AbstractController
 
             if ($images != null) {
                 // On définit le dossier de destination
-                $folder = 'recettes';
+                $folder = $this->getParameter('recipe_folder');
 
                 // On appelle le service d'ajout
                 $fichier = $pictureService->add($images, $folder, 300, 300);
@@ -220,6 +221,7 @@ class RecipeController extends AbstractController
                 $img = new Images();
                 $img->setName($fichier);
                 $img->setUser($this->getUser());
+                $img->setPictureDirectory($folder);
                 $newRecipe->addImage($img);
 
                 $isExternalRequirement = true;

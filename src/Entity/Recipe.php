@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interface\ImagesInterface;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -31,7 +32,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     message: 'Cet utilisateur a déjà créé cette recette',
     errorPath: 'name'
 )]
-class Recipe
+class Recipe implements ImagesInterface
 {
     public const PRICE_VERY_LOW = "Très bon marché";
     public const PRICE_LOW = "Bon marché";
@@ -152,11 +153,11 @@ class Recipe
     private User $user;
 
     #[Groups(['recipe_marks'])]
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $marks;
 
     #[Groups(['recipe_recipeIngredients'])]
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist','remove'], orphanRemoval: true)]
     #[Assert\Valid()]
     private Collection $recipeIngredients;
 
@@ -181,7 +182,7 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'recipes')]
     private Collection $categories;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Images::class, cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Images::class, cascade:['persist','remove'], orphanRemoval: true)]
     private Collection $images;
 
 

@@ -76,7 +76,7 @@ class IngredientController extends AbstractController
 
             if ($images != null) {
                 // On définit le dossier de destination
-                $folder = 'ingredients';
+                $folder = $this->getParameter('ingredient_folder');
 
                 // On appelle le service d'ajout
                 $fichier = $pictureService->add($images, $folder, 300, 300);
@@ -84,6 +84,7 @@ class IngredientController extends AbstractController
                 $img = new Images();
                 $img->setName($fichier);
                 $img->setUser($this->getUser());
+                $img->setPictureDirectory($folder);
                 $ingredient->addImage($img);
             }
 
@@ -130,7 +131,7 @@ class IngredientController extends AbstractController
 
             if ($images != null) {
                 // On définit le dossier de destination
-                $folder = 'ingredients';
+                $folder = $this->getParameter('ingredient_folder');
 
                 // On appelle le service d'ajout
                 $fichier = $pictureService->add($images, $folder, 300, 300);
@@ -138,6 +139,7 @@ class IngredientController extends AbstractController
                 $img = new Images();
                 $img->setName($fichier);
                 $img->setUser($this->getUser());
+                $img->setPictureDirectory($folder);
                 $ingredient->addImage($img);
             }
 

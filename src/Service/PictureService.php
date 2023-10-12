@@ -18,11 +18,6 @@ class PictureService
 
     public function add(UploadedFile $picture, ?string $folder = '', ?int $width = 250, ?int $height = 250)
     {
-        // On ajoute directement le '/' si il y a un sous-dossier
-        if ($folder != '') {
-            $folder = $folder . '/';
-        }
-
         // On donne un nouveau nom à l'image
         $file = md5(uniqId()) . '.webp';
 
@@ -61,7 +56,7 @@ class PictureService
             case -1: // portrait
                 $squareSize = $imageWidth;
                 $src_x = 0;
-                $src_y = ($imageHeight - $squareSize) / 2;
+                $src_y = (int) floor(($imageHeight - $squareSize) / 2);
                 break;
             case 0: // carré
                 $squareSize = $imageWidth;
@@ -70,7 +65,7 @@ class PictureService
                 break;
             case 1: // paysage
                 $squareSize = $imageHeight;
-                $src_x = ($imageWidth - $squareSize) / 2;
+                $src_x = (int) floor(($imageWidth - $squareSize) / 2);
                 $src_y = 0;
                 break;
         }
@@ -97,11 +92,6 @@ class PictureService
     public function delete(string $file, ?string $folder = '', ?int $width = 250, ?int $height = 250)
     {
         if ($file !== 'default.webp') {
-
-            // On ajoute directement le '/' si il y a un sous-dossier
-            if ($folder != '') {
-                $folder = $folder . '/';
-            }
 
             $success = false;
             $path = $this->params->get('images_directory') . $folder;

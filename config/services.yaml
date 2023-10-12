@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     images_directory: '%kernel.project_dir%/public/images/'
+    ingredient_folder: 'ingredients/'
+    recipe_folder: 'recettes/'
 
 services:
     # default configuration for services in *this* file
@@ -23,8 +25,13 @@ services:
 
     App\EntityListener\UserListener:
         tags:
-            -
-                name: doctrine.orm.entity_listener
+            - name: doctrine.orm.entity_listener
+
+    App\EventSubscriber\PictureRemovalSubscriber:
+        arguments:
+            $pictureService: '@App\Service\PictureService'
+        tags:
+            - name: doctrine.event_subscriber
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 

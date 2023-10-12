@@ -32,11 +32,10 @@
 		{% for image in ingredient.images %}
 			<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
 				data-images-imageid-value="{{ image.id }}"
-				data-images-folder-value="ingredients"
 			>
 				<div class="py-2 text-center">
 					<img class="w-75 shadow custom-img-1-1 rounded-4" 
-						src="{{ tools.provideDefaultImageFromSingleImage(image, 'ingredients') }}"
+						src="{{ tools.provideDefaultImageFromSingleImage(image) }}"
 					>
 				</div>
 				<div class="p-2 text-center">

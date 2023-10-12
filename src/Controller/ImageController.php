@@ -22,26 +22,18 @@ class ImageController extends AbstractController
     public function deleteImage(Request $request, ImagesRepository $imagesRepository, EntityManagerInterface $manager, PictureService $pictureService): JsonResponse
     {
         $image = $imagesRepository->find($request->request->get("imageId"));
-        
-        if($image->getUser() != $this->getUser()){
+
+        if ($image->getUser() != $this->getUser()) {
             throw new AccessDeniedHttpException("Image deletion Access denied");
         }
-        
-        $folder = $request->request->get("folder");
-        // On récupère le nom de l'image
-        $filename = $image->getName();
 
-        $path = $this->getParameter('images_directory');
-        if(file_exists($path.$filename))
-        {
-            if(!$pictureService->delete($filename, $folder, 300, 300))
-            {
-                // La suppression a échoué
-                return new JsonResponse(['error' => 'Erreur de suppression'], 400);
-            }
+        if (!$pictureService->delete($image->getPictureName(), $image->getPictureDirectory(), 300, 300)) {
+            // La suppression a échoué
+            return new JsonResponse(['error' => 'Erreur de suppression'], 400);
         }
+
         $manager->remove($image);
         $manager->flush();
-        return new JsonResponse(['success' => true], 200);      
+        return new JsonResponse(['success' => true], 200);
     }
 }

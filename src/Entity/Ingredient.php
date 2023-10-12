@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interface\ImagesInterface;
 use App\Repository\IngredientRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -19,7 +20,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     message: 'Cet utilisateur a déjà créé cet ingrédient',
     errorPath: 'name'
 )]
-class Ingredient
+class Ingredient implements ImagesInterface
 {
     #[Groups(['ingredient'])]
     #[ORM\Id]
@@ -52,7 +53,7 @@ class Ingredient
     #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
     private Collection $recipeIngredients;
 
-    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class, cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class, cascade:['persist','remove'], orphanRemoval: true)]
     private Collection $images;
 
     /**
