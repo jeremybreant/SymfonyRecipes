@@ -27,11 +27,6 @@ class ImageController extends AbstractController
             throw new AccessDeniedHttpException("Image deletion Access denied");
         }
 
-        if (!$pictureService->delete($image->getPictureName(), $image->getPictureDirectory(), 300, 300)) {
-            // La suppression a échoué
-            return new JsonResponse(['error' => 'Erreur de suppression'], 400);
-        }
-
         $manager->remove($image);
         $manager->flush();
         return new JsonResponse(['success' => true], 200);

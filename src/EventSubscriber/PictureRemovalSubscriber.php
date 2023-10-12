@@ -31,21 +31,11 @@ class PictureRemovalSubscriber implements EventSubscriber
     public function preRemove(PreRemoveEventArgs $preRemoveEventArgs)
     {
         $entity = $preRemoveEventArgs->getObject();
-        
-        if (!$entity instanceof ImagesInterface) {
+
+        if (!$entity instanceof PictureServiceInterface) {
             return;
         }
 
-        $images = $entity->getImages();
-        if ($images == null) {
-            return;
-        }
-
-        foreach ($images as $image) {
-            if (!$image instanceof PictureServiceInterface) {
-                continue;
-            }
-            $this->pictureService->delete($image->getPictureName(), $image->getPictureDirectory(), 300, 300);
-        }
+        $this->pictureService->delete($entity->getPictureName(), $entity->getPictureDirectory(), 300, 300);
     }
 }
