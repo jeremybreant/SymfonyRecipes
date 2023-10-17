@@ -27,6 +27,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\ItemInterface;
 
+use function PHPUnit\Framework\containsIdentical;
+
 class RecipeController extends AbstractController
 {
     /**
@@ -299,7 +301,7 @@ class RecipeController extends AbstractController
     ): Response {
 
         // Si ce n'est pas l'auteur et que la recette n'est pas sensé être accessible au public
-        if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser()) {
+        if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser() && !in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
             throw new AccessDeniedHttpException("View Access denied");
         }
 

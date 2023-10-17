@@ -26,13 +26,12 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Vich\UploaderBundle\Form\Type\VichImageType;
 
-class RecipeCrudController extends AbstractCrudController
+class ApprobRecipeCrudController extends AbstractCrudController
 {
 
     private $adminUrlGenerator;
@@ -52,10 +51,10 @@ class RecipeCrudController extends AbstractCrudController
     public function configureCrud(Crud $crud): Crud
     {
         return $crud
-            ->setEntityLabelInPlural('Recettes')
-            ->setEntityLabelInSingular('Recette')
+            ->setEntityLabelInPlural('Demandes d\'approbation')
+            ->setEntityLabelInSingular('Demande d\'approbation')
 
-            ->setPageTitle("index","Symfony Recipes - Administration des recettes")
+            ->setPageTitle("index","Symfony Recipes - Administration des demandes d'approbation")
             ->showEntityActionsInlined()
 
             ->setPaginatorPageSize(10)
@@ -83,49 +82,80 @@ class RecipeCrudController extends AbstractCrudController
 
             FormField::addPanel("Informations à vérifier"),
             TextField::new('name')
+                ->setDisabled()
                 ->setColumns(6),      
             NumberField::new('preparationTime')
+                ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
             NumberField::new('cookingTime')
+                ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
             NumberField::new('foodQuantity')
+                ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
             TextField::new('foodQuantityType')
+                ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
             TextField::new('difficulty')
+                ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
             TextareaField::new('description')  
+                ->setDisabled()
                 ->renderAsHtml()
                 ->setColumns(12),
 
-            FormField::addPanel("Image info")
-                ->hideOnForm(),
-
+            FormField::addPanel("Image info"),
+            
             CollectionField::new('images', 'Image')
-                ->hideOnForm()
                 ->hideOnIndex()
-                ->setTemplatePath('admin/field/image_collection_field_template.html.twig')
-            ];
+                ->setFormType(FileType::class)
+                ->setTemplatePath('admin/field/image_collection_field_template.html.twig')   
+
+        ];
     }
 
-     public function configureActions(Actions $actions): Actions
+    // Surchargez la méthode createIndexQueryBuilder pour appliquer directement le filtre
+    public function createIndexQueryBuilder(SearchDto $searchDto, EntityDto $entityDto, FieldCollection $fields, FilterCollection $filters): QueryBuilder
     {
+        $queryBuilder = parent::createIndexQueryBuilder($searchDto, $entityDto, $fields, $filters);
 
-        $seeFromClientView = Action::new('seeFrowCustomerView', 'Voir comme client', 'fas fa-eye')
+        // Appliquez la condition pour filtrer les recettes ayant le tag "récent"
+        $queryBuilder->andWhere('entity.status LIKE :status_in_approbation')
+            ->setParameter('status_in_approbation', Recipe::STATUS_IN_APPROBATION);
+
+        return $queryBuilder;
+    }
+
+
+    public function configureActions(Actions $actions): Actions
+    {
+        $refuseRecipe = Action::new('refuseApprobation', 'Refuser l\'approbation', 'fas fa-xmark')
+            ->linkToCrudAction('refuseApprobation')
+            ->setCssClass('btn btn-danger');
+
+        $acceptRecipe = Action::new('approbate', 'Approuver', 'fas fa-check')
+            ->linkToCrudAction('approbate')
+            ->setCssClass('btn btn-success');
+
+        $seeFromClientView = Action::new('seeFrowCustomerView', 'Voir', 'fas fa-eye')
         ->linkToCrudAction('seeFrowCustomerView')
         ->setCssClass('btn btn-info');
         
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
+            ->add(Crud::PAGE_DETAIL, $refuseRecipe)
+            ->add(Crud::PAGE_DETAIL, $acceptRecipe)
             ->add(Crud::PAGE_DETAIL, $seeFromClientView)
             ->remove(Crud::PAGE_INDEX, Action::NEW)
+            ->remove(Crud::PAGE_DETAIL, Action::EDIT)
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
+            ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
         ;
     }
