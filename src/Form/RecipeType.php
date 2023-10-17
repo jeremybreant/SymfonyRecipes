@@ -79,7 +79,7 @@ class RecipeType extends AbstractType
                     "menubar" => "",
                     "statusbar" => ""
                 ],
-                'label' => 'Description',
+                'label' => 'Description :',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -93,7 +93,7 @@ class RecipeType extends AbstractType
             ])
             ->add('isPublic', CheckboxType::class, [
                 'required' => false,
-                'label' => 'Public ?',
+                'label' => 'La recette est elle publique ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
                 ]
@@ -112,7 +112,10 @@ class RecipeType extends AbstractType
                 ]
             ])
             ->add('images', FileType::class, [
-                'label' => false,
+                'label' => 'Ajouter une image :',
+                'label_attr' => [
+                    'class' => 'form-label'
+                ],
                 'multiple' => false,
                 'mapped' => false,
                 'required' => false
@@ -120,6 +123,7 @@ class RecipeType extends AbstractType
             ->add('recipeIngredients', CollectionType::class, [
                 'entry_type' => RecipeIngredientType::class,
                 'entry_options' => ['label' => false],
+                'label' => false,
                 'by_reference' => false,
                 'allow_add' => true,
                 'allow_delete' => true

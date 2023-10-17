@@ -27,26 +27,24 @@
 
 	{# On affiche les images si on est en édition #}
 	<a class="custom-anchor" id="images"></a>
-	<h2 class="mt-4">Images</h2>
-	<div class="row">
-		{% for image in ingredient.images %}
-			<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4"
-				data-images-imageid-value="{{ image.id }}"
-			>
-				<div class="py-2 text-center">
-					<img class="w-75 shadow custom-img-1-1 rounded-4" 
-						src="{{ tools.provideDefaultImageFromSingleImage(image) }}"
-					>
+	{% if ingredient.images is not empty %}
+		<h2 class="mt-4">Images</h2>
+		<div class="row">
+			{% for image in ingredient.images %}
+				<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4" data-images-imageid-value="{{ image.id }}">
+					<div class="py-2 text-center">
+						<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ tools.provideDefaultImageFromSingleImage(image) }}">
+					</div>
+					<div class="p-2 text-center">
+						<a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>
+					</div>
 				</div>
-				<div class="p-2 text-center">
-				    <a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>
-				</div>
-			</div>
-		{% endfor %}
-	</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
 	<div class="form-group">
 		{{ form_row(form.submit, {'label': 'Modifier'}) }}
 	</div>
 	{{ form_end(form) }}
 {% endblock %}
-

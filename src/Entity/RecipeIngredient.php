@@ -65,6 +65,7 @@ class RecipeIngredient
     #[Groups(['recipeIngredient_ingredient'])]
     #[ORM\ManyToOne(inversedBy: 'recipeIngredients')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotNull(message:"Vous devez sélectionner un ingrédient. Si vous n'en avez pas à mettre supprimer cette ligne. Il vous faudra créer un ingrédient et modifier cette recette par la suite")]
     private ?Ingredient $ingredient = null;
 
     public function getId(): ?int
