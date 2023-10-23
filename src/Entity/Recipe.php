@@ -89,7 +89,7 @@ class Recipe implements ImagesInterface
         ];
     }
 
-    public const PICTURE_SIZE_WIDTH = 600;
+    public const PICTURE_SIZE_WIDTH = 900;
     public const PICTURE_SIZE_HEIGHT = 600;
     public const PICTURE_DIRECTORY = "recettes/";
 

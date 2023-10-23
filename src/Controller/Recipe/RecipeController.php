@@ -225,6 +225,7 @@ class RecipeController extends AbstractController
                 ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
 
                 $newRecipe->addImage($img);
+                $isExternalRequirement = true;
             }
 
             //reset status in order to not show inapropriate content
