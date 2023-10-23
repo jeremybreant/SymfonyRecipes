@@ -29,7 +29,10 @@ class IngredientType extends AbstractType
                 'label' => 'Need context for the name'
             ])
             ->add('images', FileType::class, [
-                'label' => false,
+                'label' => 'Ajouter une image',
+                'label_attr' => [
+                    'class' => 'form-label'
+                ],
                 'multiple' => false,
                 'mapped' => false,
                 'required' => false

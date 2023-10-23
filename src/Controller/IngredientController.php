@@ -72,18 +72,18 @@ class IngredientController extends AbstractController
             $ingredient = $form->getData();
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = 'ingredients';
-
-                // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+            if ($image != null) {
+                $fichier = $pictureService->add($image, Ingredient::PICTURE_DIRECTORY, Ingredient::PICTURE_SIZE_WIDTH, Ingredient::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Ingredient::PICTURE_DIRECTORY)
+                ->setPictureWidth(Ingredient::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Ingredient::PICTURE_SIZE_HEIGHT);
+
                 $ingredient->addImage($img);
             }
 
@@ -126,18 +126,18 @@ class IngredientController extends AbstractController
             $ingredient = $form->getData();
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = 'ingredients';
-
-                // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+            if ($image != null) {
+                $fichier = $pictureService->add($image, Ingredient::PICTURE_DIRECTORY, Ingredient::PICTURE_SIZE_WIDTH, Ingredient::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Ingredient::PICTURE_DIRECTORY)
+                ->setPictureWidth(Ingredient::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Ingredient::PICTURE_SIZE_HEIGHT);
+
                 $ingredient->addImage($img);
             }
 

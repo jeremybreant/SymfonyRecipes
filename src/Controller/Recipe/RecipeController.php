@@ -27,6 +27,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\ItemInterface;
 
+use function PHPUnit\Framework\containsIdentical;
+
 class RecipeController extends AbstractController
 {
     /**
@@ -129,18 +131,19 @@ class RecipeController extends AbstractController
             $recipe = $form->getData();
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = 'recettes';
-
+            if ($image != null) {
                 // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+                $fichier = $pictureService->add($image, Recipe::PICTURE_DIRECTORY, Recipe::PICTURE_SIZE_WIDTH, Recipe::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Recipe::PICTURE_DIRECTORY)
+                ->setPictureWidth(Recipe::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
+
                 $recipe->addImage($img);
             }
 
@@ -208,20 +211,20 @@ class RecipeController extends AbstractController
             $isExternalRequirement = false;
 
             // On récupère les images
-            $images = $form->get('images')->getData();
+            $image = $form->get('images')->getData();
 
-            if ($images != null) {
-                // On définit le dossier de destination
-                $folder = 'recettes';
-
+            if ($image != null) {
                 // On appelle le service d'ajout
-                $fichier = $pictureService->add($images, $folder, 300, 300);
+                $fichier = $pictureService->add($image, Recipe::PICTURE_DIRECTORY, Recipe::PICTURE_SIZE_WIDTH, Recipe::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
-                $img->setName($fichier);
-                $img->setUser($this->getUser());
-                $newRecipe->addImage($img);
+                $img->setName($fichier)
+                ->setUser($this->getUser())
+                ->setPictureDirectory(Recipe::PICTURE_DIRECTORY)
+                ->setPictureWidth(Recipe::PICTURE_SIZE_WIDTH)
+                ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
 
+                $newRecipe->addImage($img);
                 $isExternalRequirement = true;
             }
 
@@ -299,7 +302,7 @@ class RecipeController extends AbstractController
     ): Response {
 
         // Si ce n'est pas l'auteur et que la recette n'est pas sensé être accessible au public
-        if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser()) {
+        if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser() && !in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
             throw new AccessDeniedHttpException("View Access denied");
         }
 

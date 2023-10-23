@@ -1,14 +1,14 @@
-{% macro provideDefaultImageFromSingleImage(image, directory) %}
-    {% if image is not empty and file_exists(directory ~ '/mini/300x300-' ~ image.name) %}
-        {{ asset('images/' ~ directory ~ '/mini/300x300-' ~ image.name) }}
+{% macro provideDefaultImageFromSingleImage(image) %}
+    {% if image is not empty and file_exists(image.providePicturePath()) %}
+        {{ asset(images_directory ~ image.providePicturePath()) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}
 {% endmacro %}
 
-{% macro provideDefaultImageFromArray(images, directory) %}
-    {% if images is not empty and file_exists(directory ~ '/mini/300x300-' ~ images[0].name) %}
-        {{ asset('images/' ~ directory ~ '/mini/300x300-' ~ images[0].name) }}
+{% macro provideDefaultImageFromArray(images) %}
+    {% if images is not empty and file_exists(images[0].providePicturePath()) %}
+        {{ asset(images_directory ~ images[0].providePicturePath()) }}
     {% else %}
         {{ asset('build/images/fakifv.jpg') }}
     {% endif %}

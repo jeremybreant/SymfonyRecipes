@@ -6,7 +6,6 @@ export default class extends Controller {
 
     static values = {
         imageid: Number,
-        folder: String
     }
     static targets = ["image"];
 
@@ -19,7 +18,6 @@ export default class extends Controller {
                 method: 'DELETE',
                 data: {
                     imageId: this.imageidValue,
-                    folder: this.folderValue
                 },
                 //*
                 success: function (response) {

@@ -2,11 +2,12 @@
 
 namespace App\Entity;
 
+use App\Interface\PictureServiceInterface;
 use App\Repository\ImagesRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ImagesRepository::class)]
-class Images
+class Images implements PictureServiceInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -25,6 +26,15 @@ class Images
     #[ORM\ManyToOne(inversedBy: 'images')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column(length: 50)]
+    private ?string $pictureDirectory = null;
+
+    #[ORM\Column]
+    private ?int $pictureHeight = 250;
+
+    #[ORM\Column]
+    private ?int $pictureWidth = 250;
 
     public function getId(): ?int
     {
@@ -77,5 +87,51 @@ class Images
         $this->user = $user;
 
         return $this;
+    }
+
+    public function getPictureName(): string
+    {
+        return $this->getName();
+    }
+
+    public function getPictureDirectory(): ?string
+    {
+        return $this->pictureDirectory;
+    }
+
+    public function setPictureDirectory(string $pictureDirectory): static
+    {
+        $this->pictureDirectory = $pictureDirectory;
+
+        return $this;
+    }
+
+    public function getPictureHeight(): ?int
+    {
+        return $this->pictureHeight;
+    }
+
+    public function setPictureHeight(int $pictureHeight): static
+    {
+        $this->pictureHeight = $pictureHeight;
+
+        return $this;
+    }
+
+    public function getPictureWidth(): ?int
+    {
+        return $this->pictureWidth;
+    }
+
+    public function setPictureWidth(int $pictureWidth): static
+    {
+        $this->pictureWidth = $pictureWidth;
+
+        return $this;
+    }
+
+    public function providePicturePath(): string
+    {
+        return $this->pictureDirectory.$this->pictureWidth.'x'.$this->pictureHeight.'/'.$this->name;
     }
 }

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interface\ImagesInterface;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -10,18 +11,13 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\Form\FormTypeInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory;
 use Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Config\TwigExtra\StringConfig;
-use Vich\UploaderBundle\Mapping\Annotation as Vich;
+
 
 
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
@@ -31,7 +27,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     message: 'Cet utilisateur a déjà créé cette recette',
     errorPath: 'name'
 )]
-class Recipe
+class Recipe implements ImagesInterface
 {
     public const PRICE_VERY_LOW = "Très bon marché";
     public const PRICE_LOW = "Bon marché";
@@ -93,6 +89,10 @@ class Recipe
         ];
     }
 
+    public const PICTURE_SIZE_WIDTH = 900;
+    public const PICTURE_SIZE_HEIGHT = 600;
+    public const PICTURE_DIRECTORY = "recettes/";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -152,11 +152,11 @@ class Recipe
     private User $user;
 
     #[Groups(['recipe_marks'])]
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Mark::class, cascade: ['remove'], orphanRemoval: true)]
     private Collection $marks;
 
     #[Groups(['recipe_recipeIngredients'])]
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist'], orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: RecipeIngredient::class, cascade: ['persist','remove'], orphanRemoval: true)]
     #[Assert\Valid()]
     private Collection $recipeIngredients;
 
@@ -181,7 +181,7 @@ class Recipe
     #[ORM\ManyToMany(targetEntity: Category::class, inversedBy: 'recipes')]
     private Collection $categories;
 
-    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Images::class, cascade:['persist'])]
+    #[ORM\OneToMany(mappedBy: 'recipe', targetEntity: Images::class, cascade:['persist','remove'], orphanRemoval: true)]
     private Collection $images;
 
 

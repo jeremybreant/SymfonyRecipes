@@ -4,7 +4,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    images_directory: '%kernel.project_dir%/public/images/'
+    public_directory: '%kernel.project_dir%/public/'
+    images_directory: 'images/'
+    images_path: '%public_directory%%images_directory%'
 
 services:
     # default configuration for services in *this* file
@@ -23,8 +25,13 @@ services:
 
     App\EntityListener\UserListener:
         tags:
-            -
-                name: doctrine.orm.entity_listener
+            - name: doctrine.orm.entity_listener
+
+    App\EventSubscriber\PictureRemovalSubscriber:
+        arguments:
+            $pictureService: '@App\Service\PictureService'
+        tags:
+            - name: doctrine.event_subscriber
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
