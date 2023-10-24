@@ -36,24 +36,36 @@ class RecipeType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Nom'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
             ->add('preparationTime', IntegerType::class,[
                 'label' => 'temps de préparation :',
+                'attr' => [
+                    'placeholder' => 'Minutes'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
             ->add('cookingTime', IntegerType::class,[
                 'label' => 'temps de cuisson :',
+                'attr' => [
+                    'placeholder' => 'Minutes'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
             ])
             ->add('foodQuantity', IntegerType::class,[
                 'label' => 'Quantité :',
+                'attr' => [
+                    'placeholder' => '10'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -77,7 +89,8 @@ class RecipeType extends AbstractType
                     "class" => "form-control",
                     "toolbar" => "bold italic underline | bullist numlist",
                     "menubar" => "",
-                    "statusbar" => ""
+                    "statusbar" => "",
+                    'placeholder' => 'Étape 1: ...'
                 ],
                 'label' => 'Description :',
                 'label_attr' => [

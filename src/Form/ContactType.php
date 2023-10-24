@@ -23,7 +23,8 @@ class ContactType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '50',
+                    'placeholder' => 'Nom'
                 ],
                 'label' => 'Nom / Prenom',
                 'label_attr' => [
@@ -34,7 +35,8 @@ class ContactType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '180'
+                    'maxlength' => '180',
+                    'placeholder' => 'Mail'
                 ],
                 'label' => 'Adresse email',
                 'label_attr' => [
@@ -43,7 +45,8 @@ class ContactType extends AbstractType
             ])
             ->add('subject', TextType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => 'Indiquer le sujet de votre demande'
                 ],
                 'label' => 'Sujet',
                 'label_attr' => [
@@ -52,7 +55,8 @@ class ContactType extends AbstractType
             ])
             ->add('message', TextareaType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => 'Entrer votre message ici'
                 ],
                 'label' => 'Description',
                 'label_attr' => [

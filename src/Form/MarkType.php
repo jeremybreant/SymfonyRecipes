@@ -34,7 +34,8 @@ class MarkType extends AbstractType
             ])
             ->add('comment', TextareaType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => 'Entrer votre commentaire ici'
                 ],
                 'label' => 'Commentaire :',
                 'label_attr' => [

@@ -22,7 +22,8 @@ class UserType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '50',
+                    'placeholder' => 'Jhon Doe'
                 ],
                 'label' => 'Nom / Prenom',
                 'label_attr' => [
@@ -33,7 +34,8 @@ class UserType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '50',
+                    'placeholder'=> 'Pseudonyme'
                 ],
                 'required' => false,
                 'label' => 'Pseudo',
@@ -43,7 +45,8 @@ class UserType extends AbstractType
             ])
             ->add('plainPassword',PasswordType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => '*************'
                 ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'

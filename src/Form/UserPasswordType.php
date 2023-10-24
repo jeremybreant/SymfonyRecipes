@@ -18,7 +18,8 @@ class UserPasswordType extends AbstractType
         $builder
             ->add('plainPassword',PasswordType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => '*************'
                 ],
                 'label_attr' => [
                     'class' => 'form-label'
@@ -29,7 +30,8 @@ class UserPasswordType extends AbstractType
                 'type' => PasswordType::class,
                 'first_options' => [
                     'attr' => [
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        'placeholder' => '*************'
                     ],
                     'label_attr' => [
                         'class' => 'form-label'
@@ -38,7 +40,8 @@ class UserPasswordType extends AbstractType
                 ],
                 'second_options' => [
                     'attr' => [
-                        'class' => 'form-control'
+                        'class' => 'form-control',
+                        'placeholder' => '*************'
                     ],
                     'label_attr' => [
                         'class' => 'form-label'

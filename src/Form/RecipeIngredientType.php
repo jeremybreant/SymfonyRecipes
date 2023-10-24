@@ -43,6 +43,9 @@ class RecipeIngredientType extends AbstractType
             ])
             ->add('quantity', NumberType::class,[
                 'label' => 'quantité :',
+                'attr' => [
+                    'placeholder' => '0'
+                ],
                 'required' => false,
                 'label_attr' => [
                     'class' => 'form-label mt-4'

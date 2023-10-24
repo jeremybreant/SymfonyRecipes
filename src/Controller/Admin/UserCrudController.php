@@ -24,7 +24,7 @@ class UserCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Utilisateurs')
             ->setEntityLabelInSingular('Utilisateur')
 
-            ->setPageTitle("index","Symfony Recipes - Administration des utilisateurs")
+            ->setPageTitle("index","LaPoêlée - Administration des utilisateurs")
 
             ->setPaginatorPageSize(10)
             ;

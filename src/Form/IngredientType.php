@@ -18,6 +18,9 @@ class IngredientType extends AbstractType
         $builder
             ->add('name', TextType::class, [
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Nom'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]

@@ -54,7 +54,7 @@ class ApprobRecipeCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Demandes d\'approbation')
             ->setEntityLabelInSingular('Demande d\'approbation')
 
-            ->setPageTitle("index","Symfony Recipes - Administration des demandes d'approbation")
+            ->setPageTitle("index","LaPoêlée - Administration des demandes d'approbation")
             ->showEntityActionsInlined()
 
             ->setPaginatorPageSize(10)

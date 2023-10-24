@@ -24,7 +24,7 @@ class ContactCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Contacts')
             ->setEntityLabelInSingular('Contact')
 
-            ->setPageTitle("index","Symfony Recipes - Administration des demandes de contact")
+            ->setPageTitle("index","LaPoêlée - Administration des demandes de contact")
 
             ->setPaginatorPageSize(10)
             ;

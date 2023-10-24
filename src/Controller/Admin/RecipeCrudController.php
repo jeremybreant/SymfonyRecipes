@@ -55,7 +55,7 @@ class RecipeCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Recettes')
             ->setEntityLabelInSingular('Recette')
 
-            ->setPageTitle("index","Symfony Recipes - Administration des recettes")
+            ->setPageTitle("index","LaPoêlée - Administration des recettes")
             ->showEntityActionsInlined()
 
             ->setPaginatorPageSize(10)
