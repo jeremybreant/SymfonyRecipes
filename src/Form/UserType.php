@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
@@ -21,31 +22,34 @@ class UserType extends AbstractType
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '50',
+                    'placeholder' => 'Jhon Doe'
                 ],
                 'label' => 'Nom / Prenom',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('pseudo', TextType::class, [
                 'attr' => [
                     'class' => 'form-control',
                     'minlength' => '2',
-                    'maxlength' => '50'
+                    'maxlength' => '50',
+                    'placeholder'=> 'Pseudonyme'
                 ],
                 'required' => false,
                 'label' => 'Pseudo',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('plainPassword',PasswordType::class, [
                 'attr' => [
-                    'class' => 'form-control'
+                    'class' => 'form-control',
+                    'placeholder' => '*************'
                 ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ],
                 'label' => 'Mot de passe',
             ])

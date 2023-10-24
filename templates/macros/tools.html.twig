@@ -1,0 +1,67 @@
+{% macro provideDefaultImageFromSingleImage(image) %}
+    {% if image is not empty and file_exists(image.providePicturePath()) %}
+        {{ asset(images_directory ~ image.providePicturePath()) }}
+    {% else %}
+        {{ asset('build/images/fakifv.jpg') }}
+    {% endif %}
+{% endmacro %}
+
+{% macro provideDefaultImageFromArray(images) %}
+    {% if images is not empty and file_exists(images[0].providePicturePath()) %}
+        {{ asset(images_directory ~ images[0].providePicturePath()) }}
+    {% else %}
+        {{ asset('build/images/fakifv.jpg') }}
+    {% endif %}
+{% endmacro %}
+
+
+{% macro provideClickableFavIcon(id, isFavorite) %}
+<div {{ stimulus_controller('tool') }} data-tool-recipeid-value="{{ id }}" class="w-100 h-100">
+    <a {{ stimulus_action('tool', 'toggleFav') }} class="btn position-relative w-100 h-100 m-0 p-0 border-2 rounded-circle bg-white border custom-color-pink custom-border-pink">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+            {% if isFavorite %}
+                <i {{ stimulus_target('tool', 'icon') }} class="fas fa-heart"></i>
+            {% else %}
+                <i {{ stimulus_target('tool', 'icon') }} class="far fa-heart"></i>
+            {% endif %}
+        </div>
+    </a>
+</div>
+{% endmacro %}
+
+{% macro provideNotConnectedFavIcon() %}
+    <div class="w-100 h-100">
+        <a href="{{ path('security.login') }}" class="btn position-relative w-100 h-100 m-0 p-0 border-2 rounded-circle bg-white border custom-color-pink custom-border-pink">
+        <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                <i class="far fa-heart"></i>
+        </div>
+        </a>
+    </div>
+{% endmacro %}
+
+{% macro provideStatusTag(statusValue) %}
+    <span class="badge 
+    {% if statusValue == "Non approuvée" %}
+        bg-secondary
+    {% elseif statusValue == "En cours d'approbation" %}
+        bg-info
+    {% elseif statusValue == "Approuvée" %}
+        bg-success
+    {% elseif statusValue == "Refusée" %}
+        bg-danger
+    {% endif %}
+    ">
+    {{statusValue}}
+    </span>
+{% endmacro %}
+
+{% macro providePublicTag(isPublic) %}
+    <span class="badge 
+    {% if isPublic %}
+        bg-success">Public
+    {% else %}
+        bg-danger">Privée
+    {% endif %}
+    </span>
+{% endmacro %}
+

@@ -1,63 +1,86 @@
 {% extends 'base.html.twig' %}
+{% import "macros/tools.html.twig" as tools %}
 
-{% block title %}StmfonyRecipes - Mes recettes{% endblock %}
+{% block title %}Mes recettes
+{% endblock %}
 
 {% block body %}
-    <h1>Mes recettes</h1>
 
-    <a href="{{ path('recipe.new') }}" class="btn btn-primary mt-4">
-        Créer une recette
-    </a>
+	<h1>Mes recettes</h1>
 
-    <div class="count mt-4">
-        Il y a {{ recipes.getTotalItemCount }}
-        {% if recipes.getTotalItemCount > 1 %}
-            recettes
-        {% else %}
-            recette
-        {% endif %}
-        au total
-    </div>
+	<div>
+		<div class="d-inline-flex alert alert-dismissible alert-secondary mt-2">
+			<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+			Pour qu'une recette soit visible par les autres utilisateurs, vous devez faire approuver votre recette.
+		</div>
+	</div>
 
-    <table class="table table-hover mt-4">
-        <thead>
-        <tr>
-            <th scope="col">Numéro</th>
-            <th scope="col">Nom</th>
-            <th scope="col">Temps</th>
-            <th scope="col">Nombre de personne</th>
-            <th scope="col">Difficulté</th>
-            <th scope="col">Prix</th>
-            <th scope="col">Date de création</th>
-            <th scope="col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for recipe in recipes %}
-            <tr class="table-primary">
-                <th scope="row">{{ recipe.id }}</th>
-                <td>{{ recipe.name }}</td>
-                <td>{{ (recipe.time is null) ? '--' : recipe.time }}</td>
-                <td>{{ (recipe.peopleRequired is null) ? '--' : recipe.peopleRequired }}</td>
-                <td>{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
-                <td>{{ (recipe.price is null) ? '--' : recipe.price|number_format(2, '.', ',') }} €</td>
-                <td>{{ recipe.createdAt | date("d/m/Y") }}</td>
-                <td>
-                    {% if recipe.user == app.user %}
-                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-success">Consulter</a>
-                        <a href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">Modifier</a>
-                        <a href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger"
-                           onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">Supprimer</a>
-                    {% else %}
-                        --
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    {# display navigation #}
-    <div class="navigation d-flex justify-content-center mt-4">
-        {{ knp_pagination_render(recipes) }}
-    </div>
+	<a href="{{ path('recipe.new') }}" class="btn btn-primary mt-3">
+		Créer une recette
+	</a>
+
+	<div class="count mt-4">
+		Il y a
+		{{ recipes.getTotalItemCount }}
+		{% if recipes.getTotalItemCount > 1 %}
+			recettes
+		{% else %}
+			recette
+		{% endif %}
+		au total
+	</div>
+
+	<table class="table table-striped mt-4">
+		<thead>
+			<tr>
+				<th scope="col">Image</th>
+				<th scope="col">Nom</th>
+				<th scope="col">Status</th>
+				<th scope="col">Difficulté</th>
+				<th scope="col">Prix</th>
+				<th scope="col">Action</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for recipe in recipes %}
+				<tr>
+					<td>
+                    <div class="ingredient_images">
+                        <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImageFromArray(recipe.images) }}">
+                    </div>
+					</td>
+					<td class="align-middle">{{ recipe.name }}</td>
+					<td class="align-middle">
+						{{tools.provideStatusTag(recipe.status)}}
+						{{tools.providePublicTag(recipe.isPublic)}}
+					</td>
+					<td class="align-middle">{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
+					<td class="align-middle">{{ (recipe.price is null) ? '--' : recipe.price }}</td>
+					<td class="align-middle">
+						{% if recipe.user == app.user %}
+							<a title="Visualiser la recette" href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-secondary">
+								<i class="fa-solid fa-eye"></i>
+							</a>
+							<a title="Modifier la recette" href="{{ path('recipe.edit', { id: recipe.id}) }}" class="btn btn-info">
+								<i class="fa-solid fa-pen-to-square"></i>
+							</a>
+							<a title="Lancer la vérification de la recette" href="{{ path('recipe.start-check', { id: recipe.id}) }}" class="btn btn-success" onclick="return confirm('Êtes-vous sûr de vouloir lancer la vérification de votre recette ?');">
+								<i class="fa-regular fa-circle-check"></i>
+							</a>
+							<a title="Supprimer la recette" href="{{ path('recipe.delete', { id: recipe.id}) }}" class="btn btn-danger" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+								<i class="fa-solid fa-trash-can"></i>
+							</a>
+						{% else %}
+							--
+						{% endif %}
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	{# display navigation #}
+	<div class="navigation d-flex justify-content-center mt-4">
+		{{ knp_pagination_render(recipes) }}
+	</div>
 {% endblock %}

@@ -1,37 +1,27 @@
 {% extends "base.html.twig" %}
+{% import "macros/recipe/recipeCard.html.twig" as recipeCard %}
 
 {% block body %}
     <div class="jumbotron">
-        <h1 class="display-4">Symfony recipes</h1>
-        <p class="lead">SymfonyRecipes est une application permettant de créer des recettes. Elles pourront être
+        <h1 class="display-4">LaPoêlée</h1>
+        <p class="lead">LaPoêlée est une application permettant de créer des recettes. Elles pourront être
             partagées à la communauté du site... ou pas.</p>
         <hr class="my-4">
-        <p>Mais avant cela, il va falloir t'inscrire !</p>
-        <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">S'inscrire</a>
-        <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Se connecter</a>
+        {% if not app.user %}
+            <p>Mais avant cela, il va falloir t'inscrire !</p>
+            <a class="btn btn-primary btn-lg" href="{{ path('security.registration') }}" role="button">S'inscrire</a>
+            <a class="btn btn-primary btn-lg" href="{{ path('security.login') }}" role="button">Se connecter</a>
+        {% endif %}
     </div>
     <div class="recipes mt-5">
         <h1>Recettes de la communauté</h1>
         {% if recipes is same as([]) %}
-            <h4>Il n'y a pas de recette</h4>
+        <h4>Il n'y a pas de recette</h4>
         {% else %}
-            <div class="d-flex justify-content-around flex-wrap mt-4">
+            <div class="row justify-content-center">
                 {% for recipe in recipes %}
-                    <div class="card border-primary mb-3" style="width: 23rem;">
-                        <a href="{{ path('recipe.show', { id: recipe.id}) }}" class="card-header btn btn-light">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    {{ recipe.name }}
-                                </div>
-                                <div>
-                                    {{ recipe.getRoundedAverage() }} &#10032;
-                                </div>
-                            </div>
-                        </a>
-                        <div class="card-body">
-                            <h4 class="card-title">{{ recipe.name }}</h4>
-                            <p class="card-text">{{ recipe.description|slice(0,100) ~ "..." }}</p>
-                        </div>
+                    <div class="col col-lg-3 col-md-6 col-sm-6 col-10 p-4">
+                        {{ recipeCard.displayRecipeCard(recipe) }}
                     </div>
                 {% endfor %}
             </div>

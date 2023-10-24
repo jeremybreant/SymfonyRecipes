@@ -1,32 +1,50 @@
+{% import "macros/tools.html.twig" as tools %}
+
 {% extends "base.html.twig" %}
 
-{% block title %}StmfonyRecipes - Modification ingrédient{% endblock %}
+{% block title %}Modification ingrédient
+{% endblock %}
 
 {% block body %}
-    <h1>
-        Modification de l'ingrédient
-    </h1>
+	<h1>
+		Modification de l'ingrédient
+	</h1>
+	{{ form_start(form) }}
+	<div class="form-group">
+		{{ form_label(form.name) }}
+		{{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form_errors(form.name) is not empty ? ' is-invalid' : '')}}) }}
+		<div class="invalid-feedback">
+			{{ form_errors(form.name) }}
+		</div>
+	</div>
+	<div class="form-group mt-4">
+		{{ form_label(form.images) }}
+		{{ form_widget(form.images, {'attr': {'class': 'form-control' ~ (form_errors(form.images) is not empty ? ' is-invalid' : '')}}) }}
+		<div class="invalid-feedback">
+			{{ form_errors(form.images) }}
+		</div>
+	</div>
 
-    {{ form_start(form) }}
-
-    <div class="form-group">
-        {{ form_label(form.name) }}
-        {{ form_widget(form.name) }}
-        <div class="form-error">
-            {{ form_errors(form.name) }}
-        </div>
-    </div>
-
-    <div class="form-group">
-        {{ form_label(form.price) }}
-        {{ form_widget(form.price) }}
-        <div class="form-error">
-            {{ form_errors(form.price) }}
-        </div>
-    </div>
-
-    <div class="form-group">
-        {{ form_row(form.submit, {'label': 'Modifier'}) }}
-    </div>
-    {{ form_end(form) }}
+	{# On affiche les images si on est en édition #}
+	<a class="custom-anchor" id="images"></a>
+	{% if ingredient.images is not empty %}
+		<h2 class="mt-4">Images</h2>
+		<div class="row">
+			{% for image in ingredient.images %}
+				<div {{ stimulus_controller('images') }} {{ stimulus_target('images', 'image') }} class="col col-4 col-md-4 col-lg-3 d-flex flex-column pt-4" data-images-imageid-value="{{ image.id }}">
+					<div class="py-2 text-center">
+						<img class="w-75 shadow custom-img-1-1 rounded-4" src="{{ tools.provideDefaultImageFromSingleImage(image) }}">
+					</div>
+					<div class="p-2 text-center">
+						<a href="#images" class="mt-4" {{ stimulus_action('images', 'deleteImages') }}>Supprimer l'image</a>
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
+	<div class="form-group">
+		{{ form_row(form.submit, {'label': 'Modifier'}) }}
+	</div>
+	{{ form_end(form) }}
 {% endblock %}

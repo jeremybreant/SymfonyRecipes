@@ -1,17 +1,21 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\Ingredient;
+use App\Entity\Category;
 use App\Entity\Recipe;
-use App\Repository\IngredientRepository;
+use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\QueryBuilder;
+use Eckinox\TinymceBundle\Form\Type\TinymceType;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -31,104 +35,111 @@ class RecipeType extends AbstractType
     {
         $builder
             ->add('name', TextType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
                 'label' => 'Nom',
+                'attr' => [
+                    'placeholder' => 'Nom'
+                ],
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('time', IntegerType::class,[
+            ->add('preparationTime', IntegerType::class,[
+                'label' => 'temps de préparation :',
                 'attr' => [
-                    'class' => 'form-control'
+                    'placeholder' => 'Minutes'
                 ],
-                'label' => 'temps',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('peopleRequired', IntegerType::class,[
+            ->add('cookingTime', IntegerType::class,[
+                'label' => 'temps de cuisson :',
                 'attr' => [
-                    'class' => 'form-control'
+                    'placeholder' => 'Minutes'
                 ],
-                'label' => 'Nbr de personne :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('difficulty',  IntegerType::class,[
+            ->add('foodQuantity', IntegerType::class,[
+                'label' => 'Quantité :',
                 'attr' => [
-                    'class' => 'form-control'
+                    'placeholder' => '10'
                 ],
-                'label' => 'difficulté',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('description', TextareaType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'label' => 'Description',
+            ->add('foodQuantityType', ChoiceType::class, [
+                'choices' => Recipe::getAvailableQuantityType(),
+                'label' => 'Unité :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('price', MoneyType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'label' => 'Prix',
+            ->add('difficulty', ChoiceType::class, [
+                'choices' => Recipe::getAvailabledifficulties(),
+                'label' => 'Difficulté :',
                 'label_attr' => [
-                    'class' => 'form-label'
+                    'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('isFavorite', CheckboxType::class, [
-                'attr' => [
-                    'class' => 'form-check-input'
+            ->add("description", TinymceType::class, [
+                "attr" => [
+                    "class" => "form-control",
+                    "toolbar" => "bold italic underline | bullist numlist",
+                    "menubar" => "",
+                    "statusbar" => "",
+                    'placeholder' => 'Étape 1: ...'
                 ],
-                'required' => false,
-                'label' => 'Favoris ?',
+                'label' => 'Description :',
                 'label_attr' => [
-                    'class' => 'form-check-label'
+                    'class' => 'form-label mt-4'
+                ]
+            ])
+            ->add('price', ChoiceType::class, [
+                'choices' => Recipe::getAvailablePrices(),
+                'label' => 'Prix :',
+                'label_attr' => [
+                    'class' => 'form-label mt-4'
                 ]
             ])
             ->add('isPublic', CheckboxType::class, [
-                'attr' => [
-                    'class' => 'form-check-input'
-                ],
                 'required' => false,
-                'label' => 'Public ?',
+                'label' => 'La recette est elle publique ?',
                 'label_attr' => [
                     'class' => 'form-check-label'
                 ]
             ])
-            ->add('ingredients', EntityType::class, [
-                'class' => Ingredient::class,
+            ->add('categories', EntityType::class, [
+                'class' => Category::class,
                 'multiple' => true,
+                'label' => 'Catégories :',
                 'choice_label' => 'name',
-                'query_builder' => function (IngredientRepository $ir) {
-                    return $ir->createQueryBuilder('i')
-                        ->where('i.user = :user')
-                        ->orderBy('i.name', 'ASC')
-                        ->setParameter('user' , $this->token->getToken()->getUser());
+                'query_builder' => function (EntityRepository $er) {
+                    return $er->createQueryBuilder('c')
+                        ->orderBy('c.name', 'ASC');
                 },
-                'expanded' => true,
-                'label' => 'les ingrédients :',
                 'label_attr' => [
                     'class' => 'form-label'
                 ]
             ])
-            ->add('imageFile', VichImageType::class, [
-                'attr' => [
-                    'class' => 'form-control'
-                ],
-                'required' => false,
-                'label' => 'Image :',
+            ->add('images', FileType::class, [
+                'label' => 'Ajouter une image :',
                 'label_attr' => [
                     'class' => 'form-label'
-                ]
+                ],
+                'multiple' => false,
+                'mapped' => false,
+                'required' => false
+            ])
+            ->add('recipeIngredients', CollectionType::class, [
+                'entry_type' => RecipeIngredientType::class,
+                'entry_options' => ['label' => false],
+                'label' => false,
+                'by_reference' => false,
+                'allow_add' => true,
+                'allow_delete' => true
             ])
             ->add('submit', SubmitType::class, [
                 'attr' => [

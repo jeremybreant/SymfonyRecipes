@@ -1,56 +1,76 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Interface\ImagesInterface;
 use App\Repository\IngredientRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: IngredientRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 #[UniqueEntity(
     fields: ['name','user'],
     message: 'Cet utilisateur a déjà créé cet ingrédient',
     errorPath: 'name'
 )]
-class Ingredient
+class Ingredient implements ImagesInterface
 {
+
+    public const PICTURE_SIZE_WIDTH = 300;
+    public const PICTURE_SIZE_HEIGHT = 300;
+
+    public const PICTURE_DIRECTORY = "ingredients/";
+
+    #[Groups(['ingredient'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id;
 
+    #[Groups(['ingredient'])]
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 50)]
+    #[Assert\NotBlank]
+    #[Assert\Length(min: 2, max: 50,minMessage: "Le nom doit faire une minimum de 2 caractères" ,maxMessage: "le nom ne peut pas dépasser 50 caractères")]
     private string $name;
 
+    #[Groups(['ingredient'])]
+    #[ORM\Column]
+    #[Assert\NotNull]
+    private ?DateTimeImmutable $createdAt;
+
+    #[Groups(['ingredient'])]
     #[ORM\Column]
     #[Assert\NotNull()]
-    #[Assert\Positive()]
-    #[Assert\LessThan(50)]
-    private float $price;
+    private \DateTimeImmutable $updatedAt;
 
-    #[ORM\Column]
-    #[Assert\NotNull()]
-    private ?\DateTimeImmutable $createdAt;
-
-    #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'ingredients')]
-    private Collection $recipes;
-
+    #[Groups(['ingredient_user'])]
     #[ORM\ManyToOne(inversedBy: 'ingredients')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[Groups(['ingredient_recipeIngredient'])]
+    #[ORM\OneToMany(mappedBy: 'ingredient', targetEntity: RecipeIngredient::class, orphanRemoval: true)]
+    private Collection $recipeIngredients;
+
+    #[ORM\OneToMany(mappedBy: 'ingredients', targetEntity: Images::class, cascade:['persist','remove'], orphanRemoval: true)]
+    private Collection $images;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->createdAt = new \DateTimeImmutable();
-        $this->recipes = new ArrayCollection();
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new \DateTimeImmutable();
+        $this->recipeIngredients = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     public function getId(): int
@@ -70,55 +90,27 @@ class Ingredient
         return $this;
     }
 
-    public function getPrice(): float
-    {
-        return $this->price;
-    }
-
-    public function setPrice(float $price): self
-    {
-        $this->price = $price;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): \DateTimeImmutable
+    public function getCreatedAt(): DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Recipe>
-     */
-    public function getRecipes(): Collection
+    #[ORM\PrePersist]
+    public function setUpdatedAtValue(): void
     {
-        return $this->recipes;
+        $this->updatedAt = new \DateTimeImmutable();
     }
 
-    public function addRecipe(Recipe $recipe): self
+    public function getUpdatedAt(): ?\DateTimeImmutable
     {
-        if (!$this->recipes->contains($recipe)) {
-            $this->recipes->add($recipe);
-            $recipe->addIngredients($this);
-        }
-
-        return $this;
-    }
-
-    public function removeRecipe(Recipe $recipe): self
-    {
-        if ($this->recipes->removeElement($recipe)) {
-            $recipe->removeIngredients($this);
-        }
-
-        return $this;
+        return $this->updatedAt;
     }
 
     public function __toString()
@@ -136,5 +128,70 @@ class Ingredient
         $this->user = $user;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, RecipeIngredient>
+     */
+    public function getRecipeIngredients(): Collection
+    {
+        return $this->recipeIngredients;
+    }
+
+    public function addRecipeIngredient(RecipeIngredient $recipeIngredient): self
+    {
+        if (!$this->recipeIngredients->contains($recipeIngredient)) {
+            $this->recipeIngredients->add($recipeIngredient);
+            $recipeIngredient->setIngredient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeRecipeIngredient(RecipeIngredient $recipeIngredient): self
+    {
+        if ($this->recipeIngredients->removeElement($recipeIngredient)) {
+            // set the owning side to null (unless already changed)
+            if ($recipeIngredient->getIngredient() === $this) {
+                $recipeIngredient->setIngredient(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setIngredients($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getIngredients() === $this) {
+                $image->setIngredients(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getImagesDirectory(): string
+    {
+        return Ingredient::IMAGE_DIRECTORY;
     }
 }

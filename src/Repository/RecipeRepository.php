@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Repository;
 
 use App\Entity\Recipe;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -27,18 +29,60 @@ class RecipeRepository extends ServiceEntityRepository
      * @param int $nbRecipes
      * @return array
      */
-    public function findPublicRecipe(?int $nbRecipes): array
+    public function findPublicRecipeQuery(?int $nbRecipes): Query
     {
         $queryBuilder = $this->createQueryBuilder('r')
             ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
             ->orderBy('r.createdAt', 'DESC');
-        if ($nbRecipes !== 0 || $nbRecipes !== null) {
+        if ($nbRecipes !== 0 && $nbRecipes !== null) {
             $queryBuilder->setMaxResults($nbRecipes);
         }
         return $queryBuilder
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
 
+    }
+
+    public function findPublicRecipeswithCategoryQuery(?int $nbRecipes, $categoryId): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere(':categoryValue MEMBER OF r.categories')
+            ->setParameter('categoryValue', $categoryId)
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+    }
+
+    public function findRecipesBasedOnNameQuery(?int $nbRecipes, $keyword): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
+            ->andWhere('r.name LIKE :keyword')
+            ->setParameter('keyword', '%'.$keyword.'%')
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+            
+    }
+
+    public function findRecipesLikedByTheUserQuery(?int $nbRecipes, $user): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
+            ->innerJoin('r.usersLikingThisRecipe', 'u') // Utilisation de innerJoin pour correspondre à la table de liaison
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('r.createdAt', 'DESC')
+            ->getQuery();
+
+        
+            
     }
 
     public function save(Recipe $entity, bool $flush = false): void

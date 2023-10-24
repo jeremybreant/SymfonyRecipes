@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 
-{% block title %}Symfony Recipe - Nouvel ingrédient{% endblock %}
+{% block title %}Nouvel ingrédient{% endblock %}
 
 {% block body %}
     <h1>
@@ -17,20 +17,18 @@
 
     <div class="form-group">
         {{ form_label(form.name) }}
-        {{ form_widget(form.name) }}
-        <div class="form-error">
+        {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form_errors(form.name) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.name) }}
         </div>
     </div>
-
-    <div class="form-group">
-        {{ form_label(form.price) }}
-        {{ form_widget(form.price) }}
-        <div class="form-error">
-            {{ form_errors(form.price) }}
+    <div class="form-group mt-4">
+        {{ form_label(form.images) }}
+        {{ form_widget(form.images, {'attr': {'class': 'form-control' ~ (form_errors(form.images) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.images) }}
         </div>
     </div>
-
     <div class="form-group">
         {{ form_row(form.submit, { 'label': 'Créer un ingrédient'}) }}
     </div>

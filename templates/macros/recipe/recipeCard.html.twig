@@ -1,0 +1,40 @@
+{% macro displayRecipeCard(recipe) %}
+	{% import "macros/tools.html.twig" as tools %}
+	{% import "macros/mark/mark.html.twig" as starMark %}
+
+
+	<div class="position-relative">
+        <div class="position-absolute custom-fav-button custom-card-top-right-corner">
+             {% if app.user %}
+                {{ tools.provideClickableFavIcon(recipe.id, app.user.getfavoriteRecipes().contains(recipe)) }}
+            {% else %}
+                {{ tools.provideNotConnectedFavIcon() }}
+            {% endif %}
+        </div>
+		{% if recipe.categories|length > 0 %}
+			<div class="position-absolute custom-card-bottom-left-corner badge custom-no-pointer-event custom-over-image-tag rounded-3">
+	         	{% set firstCategory = recipe.categories.first().slug %}
+                {{ firstCategory|get_root_category }}                
+			</div>
+		{% endif %}
+		<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
+			<img alt="recipeImage" class="custom-img-1-1 rounded-4 shadow" src="{{ tools.provideDefaultImageFromArray(recipe.images) }}">
+		</a>
+	</div>
+	<a href="{{ path('recipe.show', { id: recipe.id}) }}" class="custom-neutral">
+		<div class="pt-4">
+			<div>
+				{{ recipe.name }}
+			</div>
+			<div>
+				{{ starMark.displayMarkWithStar(recipe.getRoundedAverage()) }}
+			</div>
+			<div>
+				{{ recipe.getMarks().Count() }}
+				avis
+			</div>
+		</div>
+	</a>
+
+
+{% endmacro %}

@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Form;
 
@@ -6,6 +7,7 @@ use App\Entity\Mark;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -28,6 +30,16 @@ class MarkType extends AbstractType
                 'label' => 'noter la recette',
                 'label_attr' => [
                     'class' => 'form-label mt-4'
+                ]
+            ])
+            ->add('comment', TextareaType::class, [
+                'attr' => [
+                    'class' => 'form-control',
+                    'placeholder' => 'Entrer votre commentaire ici'
+                ],
+                'label' => 'Commentaire :',
+                'label_attr' => [
+                    'class' => 'form-label'
                 ]
             ])
             ->add('submit', SubmitType::class, [

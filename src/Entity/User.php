@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Entity;
 
@@ -23,11 +24,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private int $id;
 
     #[ORM\Column(length: 50)]
-    #[Assert\NotBlank(message: "fullName notNull")]
+    #[Assert\NotBlank(message: "Votre nom ne peut pas être null")]
     #[Assert\Length(min: 2, max: 50)]
     private string $fullName;
 
-    #[ORM\Column(length: 50, nullable: true)]
+    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank(message: "Veuillez entrer un pseudo")]
     #[Assert\Length(min: 2, max: 50)]
     private ?string $pseudo = null;
 
@@ -38,7 +40,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     private ?string $plainPassword = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'json')]
+    #[Assert\NotNull()]
     private array $roles = [];
 
     /**
@@ -53,7 +56,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private \DateTimeImmutable $createdAt;
 
     #[ORM\Column]
-    #[Assert\NotNull(message: "pdatedAt notNull")]
+    #[Assert\NotNull(message: "updatedAt notNull")]
     private \DateTimeImmutable $updatedAt;
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Ingredient::class, orphanRemoval: true)]
@@ -64,6 +67,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Mark::class, orphanRemoval: true)]
     private Collection $marks;
+
+    #[ORM\ManyToMany(targetEntity: Recipe::class, inversedBy: 'usersLikingThisRecipe')]
+    private Collection $favoriteRecipes;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Images::class)]
+    private Collection $images;
 
     public function getId(): ?int
     {
@@ -112,6 +121,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->ingredients = new ArrayCollection();
         $this->recipes = new ArrayCollection();
         $this->marks = new ArrayCollection();
+        $this->favoriteRecipes = new ArrayCollection();
+        $this->images = new ArrayCollection();
     }
 
     /**
@@ -190,9 +201,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @param string|null $plainPassword
      */
-    public function setPlainPassword(?string $plainPassword): void
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
+
+        return $this;
     }
 
     public function getUpdatedAt(): ?\DateTimeImmutable
@@ -297,4 +310,71 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    /**
+     * @return Collection<int, Recipe>
+     */
+    public function getFavoriteRecipes(): Collection
+    {
+        return $this->favoriteRecipes;
+    }
+
+    public function addFavoriteRecipe(Recipe $favoriteRecipe): self
+    {
+        if (!$this->favoriteRecipes->contains($favoriteRecipe)) {
+            $this->favoriteRecipes->add($favoriteRecipe);
+        }
+
+        return $this;
+    }
+
+    public function removeFavoriteRecipe(Recipe $favoriteRecipe): self
+    {
+        $this->favoriteRecipes->removeElement($favoriteRecipe);
+
+        return $this;
+    }
+
+    public function toggleFavoriteRecipe(Recipe $recipe): self
+    {
+        if($this->getFavoriteRecipes()->contains($recipe))
+        {
+            $this->removeFavoriteRecipe($recipe);
+        }
+        else{
+            $this->addFavoriteRecipe($recipe);
+        }
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Images>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Images $image): static
+    {
+        if (!$this->images->contains($image)) {
+            $this->images->add($image);
+            $image->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Images $image): static
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getUser() === $this) {
+                $image->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
 }

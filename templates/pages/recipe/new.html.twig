@@ -1,88 +1,111 @@
+{% import "macros/recipeIngredient/form.html.twig" as recipeIngredientMacro %}
+
 {% extends "base.html.twig" %}
 
-{% block title %}Symfony Recipe - Nouvelle recette{% endblock %}
+{% block title %}Nouvelle recette{% endblock %}
 
 {% block body %}
     <h1>
         Création d'une recette
     </h1>
-
     {{ form_start(form) }}
-
     <div class="form-group mt-4">
         {{ form_label(form.name) }}
-        {{ form_widget(form.name) }}
-        <div class="form-error">
+        {{ form_widget(form.name, {'attr': {'class': 'form-control' ~ (form_errors(form.name) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.name) }}
         </div>
     </div>
-    <div class="form-group mt-4">
-        {{ form_label(form.time) }}
-        {{ form_widget(form.time) }}
-        <div class="form-error">
-            {{ form_errors(form.time) }}
+    <div class="row">
+        <div class="col-6 form-group mt-4">
+            {{ form_label(form.difficulty) }}
+            {{ form_widget(form.difficulty, {'attr': {'class': 'form-select' ~ (form_errors(form.difficulty) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.difficulty) }}
+            </div>
+        </div>
+        <div class="col-6 form-group mt-4">
+            {{ form_label(form.price) }}
+            {{ form_widget(form.price, {'attr': {'class': 'form-select' ~ (form_errors(form.price) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.price) }}
+            </div>
         </div>
     </div>
-    <div class="form-group mt-4">
-        {{ form_label(form.difficulty) }}
-        {{ form_widget(form.difficulty) }}
-        <div class="form-error">
-            {{ form_errors(form.difficulty) }}
+    <div class="row">
+        <div class="col-sm-6 col-md-6 col-xl-3 form-group mt-4">
+            {{ form_label(form.preparationTime) }}
+            {{ form_widget(form.preparationTime, {'attr': {'class': 'form-control' ~ (form_errors(form.preparationTime) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.preparationTime) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-xl-3 form-group mt-4">
+            {{ form_label(form.cookingTime) }}
+            {{ form_widget(form.cookingTime, {'attr': {'class': 'form-control' ~ (form_errors(form.cookingTime) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.cookingTime) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-xl-3 form-group mt-4">
+            {{ form_label(form.foodQuantity) }}
+            {{ form_widget(form.foodQuantity, {'attr': {'class': 'form-control' ~ (form_errors(form.foodQuantity) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.foodQuantity) }}
+            </div>
+        </div>
+        <div class="col-sm-6 col-md-6 col-xl-3 form-group mt-4">
+            {{ form_label(form.foodQuantityType) }}
+            {{ form_widget(form.foodQuantityType, {'attr': {'class': 'form-select' ~ (form_errors(form.foodQuantityType) is not empty ? ' is-invalid' : '')}}) }}
+            <div class="invalid-feedback">
+                {{ form_errors(form.foodQuantityType) }}
+            </div>
         </div>
     </div>
     <div class="form-group mt-4">
         {{ form_label(form.description) }}
-        {{ form_widget(form.description) }}
-        <div class="form-error">
+        {{ form_widget(form.description, {'attr': {'class': 'form-control' ~ (form_errors(form.description) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.description) }}
-        </div>
-    </div>
-    <div class="form-group mt-4">
-        {{ form_label(form.peopleRequired) }}
-        {{ form_widget(form.peopleRequired) }}
-        <div class="form-error">
-            {{ form_errors(form.peopleRequired) }}
-        </div>
-    </div>
-    <div class="form-group mt-4">
-        {{ form_label(form.price) }}
-        {{ form_widget(form.price) }}
-        <div class="form-error">
-            {{ form_errors(form.price) }}
-        </div>
-    </div>
-    <div class="form-check mt-4">
-        {{ form_label(form.isFavorite) }}
-        {{ form_widget(form.isFavorite) }}
-        <div class="form-error">
-            {{ form_errors(form.isFavorite) }}
         </div>
     </div>
     <div class="form-check mt-4">
         {{ form_label(form.isPublic) }}
-        {{ form_widget(form.isPublic) }}
-        <div class="form-error">
+        {{ form_widget(form.isPublic, {'attr': {'class': 'form-check-input' ~ (form_errors(form.isPublic) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
             {{ form_errors(form.isPublic) }}
         </div>
     </div>
     <div class="form-group mt-4">
-        {{ form_label(form.ingredients) }}
-        <div id="ingredients-wrapper">
-            {% for field in form.ingredients %}
-                <div>
-                    {{ form_widget(field) }}
-                    {{ form_label(field) }}
-                </div>
-            {% endfor %}
+        {{ form_label(form.categories) }}
+        {{ form_widget(form.categories, {'attr': {'class': 'form-select' ~ (form_errors(form.categories) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.categories) }}
         </div>
     </div>
     <div class="form-group mt-4">
-        {{ form_label(form.imageFile) }}
-        {{ form_widget(form.imageFile) }}
-        <div class="form-error">
-            {{ form_errors(form.imageFile) }}
+        {{ form_label(form.images) }}
+        {{ form_widget(form.images, {'attr': {'class': 'form-control' ~ (form_errors(form.images) is not empty ? ' is-invalid' : '')}}) }}
+        <div class="invalid-feedback">
+            {{ form_errors(form.images) }}
         </div>
     </div>
+    <h3 class="mt-4">Ingredients</h3>
+    <div {{ stimulus_controller('form-collection') }}
+            data-form-collection-index-value="{{ form.recipeIngredients|length > 0 ? form.recipeIngredients|last.vars.name + 1 : 0 }}"
+            data-form-collection-prototype-value="{{ recipeIngredientMacro.printRecipeIngredientRow(form.recipeIngredients.vars.prototype)|e('html_attr') }}"
+    >
+        <div {{ stimulus_target('form-collection', 'collectionContainer') }}>
+            {% for recipeIngredient in form.recipeIngredients %}
+                {{ recipeIngredientMacro.printRecipeIngredientRow(recipeIngredient) }}
+            {% endfor %}
+        </div>
+
+        <button type="button"
+                class="btn btn-primary mt-4" {{ stimulus_action('form-collection', 'addCollectionElement') }}>Ajouter un ingrédient
+        </button>
+    </div>
+
     <div class="form-group">
         {{ form_row(form.submit, { 'label': 'Créer une recette'}) }}
     </div>

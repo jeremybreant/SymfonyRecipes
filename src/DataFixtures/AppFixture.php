@@ -1,38 +1,73 @@
 <?php
+declare(strict_types=1);
 
 namespace App\DataFixtures;
 
+use App\Entity\Contact;
 use App\Entity\Ingredient;
 use App\Entity\Mark;
 use App\Entity\Recipe;
+use App\Entity\RecipeIngredient;
 use App\Entity\User;
+use App\Repository\CategoryRepository;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
+use Doctrine\Common\DataFixtures\OrderedFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
-class AppFixture extends Fixture
+use Symfony\Component\Console\Output\ConsoleOutput;
+use function PHPUnit\Framework\isNull;
+
+class AppFixture extends Fixture implements DependentFixtureInterface
 {
+
+    /**
+     * @return list<class-string<FixtureInterface>>
+     */
+    public function getDependencies(): array
+    {
+        return [CategoryFixture::class];
+    }
+
     /**
      * @var Generator
      */
     private Generator $faker;
 
-    public function  __construct()
+    public CategoryRepository $catergoryRepository;
+
+    public function __construct(CategoryRepository $catergoryRepository)
     {
         $this->faker = Factory::create('fr_FR');
+        $this->catergoryRepository = $catergoryRepository;
     }
 
     public function load(ObjectManager $manager): void
     {
 
+        $output = new ConsoleOutput();
+
+        $categories = $this->catergoryRepository->findAll();
+
         //Users
-        $users = [];
-        for ($i = 0; $i < 10; $i++) {
+        $output->writeln('Users');
+        $admin = new User();
+        $admin->setFullName('Administrateur de SymRecipe')
+            ->setPseudo($this->faker->firstName())
+            ->setEmail('admin@symrecipe.fr')
+            ->setRoles(['ROLE_USER', 'ROLE_ADMIN'])
+            ->setPlainPassword('password');
+        $users[] = $admin;
+        $manager->persist($admin);
+
+        for ($i = 0; $i < 75; $i++) {
 
             $user = new User();
             $user->setFullName($this->faker->name())
-                ->setPseudo(mt_rand(0, 1) === 1 ? $this->faker->firstName() : null)
+                ->setPseudo($this->faker->firstName())
                 ->setEmail($this->faker->email())
                 ->setRoles(['ROLE_USER'])
                 ->setPlainPassword('password');
@@ -42,45 +77,91 @@ class AppFixture extends Fixture
         }
 
         //Ingredients
+        $output->writeln('Ingredients');
         $ingredients = [];
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 300; $i++) {
             $ingredient = new Ingredient();
-            $ingredient->setName($this->faker->word(1))
-                ->setPrice(mt_rand(100*1, 100*50)/100)
-                ->setUser($users[mt_rand(0,count($users)-1)]);
+            $ingredient->setName($this->faker->word())
+                ->setUser($users[mt_rand(0, count($users) - 1)]);
 
             $ingredients[$i] = $ingredient;
             $manager->persist($ingredient);
         }
 
         //Recipes
+        $output->writeln('Recipes');
+        $priceConst = Recipe::getAvailablePrices();
+        $difficultyConst = Recipe::getAvailableDifficulties();
+        $quantityTypeConst = Recipe::getAvailableQuantityType();
+        $statusConst = Recipe::getAvailableStatus();
         $recipes = [];
-        for ($i = 0; $i < 25; $i++) {
+        for ($i = 0; $i < 200; $i++) {
             $recipe = new Recipe();
-            $recipe->setName($this->faker->word(1))
-                ->setPrice(mt_rand(0, 1) == 1 ? mt_rand(100*1, 100*1000)/100 : null)
-                ->setDifficulty(mt_rand(0, 1) == 1 ? mt_rand(1, 5) : null)
+            $recipe->setName($this->faker->word())
+                ->setPrice($priceConst[array_rand($priceConst)])
+                ->setDifficulty($difficultyConst[array_rand($difficultyConst)])
                 ->setDescription($this->faker->text(200))
-                ->setPeopleRequired(mt_rand(0, 1) == 1 ? mt_rand(1, 50) : null)
-                ->setTime(mt_rand(0, 1) == 1 ? mt_rand(2, 1440) : null)
-                ->setIsFavorite(mt_rand(0, 1) == 1)
-                ->setUser($users[mt_rand(0,count($users)-1)])
-                ->setIsPublic(mt_rand(0, 1) == 1);
-            for ($k = 0; $k < mt_rand(5, 15); $k++) {
-                $recipe->addIngredients($ingredients[mt_rand(0, count($ingredients) - 1)]);
+                ->setFoodQuantity(mt_rand(1, 15))
+                ->setFoodQuantityType($quantityTypeConst[array_rand($quantityTypeConst)])
+                ->setPreparationTime(mt_rand(2, 600))
+                ->setCookingTime(mt_rand(0, 1) == 1 ? mt_rand(0, 1440) : null)
+                ->setUser($users[mt_rand(0, count($users) - 1)])
+                ->setIsPublic(mt_rand(0, 1) == 1)
+                ->setStatus($statusConst[array_rand($statusConst)]);
+
+            /** @var Category */
+            $selectedCat = $categories[rand(0,count($categories)-1)];
+            $recipeCategories = array();
+            array_push($recipeCategories, $selectedCat);
+            if(null != $selectedCat->getParentCategory()){
+                $parentCats = $selectedCat->getParentCatRecurcive();
+                foreach($parentCats as $parentCategory){
+                    array_push($recipeCategories, $parentCategory);
+                }
+            }      
+
+            foreach($recipeCategories as $recipeCategory){
+
+                $recipe->addCategory($recipeCategory);
             }
 
             $recipes[$i] = $recipe;
             $manager->persist($recipe);
         }
 
+        //RecipeIngredient
+        $output->writeln('RecipeIngredient');
+        $unitConst = RecipeIngredient::getAvailableUnits();
+        foreach ($recipes as $recipe) {
+            $ingredientNumber = mt_rand(1, 10);
+            $ingredientAdded = 0;
+            foreach ($ingredients as $ingredient) {
+                // 1 out of 10
+                if (mt_rand(0, 9) === 0) {
+                    $recipeIngredient = new RecipeIngredient();
+                    $recipeIngredient->setRecipe($recipe)
+                        ->setIngredient($ingredient)
+                        ->setQuantity(mt_rand(1, 5))
+                        ->setUnitType($unitConst[array_rand($unitConst)]);
+                    $manager->persist($recipeIngredient);
+                    $ingredientAdded++ ;
+                }
+                if ($ingredientNumber == $ingredientAdded){
+                    break;
+                }
+            }
+        }
+
+
         //Marks
+        $output->writeln('Marks');
         foreach ($users as $user) {
-            foreach ($recipes as $recipe){
-                if (mt_rand(0,1)){
+            foreach ($recipes as $recipe) {
+                if (mt_rand(0, 1)) {
                     $mark = new Mark();
                     $mark->setUser($user)
-                        ->setMark(mt_rand(0,5))
+                        ->setMark(mt_rand(1, 5))
+                        ->setComment($this->faker->text(200))
                         ->setRecipe($recipe);
 
                     $manager->persist($mark);
@@ -88,6 +169,16 @@ class AppFixture extends Fixture
             }
         }
 
+        //Contact
+        $output->writeln('Contact');
+        for ($i = 0; $i < 5; $i++) {
+            $contact = new Contact();
+            $contact->setFullName($this->faker->name())
+                ->setEmail($this->faker->email())
+                ->setSubject('Demande n°' . ($i + 1))
+                ->setMessage($this->faker->text());
+            $manager->persist($contact);
+        }
 
         $manager->flush();
     }
