@@ -36,15 +36,15 @@
 				<th scope="col">Image</th>
 				<th scope="col">Nom</th>
 				<th scope="col">Status</th>
-				<th scope="col">Difficulté</th>
-				<th scope="col">Prix</th>
+				<th class="largescreen" scope="col">Difficulté</th>
+				<th class="largescreen" scope="col">Prix</th>
 				<th scope="col">Action</th>
 			</tr>
 		</thead>
 		<tbody>
 			{% for recipe in recipes %}
 				<tr>
-					<td>
+					<td class="align-middle">
                     <div class="ingredient_images">
                         <img class="custom-img-size-40 rounded-1 custom-img-1-1" src="{{ tools.provideDefaultImageFromArray(recipe.images) }}">
                     </div>
@@ -54,8 +54,8 @@
 						{{tools.provideStatusTag(recipe.status)}}
 						{{tools.providePublicTag(recipe.isPublic)}}
 					</td>
-					<td class="align-middle">{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
-					<td class="align-middle">{{ (recipe.price is null) ? '--' : recipe.price }}</td>
+					<td class="align-middle largescreen">{{ (recipe.difficulty is null) ? '--' : recipe.difficulty }}</td>
+					<td class="align-middle largescreen">{{ (recipe.price is null) ? '--' : recipe.price }}</td>
 					<td class="align-middle">
 						{% if recipe.user == app.user %}
 							<a title="Visualiser la recette" href="{{ path('recipe.show', { id: recipe.id}) }}" class="btn btn-secondary">

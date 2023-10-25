@@ -47,7 +47,7 @@
     height: 45px;
     aspect-ratio: 1/1;
 }
-@media only screen and (max-device-width: 767px) {
+@media only screen and (max-device-width: 992px) {
     /* Ajoute 5px à toutes les tailles */
     .custom-fav-button{
         width: 70px;
@@ -81,13 +81,14 @@
     html {
       font-size: calc(250%);
     }
+
+    .custom-img-size-40{
+        height: 100px;
+        width: 100px;
+    }
 }
 
 @media only screen and (max-width: 992px) {
-    .smallscreen{
-        display: block;
-    }
-
     .largescreen{
         display: none;
     }
@@ -103,10 +104,6 @@
 @media only screen and (min-width: 992px) {
     .smallscreen{
         display: none;
-    }
-
-    .largescreen{
-        display: block;
     }
 
     .logo{
