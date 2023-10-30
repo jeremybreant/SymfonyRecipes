@@ -63,6 +63,6 @@ class ExceptionController extends AbstractController
 
         );
 
-        return $this->redirectToRoute("security.login");
+        return $this->redirectToRoute("home");
     }
 }
