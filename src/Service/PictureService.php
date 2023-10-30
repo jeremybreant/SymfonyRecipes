@@ -39,7 +39,7 @@ class PictureService
             case 'image/jpeg':
                 $picture_source = imagecreatefromjpeg($picture_path);
                 break;
-            case 'image/wbp':
+            case 'image/webp':
                 $picture_source = imagecreatefromwebp($picture_path);
                 break;
             default:
