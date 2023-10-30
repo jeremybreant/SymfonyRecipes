@@ -4,21 +4,21 @@ declare(strict_types=1);
 // src/EventListener/ExceptionListener.php
 namespace App\EventListener;
 
-use Symfony\Component\DependencyInjection\Attribute\When;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 
-
-#[When(env: 'prod')]
 class ExceptionListener
 {
     private $router;
+    private $env;
 
-    public function __construct(RouterInterface $router)
+    public function __construct(RouterInterface $router, KernelInterface $kernel)
     {
         $this->router = $router;
+        $this->env = $kernel->getEnvironment();
     }
 
     public function __invoke(ExceptionEvent $event): void
@@ -27,7 +27,10 @@ class ExceptionListener
         
         $exception = $event->getThrowable();
         
-        dd($exception);
+        if($this->env === 'dev'){
+            dd($exception);
+        }
+        
         //*
         if ($exception instanceof HttpExceptionInterface) {
             $response = new RedirectResponse(
