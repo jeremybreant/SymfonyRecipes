@@ -1,41 +1,49 @@
 // assets/controllers/form-collection_controller.js
 
+/**
+ * This stimulus is used to update the amount of ingredient depending of the required food quantity
+ * eg. A recipe for 4 persons can be changed to display ingredient for only 2 persons
+ */
+
 import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
 
     static values = {
         recipe :Object,
-        requestedfoodquantity   : Number,
+        requestedfoodquantity :Number,
     }
 
     incrementFoodQuantity(event)
     {
         this.requestedfoodquantityValue++;
-        this.changeQuantityDisplay();
+        this.changeRequiredQuantityDisplayed();
 
-        this.recipeValue.recipeIngredients.forEach(
-            recipeIngredient => this.changeIngredientQuantityDisplay(recipeIngredient)
-        );
+        this.changeAllIngredientQuantityDisplayed();
     }
 
     decrementFoodQuantity(event)
     {
         if(this.requestedfoodquantityValue === 1) return;
         this.requestedfoodquantityValue--;
-        this.changeQuantityDisplay();
+        this.changeRequiredQuantityDisplayed();
+
+        this.changeAllIngredientQuantityDisplayed();
+    }
+
+    changeAllIngredientQuantityDisplayed(){
         this.recipeValue.recipeIngredients.forEach(
-            recipeIngredient => this.changeIngredientQuantityDisplay(recipeIngredient)
+            recipeIngredient => this.changeIngredientQuantityDisplayed(recipeIngredient)
         );
     }
 
-    changeQuantityDisplay()
+    changeRequiredQuantityDisplayed()
     {
         let foodQuantityNum = document.getElementById("foodQuantityNum");
         foodQuantityNum.innerHTML = this.requestedfoodquantityValue;
     }
 
-    changeIngredientQuantityDisplay(recipeIngredient)
+    changeIngredientQuantityDisplayed(recipeIngredient)
     {
         let dividedQuantity;
         let targetNode = document.getElementById(recipeIngredient.id);
@@ -52,7 +60,6 @@ export default class extends Controller {
         {
             return  dividedQuantity;
         }
-
         if(dividedQuantity < 0.10)
         {
             return "";

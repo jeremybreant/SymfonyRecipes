@@ -1,4 +1,7 @@
 // assets/controllers/images_controller.js
+/**
+ * This stimulus allow to delete image from a recipe or an ingredient via an ajax request
+ */
 
 import { Controller } from '@hotwired/stimulus';
 
@@ -12,6 +15,7 @@ export default class extends Controller {
     deleteImages() {
         if (confirm('Etes-vous sûre de vouloir supprimer cette image ? La suppression sera immédiate et définitive.')) {
             console.log(this.imageidValue);
+            //imageTarget ? cf. line 13
             let imageTarget = this.imageTarget;
             $.ajax({
                 url: '/image/suppression',

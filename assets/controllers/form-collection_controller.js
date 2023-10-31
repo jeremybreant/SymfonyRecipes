@@ -1,4 +1,8 @@
 // assets/controllers/form-collection_controller.js
+/**
+ * This stimuluse is used to add recipeIngredient form in the recipe form
+ * It allow to add or remove ingredient to recipe via form 
+ */
 
 import { Controller } from '@hotwired/stimulus';
 

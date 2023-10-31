@@ -1,4 +1,7 @@
 // assets/controllers/form-collection_controller.js
+/**
+ * This stimulus is handle fav button actions like css animation and ajax query
+ */
 
 import { Controller } from '@hotwired/stimulus';
 
