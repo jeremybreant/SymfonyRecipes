@@ -117,8 +117,8 @@ class RecipeCrudController extends AbstractCrudController
     {
 
         $seeFromClientView = Action::new('seeFrowCustomerView', 'Voir comme client', 'fas fa-eye')
-        ->linkToCrudAction('seeFrowCustomerView')
-        ->setCssClass('btn btn-info');
+            ->linkToCrudAction('seeFrowCustomerView')
+            ->setCssClass('btn btn-info');
         
         return $actions
             // ...

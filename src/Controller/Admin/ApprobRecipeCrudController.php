@@ -26,6 +26,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\NumberField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
@@ -74,6 +75,7 @@ class ApprobRecipeCrudController extends AbstractCrudController
                 Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED, 
                 Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED,
             ])
+            //change the way tag is displayed
             ->setTemplatePath('admin/field/tag_field_template.html.twig')
             ->setColumns(6),
             
@@ -143,8 +145,8 @@ class ApprobRecipeCrudController extends AbstractCrudController
             ->setCssClass('btn btn-success');
 
         $seeFromClientView = Action::new('seeFrowCustomerView', 'Voir', 'fas fa-eye')
-        ->linkToCrudAction('seeFrowCustomerView')
-        ->setCssClass('btn btn-info');
+            ->linkToCrudAction('seeFrowCustomerView')
+            ->setCssClass('btn btn-info');
         
         return $actions
             // ...
