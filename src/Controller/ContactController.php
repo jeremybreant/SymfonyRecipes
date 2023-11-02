@@ -14,6 +14,12 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ContactController extends AbstractController
 {
+    /**
+     * This route is used for user to contact administator of the website
+     * @param Request $request
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
     #[Route('/contact', name: 'contact.index', methods:['GET','POST'])]
     public function index(
         Request $request,
@@ -52,13 +58,13 @@ class ContactController extends AbstractController
 
             $this->addFlash(
                 'success',
-                'Votre mail a été transmis'
+                'Votre demande a été transmis'
             );
 
             return $this->redirectToRoute('recipe.index.public');
         }
         return $this->render('pages/contact/index.html.twig', [
-            'controller_name' => 'ContactController',
+            //'controller_name' => 'ContactController',
             'form' => $form->createView()
         ]);
     }

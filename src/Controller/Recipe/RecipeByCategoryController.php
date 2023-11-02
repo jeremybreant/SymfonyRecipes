@@ -3,30 +3,24 @@ declare(strict_types=1);
 
 namespace App\Controller\Recipe;
 
-use App\DataFixtures\CategoryFixture;
-use App\Entity\Mark;
-use App\Entity\Recipe;
-use App\Entity\RecipeIngredient;
-use App\Form\MarkType;
-use App\Form\RecipeType;
 use App\Repository\CategoryRepository;
-use App\Repository\MarkRepository;
 use App\Repository\RecipeRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-/* This should be reworked in order to not use it */
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Attribute\IsGranted;
-use Symfony\Contracts\Cache\ItemInterface;
 
 class RecipeByCategoryController extends AbstractController
 {
+    /**
+     * This controller display recipes from a category
+     * @param string $categorySlug
+     * @param CategoryRepository $categoryRepository
+     * @param RecipeRepository $recipeRepository
+     * @param PaginatorInterface $paginator
+     * @return Request
+     */
     #[Route('/recette/category/{categorySlug}', 'recipe.by.category', methods: ['GET'])]
     public function publicRecipesByCategories(
         string $categorySlug,

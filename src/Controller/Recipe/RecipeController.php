@@ -16,8 +16,6 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query;
 use Knp\Component\Pager\PaginatorInterface;
-/* This should be reworked in order to not use it */
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\Request;
@@ -27,12 +25,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\ItemInterface;
 
-use function PHPUnit\Framework\containsIdentical;
-
 class RecipeController extends AbstractController
 {
     /**
-     * This route iss to display all recipes
+     * This route display all user recipes
      *
      * @param RecipeRepository $recipeRepository
      * @param PaginatorInterface $paginator
@@ -59,13 +55,17 @@ class RecipeController extends AbstractController
         ]);
     }
 
+    /**
+     * This route display a randow recipe via recipe.show route
+     * @param RecipeRepository $recipeRepository
+     * @return Response
+     */
     #[Route('/recette/random', 'recipe.random', methods: ['GET'])]
     public function randomRecipe(
-        EntityManagerInterface $manager,
-        RecipeRepository $recipeRepository,
-        Request $request
+        RecipeRepository $recipeRepository
     ): Response {
         $cache = new FilesystemAdapter();
+        //Cache
         $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository) {
             $item->expiresAfter(300);
 
@@ -86,6 +86,13 @@ class RecipeController extends AbstractController
         return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
     }
 
+    /**
+     * This route display recipes visible by public
+     * @param RecipeRepository $recipeRepository
+     * @param PaginatorInterface $paginator,
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/recette/publique', 'recipe.index.public', methods: ['GET'])]
     public function publicRecipes(
         RecipeRepository $recipeRepository,
@@ -121,6 +128,7 @@ class RecipeController extends AbstractController
     ): Response {
 
         $recipe = new Recipe();
+        //adding RecipeIngredient in order to display a field in form
         $recipe->addRecipeIngredient(new RecipeIngredient());
 
         $recipe->setUser($this->getUser());
@@ -134,7 +142,7 @@ class RecipeController extends AbstractController
             $image = $form->get('images')->getData();
 
             if ($image != null) {
-                // On appelle le service d'ajout
+                // On appelle le service d'ajout d'image
                 $fichier = $pictureService->add($image, Recipe::PICTURE_DIRECTORY, Recipe::PICTURE_SIZE_WIDTH, Recipe::PICTURE_SIZE_HEIGHT);
 
                 $img = new Images();
@@ -176,9 +184,14 @@ class RecipeController extends AbstractController
     public function edit(
         Request $request,
         EntityManagerInterface $manager,
-        Recipe $recipe,
+        ?Recipe $recipe,
         PictureService $pictureService
     ): Response {
+
+        // If there is no recipe dening access
+        if (!$recipe) {
+            throw new AccessDeniedHttpException("Edit Access denied");
+        }
 
         // Security Control
         if ($this->getUser() != $recipe->getUser()) {
@@ -189,6 +202,7 @@ class RecipeController extends AbstractController
         $originalRecipe = clone $recipe;
 
         // dynamic recipeingredient - Create an ArrayCollection of the current recipeIngredient objects in the database for this recipe
+        // Probably related to Lazy loading of recipe entity
         foreach ($recipe->getRecipeIngredients() as $recipeIngredient) {
             $originalRecipeIngredients->add($recipeIngredient);
         }
@@ -207,8 +221,8 @@ class RecipeController extends AbstractController
                 }
             }
 
-            // On définit un booléen pour déterminer d'autre facteur de modification de la 
-            $isExternalRequirement = false;
+            // On définit un booléen pour déterminer d'autre facteur de modification de la recette
+            $isRecipeMustBeDissaproved = false;
 
             // On récupère les images
             $image = $form->get('images')->getData();
@@ -225,11 +239,12 @@ class RecipeController extends AbstractController
                 ->setPictureHeight(Recipe::PICTURE_SIZE_HEIGHT);
 
                 $newRecipe->addImage($img);
-                $isExternalRequirement = true;
+                //Set to true because adding 
+                $isRecipeMustBeDissaproved = true;
             }
 
             //reset status in order to not show inapropriate content
-            if (Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe, $isExternalRequirement)) {
+            if (Recipe::isModificationThatRequireStatusReset($originalRecipe, $newRecipe, $isRecipeMustBeDissaproved)) {
                 $newRecipe->statusResetAfterModification();
             }
 
@@ -260,29 +275,26 @@ class RecipeController extends AbstractController
     #[Route('/recette/suppression/{id}', 'recipe.delete', methods: ['GET'])]
     #[IsGranted('ROLE_USER')]
     public function delete(
-        Recipe $recipe,
+        ?Recipe $recipe,
         EntityManagerInterface $entityManager
     ): Response {
+
+        // If there is no recipe dening access
+        if (!$recipe) {
+            throw new AccessDeniedHttpException("Delete Access denied");
+        }
 
         // Security Control
         if ($this->getUser() != $recipe->getUser()) {
             throw new AccessDeniedHttpException("Delete Access denied");
         }
 
-        if (!$recipe) {
-            $this->addFlash(
-                'danger',
-                'La recette n\'a pas été trouvé'
-            );
-        } else {
-            $entityManager->remove($recipe);
-            $entityManager->flush();
-
-            $this->addFlash(
-                'success',
-                sprintf('La recette %s a été supprimé avec succès', $recipe->getName())
-            );
-        }
+        $entityManager->remove($recipe);
+        $entityManager->flush();
+        $this->addFlash(
+            'success',
+            sprintf('La recette %s a été supprimé avec succès', $recipe->getName())
+        );
 
         return $this->redirectToRoute('recipe.index');
     }
@@ -295,18 +307,23 @@ class RecipeController extends AbstractController
      */
     #[Route('/recette/{id}', 'recipe.show', methods: ['GET', 'POST'])]
     public function show(
-        Recipe $recipe,
+        ?Recipe $recipe,
         Request $request,
         MarkRepository $markRepository,
         EntityManagerInterface $manager
     ): Response {
+
+        // If there is no recipe dening access
+        if (!$recipe) {
+            throw new AccessDeniedHttpException("View Access denied");
+        }
 
         // Si ce n'est pas l'auteur et que la recette n'est pas sensé être accessible au public
         if (!$recipe->isAccessibleByPublic() && $this->getUser() !== $recipe->getUser() && !in_array('ROLE_ADMIN',$this->getUser()->getRoles())) {
             throw new AccessDeniedHttpException("View Access denied");
         }
 
-        // récupération des nhotes associées
+        // récupération des notes associées
         $relatedMarks = $markRepository->findBy([
             'recipe' => $recipe
         ]);
@@ -350,8 +367,6 @@ class RecipeController extends AbstractController
             }
             $manager->flush();
 
-
-
             return $this->redirectToRoute('recipe.index.public');
         }
         return $this->render('pages/recipe/show.html.twig', [
@@ -370,17 +385,21 @@ class RecipeController extends AbstractController
     #[IsGranted('ROLE_USER')]
     #[Route('/recette/{id}/start-check', 'recipe.start-check', methods: ['GET'])]
     public function startCheck(
-        Recipe $recipe,
+        ?Recipe $recipe,
         EntityManagerInterface $manager
     ): Response {
 
+        // If there is no recipe dening access
+        if (!$recipe) {
+            throw new AccessDeniedHttpException("Start-check Access denied");
+        }
+        
         // Security Control
         if ($this->getUser() != $recipe->getUser()) {
             throw new AccessDeniedHttpException("Start-check Access denied");
         }
 
         if ($recipe->getStatus() !== Recipe::STATUS_NOT_APPROVED) {
-
             return $this->redirectToRoute('recipe.index');
         }
 

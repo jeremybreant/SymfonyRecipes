@@ -12,6 +12,11 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ExceptionController extends AbstractController
 {
+    /** 
+     * This route is used to add error message for user when a problem is encoutered
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/exception', name: 'exception.httpException', methods: ['GET'])]
     public function index(
         Request $request
@@ -39,9 +44,15 @@ class ExceptionController extends AbstractController
                 $message)
             );
         }
+
         return $this->redirectToRoute("home");
     }
 
+    /** 
+     * This route is used to add error message for user when a server problem is encoutered
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/exception/500', name: 'exception.server-error', methods: ['GET'])]
     public function error500(
         Request $request

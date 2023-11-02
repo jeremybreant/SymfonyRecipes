@@ -13,6 +13,7 @@ use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -50,6 +51,13 @@ class RecipeFavController extends AbstractController
         ]);
     }
 
+    /**
+     * This route is used to toggle add or remove a recipe from a user's favorite
+     * @param Request $request,
+     * @param RecipeRepository $recipeRepository
+     * @param EntityManagerInterface $manager
+     * @return JsonResponse
+     */
     #[IsGranted('ROLE_USER')]
     #[Route('/toggle-recipe-fav', name: 'recipefav.toggle', methods: ['POST'])]
     public function toggle(
@@ -67,8 +75,13 @@ class RecipeFavController extends AbstractController
 
         // Retourner une JsonResponse
 
-        //*
+        //retrieve recipe
         $recipe = $recipeRepository->find($request->request->get("recipeId"));
+
+        //If the recipe to add in fav doesn't exist 
+        if(!$recipe){
+            throw new AccessDeniedHttpException("Recipe Access denied");
+        }
 
         /** @var User */
         $user = $this->getUser();

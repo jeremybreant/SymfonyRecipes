@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\Controller\Recipe;
 
-
-use App\Form\SearchType;
 use App\Repository\RecipeRepository;
 use Knp\Component\Pager\PaginatorInterface;
 /* This should be reworked in order to not use it */
