@@ -94,6 +94,7 @@ class Category
         return $this;
     }
 
+    //Get full tree of subs categories
     public function getSubCatRecurcive(): ?array
     {
         $totalSubCat = array();
@@ -119,6 +120,7 @@ class Category
         return $totalSubCat;
     }
 
+    //Get all intermediate category from actual category to the root category
     public function getParentCatRecurcive(): ?array
     {
         $totalParentCats = array();
@@ -140,6 +142,7 @@ class Category
         return $totalParentCats;
     }
 
+    //get the root category
     public function getRootCat(): Category
     {
 
@@ -156,17 +159,6 @@ class Category
         }
         
         return $previousCat;
-    }
-
-    public function getPublicRecipes(): array
-    {
-        $publicRecipes = array();
-        foreach($this->recipes as $recipe){
-            if($recipe->getIsPublic()){
-                array_push($publicRecipes, $recipe);
-            }
-        }
-        return $publicRecipes;
     }
 
     public function getParentCategory(): ?self
