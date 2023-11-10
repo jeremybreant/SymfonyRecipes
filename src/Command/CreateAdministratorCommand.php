@@ -63,7 +63,7 @@ class CreateAdministratorCommand extends Command
         }
 
         $pseudo = $input->getArgument('pseudo');
-        if (!$plainpassword) {
+        if (!$pseudo) {
             $question = new Question('What is the pseudo of the administrator: ');
             $pseudo = $helper->ask($input, $output, $question);
         }
