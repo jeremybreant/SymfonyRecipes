@@ -35,7 +35,8 @@ class CreateAdministratorCommand extends Command
         $this
             ->addArgument('full_name', InputArgument::OPTIONAL, 'Admin\'s fullname')
             ->addArgument('email', InputArgument::OPTIONAL, 'Admin\'s email')
-            ->addArgument('plain_password', InputArgument::OPTIONAL, 'Admin\'s password');
+            ->addArgument('plain_password', InputArgument::OPTIONAL, 'Admin\'s password')
+            ->addArgument('pseudo', InputArgument::OPTIONAL, 'Admin\'s pseudo');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -61,10 +62,16 @@ class CreateAdministratorCommand extends Command
             $plainpassword = $helper->ask($input, $output, $question);
         }
 
+        $pseudo = $input->getArgument('pseudo');
+        if (!$plainpassword) {
+            $question = new Question('What is the pseudo of the administrator: ');
+            $pseudo = $helper->ask($input, $output, $question);
+        }
 
         $user = (new User())->setFullName($fullname)
             ->setEmail($email)
             ->setPlainPassword($plainpassword)
+            ->setPseudo($pseudo)
             ->setRoles(['ROLE_ADMIN', 'ROLE_USER']);
 
         $this->manager->persist($user);
