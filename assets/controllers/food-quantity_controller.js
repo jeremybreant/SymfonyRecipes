@@ -45,6 +45,11 @@ export default class extends Controller {
 
     changeIngredientQuantityDisplayed(recipeIngredient)
     {
+        // No quantity, no need to update it
+        if(recipeIngredient.quantity === null){
+            return;
+        }
+
         let dividedQuantity;
         let targetNode = document.getElementById(recipeIngredient.id);
 

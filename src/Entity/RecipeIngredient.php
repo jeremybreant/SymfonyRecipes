@@ -24,6 +24,8 @@ class RecipeIngredient
     public const UNIT_GRAM = "g";
     public const UNIT_SOUP_SPOON = "cs";
     public const UNIT_COFFEE_SPOON = "cc";
+    public const UNIT_MORCEAU = "morceau";
+    public const UNIT_PORTION = "portion";
     public const UNIT_NONE = "";
 
     public static function getAvailableUnits()
@@ -36,6 +38,8 @@ class RecipeIngredient
             RecipeIngredient::UNIT_GRAM => RecipeIngredient::UNIT_GRAM,
             RecipeIngredient::UNIT_SOUP_SPOON => RecipeIngredient::UNIT_SOUP_SPOON,
             RecipeIngredient::UNIT_COFFEE_SPOON => RecipeIngredient::UNIT_COFFEE_SPOON,
+            RecipeIngredient::UNIT_MORCEAU => RecipeIngredient::UNIT_MORCEAU,
+            RecipeIngredient::UNIT_PORTION => RecipeIngredient::UNIT_PORTION,
             RecipeIngredient::UNIT_NONE => RecipeIngredient::UNIT_NONE
         ];
     }
@@ -47,9 +51,8 @@ class RecipeIngredient
     private ?int $id = null;
 
     #[Groups(['recipeIngredient'])]
-    #[ORM\Column]
+    #[ORM\Column(type: "float", nullable: true)]
     #[Assert\Range(min: 1, max: 1500, notInRangeMessage: "La quantité doit etre comprise entre 1 et 1500")]
-    #[Assert\NotBlank(message: "La quantité est obligatoire")]
     private ?float $quantity = null;
 
     #[Groups(['recipeIngredient'])]
@@ -78,7 +81,7 @@ class RecipeIngredient
         return $this->quantity;
     }
 
-    public function setQuantity(float $quantity): self
+    public function setQuantity(?float $quantity): self
     {
         $this->quantity = $quantity;
 
