@@ -208,7 +208,7 @@ class RecipeController extends AbstractController
             $originalRecipeIngredients->add($recipeIngredient);
         }
 
-        $form = $this->createForm(RecipeType::class, $recipe);
+        $form = $this->createForm(RecipeType::class, $recipe,['edit_mode' => true]);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {

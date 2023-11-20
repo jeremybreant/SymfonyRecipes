@@ -70,9 +70,12 @@ class RecipeType extends AbstractType
                     'class' => 'form-label mt-4'
                 ]
             ])
-            ->add('foodQuantityType', ChoiceType::class, [
-                'choices' => Recipe::getAvailableQuantityType(),
-                'label' => 'Unité :',
+            ->add('foodQuantityType', TextType::class, [
+                'label' => 'Unité',
+                'data' => $options['data']->getFoodQuantityType() !== null ? $options['data']->getFoodQuantityType() : 'personnes',
+                'attr' => [
+                    'placeholder' => 'Personnes'
+                ],
                 'label_attr' => [
                     'class' => 'form-label mt-4'
                 ]
@@ -154,6 +157,7 @@ class RecipeType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Recipe::class,
+            'edit_mode' => false, // Ajoutez cette option
         ]);
     }
 }

@@ -56,7 +56,7 @@
         </div>
         <div class="col-sm-6 col-md-6 col-xl-3 form-group mt-4">
             {{ form_label(form.foodQuantityType) }}
-            {{ form_widget(form.foodQuantityType, {'attr': {'class': 'form-select' ~ (form_errors(form.foodQuantityType) is not empty ? ' is-invalid' : '')}}) }}
+            {{ form_widget(form.foodQuantityType, {'attr': {'class': 'form-control' ~ (form_errors(form.foodQuantityType) is not empty ? ' is-invalid' : '')}}) }}
             <div class="invalid-feedback">
                 {{ form_errors(form.foodQuantityType) }}
             </div>
