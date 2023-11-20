@@ -42,8 +42,9 @@ class RecipeController extends AbstractController
         PaginatorInterface $paginator,
         Request $request
     ): Response {
+        $user = $this->getUser();
         $recipes = $paginator->paginate(
-            $recipeRepository->findBy(['user' => $this->getUser()]),
+            $recipeRepository->findUserRecipesrQuery(null, $user),
             /* query NOT result */
             $request->query->getInt('page', 1),
             /*page number*/

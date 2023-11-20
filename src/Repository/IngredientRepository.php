@@ -5,6 +5,7 @@ namespace App\Repository;
 
 use App\Entity\Ingredient;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -38,6 +39,16 @@ class IngredientRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function findUserIngredientsrQuery(?int $nbRecipes, $user): Query
+    {
+        return $this->createQueryBuilder('i')
+            ->innerJoin('i.user', 'u') // Utilisation de innerJoin pour correspondre à la table de liaison
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('i.name', 'ASC')
+            ->getQuery();      
     }
 
 //    /**

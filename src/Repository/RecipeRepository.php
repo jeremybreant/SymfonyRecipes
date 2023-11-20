@@ -79,10 +79,17 @@ class RecipeRepository extends ServiceEntityRepository
             ->andWhere('u.id = :userId')
             ->setParameter('userId', $user->getId())
             ->orderBy('r.createdAt', 'DESC')
-            ->getQuery();
+            ->getQuery();   
+    }
 
-        
-            
+    public function findUserRecipesrQuery(?int $nbRecipes, $user): Query
+    {
+        return $this->createQueryBuilder('r')
+            ->innerJoin('r.user', 'u') // Utilisation de innerJoin pour correspondre à la table de liaison
+            ->where('u.id = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('r.name', 'ASC')
+            ->getQuery();      
     }
 
     public function save(Recipe $entity, bool $flush = false): void
