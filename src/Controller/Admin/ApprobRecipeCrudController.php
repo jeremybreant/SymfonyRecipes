@@ -15,6 +15,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Context\AdminContext;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\EntityDto;
 use EasyCorp\Bundle\EasyAdminBundle\Dto\SearchDto;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\CollectionField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
@@ -55,37 +56,39 @@ class ApprobRecipeCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Demandes d\'approbation')
             ->setEntityLabelInSingular('Demande d\'approbation')
 
-            ->setPageTitle("index","LaPoêlée - Administration des demandes d'approbation")
+            ->setPageTitle("index", "LaPoêlée - Administration des demandes d'approbation")
             ->showEntityActionsInlined()
 
             ->setPaginatorPageSize(10)
-            ;
+        ;
     }
 
     public function configureFields(string $pageName): iterable
-    { 
+    {
         return [
             FormField::addPanel(),
             IdField::new('id')
                 ->setDisabled()
                 ->setColumns(6),
             ChoiceField::new('status')->setChoices([
-                Recipe::STATUS_NOT_APPROVED => Recipe::STATUS_NOT_APPROVED, 
-                Recipe::STATUS_IN_APPROBATION => Recipe::STATUS_IN_APPROBATION, 
-                Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED, 
+                Recipe::STATUS_NOT_APPROVED => Recipe::STATUS_NOT_APPROVED,
+                Recipe::STATUS_IN_APPROBATION => Recipe::STATUS_IN_APPROBATION,
+                Recipe::STATUS_APPROVED => Recipe::STATUS_APPROVED,
                 Recipe::STATUS_REFUSED => Recipe::STATUS_REFUSED,
             ])
-            //change the way tag is displayed
-            ->setTemplatePath('admin/field/tag_field_template.html.twig')
-            ->setColumns(6),
-            
+                //change the way tag is displayed
+                ->setTemplatePath('admin/field/tag_field_template.html.twig')
+                ->setColumns(6),
+
             DateTimeField::new("updatedAt")
-            ->setDisabled(),
+                ->setDisabled(),
+            AssociationField::new('categories')
+                ->setColumns(6),
 
             FormField::addPanel("Informations à vérifier"),
             TextField::new('name')
                 ->setDisabled()
-                ->setColumns(6),      
+                ->setColumns(6),
             NumberField::new('preparationTime')
                 ->setDisabled()
                 ->hideOnIndex()
@@ -106,17 +109,17 @@ class ApprobRecipeCrudController extends AbstractCrudController
                 ->setDisabled()
                 ->hideOnIndex()
                 ->setColumns(6),
-            TextareaField::new('description')  
+            TextareaField::new('description')
                 ->setDisabled()
                 ->renderAsHtml()
                 ->setColumns(12),
 
             FormField::addPanel("Image info"),
-            
+
             CollectionField::new('images', 'Image')
                 ->hideOnIndex()
-                ->setFormType(FileType::class)
-                ->setTemplatePath('admin/field/image_collection_field_template.html.twig')   
+                ->hideOnForm()
+                ->setTemplatePath('admin/field/image_collection_field_template.html.twig')
 
         ];
     }
@@ -144,18 +147,18 @@ class ApprobRecipeCrudController extends AbstractCrudController
             ->linkToCrudAction('approbate')
             ->setCssClass('btn btn-success');
 
-        $seeFromClientView = Action::new('seeFrowCustomerView', 'Voir', 'fas fa-eye')
-            ->linkToCrudAction('seeFrowCustomerView')
+        $seeFromClientView = Action::new('seeFromCustomerView', 'Voir via client', 'fas fa-eye')
+            ->linkToCrudAction('seeFromCustomerView')
             ->setCssClass('btn btn-info');
-        
+
+
         return $actions
             // ...
             ->add(Crud::PAGE_INDEX, Action::DETAIL)
             ->add(Crud::PAGE_DETAIL, $refuseRecipe)
             ->add(Crud::PAGE_DETAIL, $acceptRecipe)
             ->add(Crud::PAGE_DETAIL, $seeFromClientView)
-            ->remove(Crud::PAGE_INDEX, Action::NEW)
-            ->remove(Crud::PAGE_DETAIL, Action::EDIT)
+            ->remove(Crud::PAGE_INDEX, Action::NEW )
             ->remove(Crud::PAGE_DETAIL, Action::DELETE)
             ->remove(Crud::PAGE_INDEX, Action::EDIT)
             ->remove(Crud::PAGE_INDEX, Action::DELETE)
@@ -170,7 +173,7 @@ class ApprobRecipeCrudController extends AbstractCrudController
         $entityManager->persist($recipe);
         $entityManager->flush();
         $this->addFlash('success', 'L\'approbation a été refusée avec succès !');
-    
+
         $url = $this->adminUrlGenerator->setController(RecipeCrudController::class)
             ->setAction(Action::INDEX)
             ->generateUrl();
@@ -186,7 +189,7 @@ class ApprobRecipeCrudController extends AbstractCrudController
         $entityManager->persist($recipe);
         $entityManager->flush();
         $this->addFlash('success', 'L\'approbation a été accepté avec succès !');
-    
+
         $url = $this->adminUrlGenerator->setController(RecipeCrudController::class)
             ->setAction(Action::INDEX)
             ->generateUrl();
@@ -194,12 +197,12 @@ class ApprobRecipeCrudController extends AbstractCrudController
         return $this->redirect($url);
     }
 
-    public function seeFrowCustomerView(AdminContext $context, EntityManagerInterface $entityManager, Request $request)
+    public function seeFromCustomerView(AdminContext $context, EntityManagerInterface $entityManager, Request $request)
     {
         /** @var Recipe $recipe */
         $recipe = $context->getEntity()->getInstance();
-        
-        return new RedirectResponse($this->router->generate('recipe.show',['id' => $recipe->getId()]));
+
+        return new RedirectResponse($this->router->generate('recipe.show', ['id' => $recipe->getId()]));
     }
 
 }
