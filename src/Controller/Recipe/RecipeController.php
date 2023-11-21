@@ -65,25 +65,7 @@ class RecipeController extends AbstractController
     public function randomRecipe(
         RecipeRepository $recipeRepository
     ): Response {
-        $cache = new FilesystemAdapter();
-        //Cache
-        $data = $cache->get('recipes', function (ItemInterface $item) use ($recipeRepository) {
-            $item->expiresAfter(300);
-
-            /** @var Query */
-            $query = $recipeRepository->findPublicRecipeQuery(null);
-            $recipes = $query->getResult();
-
-            // Force loading of mark collection before caching (because fetch="LAZY" by default)
-            foreach ($recipes as $recipe) {
-                $recipe->getMarks()->toArray();
-                $recipe->getCategories()->toArray();
-            }
-
-            return $recipes;
-        });
-
-        $randomRecipe = $data[rand(0, count($data) - 1)];
+        $randomRecipe = $recipeRepository->findRandomRecipe();
         return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
     }
 

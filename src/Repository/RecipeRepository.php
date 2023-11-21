@@ -92,6 +92,27 @@ class RecipeRepository extends ServiceEntityRepository
             ->getQuery();      
     }
 
+    public function findRandomRecipe():?Recipe
+    {
+        $results = $this->createQueryBuilder('r')
+            ->select('r.id')
+            ->where('r.isPublic = 1')
+            ->andWhere('r.status = :status')
+            ->setParameter('status', "Approuvée")
+            ->getQuery()
+            ->getResult(Query::HYDRATE_ARRAY);
+
+        $idArray = array_column($results, 'id');
+        $randInt = mt_rand(1, count($idArray));
+        $randomId = $idArray[$randInt];
+
+        return $this->createQueryBuilder('r')
+            ->where('r.id = :randomId')
+            ->setParameter('randomId', $randomId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
     public function save(Recipe $entity, bool $flush = false): void
     {
         $this->getEntityManager()->persist($entity);
