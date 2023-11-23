@@ -2,17 +2,16 @@
 declare(strict_types=1);
 
 
-namespace App\EventSubscriber;
+namespace App\EventListener;
 
-use App\Interface\ImagesInterface;
-use Doctrine\Common\EventSubscriber;
-use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
 use App\Service\PictureService;
 use App\Interface\PictureServiceInterface;
 use Doctrine\ORM\Event\PreRemoveEventArgs;
+use Symfony\Component\EventDispatcher\Attribute\AsEventListener;
 
-class PictureRemovalSubscriber implements EventSubscriber
+#[AsEventListener(event: Events::class, method: 'preRemove')]
+class PictureRemovalListener
 {
     private $pictureService;
 
@@ -21,14 +20,7 @@ class PictureRemovalSubscriber implements EventSubscriber
         $this->pictureService = $pictureService;
     }
 
-    public function getSubscribedEvents()
-    {
-        return [
-            Events::preRemove
-        ];
-    }
-
-    public function preRemove(PreRemoveEventArgs $preRemoveEventArgs)
+    public function __invoke(PreRemoveEventArgs $preRemoveEventArgs)
     {
         $entity = $preRemoveEventArgs->getObject();
 

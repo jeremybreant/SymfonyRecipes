@@ -27,6 +27,7 @@ class ExceptionController extends AbstractController
         $code = $request->query->get('X-Code');
         $message = $request->query->get('X-Message');
 
+        //Faille XSS ? Non car message fournit par symfony donc sensé être xss proof ?
         if ($statusCode === "403") {
             $this->addFlash(
                 'danger',
