@@ -92,7 +92,7 @@ class RecipeRepository extends ServiceEntityRepository
             ->getQuery();      
     }
 
-    public function findRandomRecipe():?Recipe
+    public function findRandomPublicRecipe():?Recipe
     {
         $results = $this->createQueryBuilder('r')
             ->select('r.id')

@@ -65,7 +65,7 @@ class RecipeController extends AbstractController
     public function randomRecipe(
         RecipeRepository $recipeRepository
     ): Response {
-        $randomRecipe = $recipeRepository->findRandomRecipe();
+        $randomRecipe = $recipeRepository->findRandomPublicRecipe();
         return $this->redirectToRoute('recipe.show', ['id' => $randomRecipe->getId()]);
     }
 

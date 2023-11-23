@@ -13,11 +13,13 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CategoryFixture extends Fixture
 {
+    public const MAIN_CATEGORY = 'category-main';
+    public const MAIN_CATEGORY_COUNT = 4;
     public function load(ObjectManager $manager): void
     {
 
         $output = new ConsoleOutput();
-
+        
         $output->writeln('CategoryFixture > Start reached');
         //          Sub - 3
         $dipEtTartinade = array(
@@ -785,8 +787,11 @@ class CategoryFixture extends Fixture
                 ->addMultipleChildCategories($desserts),
         );
 
+        $count = 0;
         foreach($allCategoriesData as $mainCategory){
+            $count++;
             $manager->persist($mainCategory);
+            $this->addReference(self::MAIN_CATEGORY.$count, $mainCategory);
         }
         $manager->flush();
         $output->writeln('CategoryFixture > end reached');
