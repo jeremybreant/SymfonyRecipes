@@ -103,7 +103,7 @@ class RecipeRepository extends ServiceEntityRepository
             ->getResult(Query::HYDRATE_ARRAY);
 
         $idArray = array_column($results, 'id');
-        $randInt = mt_rand(1, count($idArray));
+        $randInt = mt_rand(0, count($idArray)-1);
         $randomId = $idArray[$randInt];
 
         return $this->createQueryBuilder('r')
